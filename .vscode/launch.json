@@ -1,0 +1,25 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "homecool Frontend (Web)",
+            "type": "dart",
+            "request": "launch",
+            "cwd": "${workspaceFolder}/frontend",
+            "program": "lib/main.dart",
+            "deviceId": "chrome"
+        },
+        {
+            "name": "homecool Backend (FastAPI)",
+            "type": "debugpy",
+            "request": "launch",
+            "module": "uvicorn",
+            "args": [
+                "backend.app.main:app",
+                "--reload"
+            ],
+            "jinja": true,
+            "cwd": "${workspaceFolder}"
+        }
+    ]
+}

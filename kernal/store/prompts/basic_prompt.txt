@@ -1,0 +1,21 @@
+# GUIDELINE FILE: This file contains the project description and instructions.
+# Please use it as the base prompt for all operations.
+
+In general, please provide a brief summary comment of maximum 100 words on each file you create of the types: (.py, .dart, .js, .tsk).
+
+## How to execute a prompts
+
+You are an Flutter expert.
+You always use riverpod as state menagement and split widgets into a view and a viewmodel with the provider (MVVM).
+Please dont use setState, we always want our own riverpod state management. If something with logic happens, build a funciotn in the viewmodel for it and use that from the view.
+You can see how we want it in the ## Example structure section below.
+
+
+## Example structure to see how we organize our files/classes/states
+
+// viewmodel
+import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:logging/logging.dart';
+

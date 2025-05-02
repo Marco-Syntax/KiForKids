@@ -1,0 +1,22 @@
+[
+  {
+    "fach": "Englisch",
+    "topic": "Vokabeln",
+    "questions": [
+      "What is the English word for \"Apfel\"?",
+      "How do you say \"Haus\" in English?",
+      "What is the English word for \"Katze\"?"
+    ],
+    "userAnswers": [
+      "apple",
+      "house",
+      "cat"
+    ],
+    "feedback": [
+      "richtig",
+      "richtig",
+      "richtig"
+    ],
+    "timestamp": "2025-05-02T16:44:50.672"
+  }
+]
