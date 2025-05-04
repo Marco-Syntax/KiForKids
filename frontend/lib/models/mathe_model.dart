@@ -3,128 +3,83 @@
 class MatheModel {
   // Themen für Klasse 5
   static const List<String> _klasse5 = [
-    'Addition und Subtraktion',
-    'Multiplikation und Division',
-    'Textaufgaben',
-    'Zahlenraum bis 1.000.000',
-    'Geometrische Grundformen',
-    'Längen, Gewichte, Zeit',
-    'Brüche: Einführung',
-    'Sachaufgaben',
-    'Runden und Überschlagen',
-    'Diagramme lesen',
+    'Zahlen & Rechnen',
+    'Geometrische Formen',
+    'Größen & Messen',
+    'Text- & Sachaufgaben',
+    'Daten & Diagramme',
   ];
 
   // Themen für Klasse 6
   static const List<String> _klasse6 = [
-    'Brüche: Rechnen',
-    'Dezimalzahlen',
-    'Prozentrechnung: Einführung',
-    'Geometrie: Flächen und Umfang',
-    'Negative Zahlen',
-    'Gleichungen: einfache Formen',
-    'Sachaufgaben mit Diagrammen',
-    'Winkel messen',
-    'Symmetrie',
-    'Körper und Volumen',
+    'Brüche & Dezimalzahlen',
+    'Geometrie & Symmetrie',
+    'Gleichungen & Terme',
+    'Größen & Messen',
+    'Diagramme & Daten',
   ];
 
   // Themen für Klasse 7
   static const List<String> _klasse7 = [
-    'Terme und Gleichungen',
-    'Proportionalität',
-    'Lineare Funktionen',
-    'Geometrie: Dreiecke und Vierecke',
-    'Brüche: Erweiterung',
-    'Kreis: Umfang und Fläche',
-    'Zufall und Wahrscheinlichkeit',
-    'Daten und Diagramme',
-    'Sachaufgaben: komplexer',
-    'Wurzeln: Einführung',
+    'Terme & Gleichungen',
+    'Funktionen & Proportionalität',
+    'Geometrie & Konstruktion',
+    'Brüche & Potenzen',
+    'Wahrscheinlichkeit & Daten',
   ];
 
   // Themen für Klasse 8
   static const List<String> _klasse8 = [
-    'Quadratische Gleichungen',
-    'Lineare Gleichungssysteme',
-    'Funktionen: Einführung',
-    'Geometrie: Pythagoras',
-    'Kreisberechnungen',
-    'Prozent- und Zinsrechnung',
-    'Statistik: Mittelwerte',
-    'Wahrscheinlichkeit: Erweiterung',
-    'Sachaufgaben: Zinsen',
-    'Trigonometrie: Grundlagen',
+    'Lineare & Quadratische Gleichungen',
+    'Funktionen & Graphen',
+    'Geometrie & Pythagoras',
+    'Zins- & Prozentrechnung',
+    'Statistik & Wahrscheinlichkeit',
   ];
 
   // Themen für Klasse 9
   static const List<String> _klasse9 = [
-    'Funktionen: Quadratisch',
-    'Geometrie: Raumfiguren',
-    'Trigonometrie: Sinus, Kosinus',
-    'Wahrscheinlichkeit: Kombinatorik',
-    'Statistik: Streuung',
-    'Lineare Optimierung',
-    'Sachaufgaben: Anwendungen',
-    'Wachstumsprozesse',
-    'Zinseszins',
-    'Datenanalyse',
+    'Quadratische Funktionen',
+    'Raumgeometrie',
+    'Trigonometrie',
+    'Wahrscheinlichkeit & Kombinatorik',
+    'Anwendungen & Modelle',
   ];
 
   // Themen für Klasse 10
   static const List<String> _klasse10 = [
-    'Analysis: Ableitung',
-    'Integralrechnung: Einführung',
-    'Geometrie: analytisch',
-    'Funktionen: ganzrational',
-    'Trigonometrie: Anwendungen',
-    'Statistik: Regression',
-    'Wahrscheinlichkeit: Binomial',
-    'Sachaufgaben: komplex',
-    'Lineare Algebra: Vektoren',
-    'Abschlussprüfungsvorbereitung',
+    'Ableitung & Integral',
+    'Vektoren & Geometrie',
+    'Ganzrationale Funktionen',
+    'Wahrscheinlichkeit & Statistik',
+    'Prüfungsvorbereitung',
   ];
 
   // Themen für Klasse 11
   static const List<String> _klasse11 = [
-    'Analysis: Ableitung & Integral',
-    'Funktionen: Exponential',
+    'Analysis: Grundlagen',
     'Vektorrechnung',
-    'Geometrie: Raum',
     'Stochastik: Grundlagen',
-    'Matrizenrechnung',
-    'Komplexe Zahlen',
-    'Statistik: Vertiefung',
-    'Sachaufgaben: Abitur',
-    'Abiturvorbereitung: Teil 1',
+    'Matrizen & komplexe Zahlen',
+    'Abitur: Teil 1',
   ];
 
   // Themen für Klasse 12
   static const List<String> _klasse12 = [
-    'Analysis: Kurvendiskussion',
-    'Integralrechnung: Anwendungen',
-    'Vektorgeometrie: Vertiefung',
-    'Stochastik: Wahrscheinlichkeitsverteilungen',
-    'Matrizen: Anwendungen',
-    'Komplexe Zahlen: Erweiterung',
-    'Statistik: Hypothesentests',
-    'Sachaufgaben: Abitur',
-    'Abiturvorbereitung: Teil 2',
-    'Mathematische Beweise',
+    'Kurvendiskussion & Integral',
+    'Vektorgeometrie',
+    'Wahrscheinlichkeitsverteilungen',
+    'Statistik & Hypothesentests',
+    'Abitur: Teil 2',
   ];
 
   // Themen für Klasse 13
   static const List<String> _klasse13 = [
-    'Abiturvorbereitung: Analysis',
-    'Abiturvorbereitung: Geometrie',
-    'Abiturvorbereitung: Stochastik',
-    'Funktionen: Abiturthemen',
-    'Vektorrechnung: Abitur',
-    'Statistik: Abitur',
-    'Komplexe Zahlen: Abitur',
+    'Analysis: Abitur',
+    'Geometrie: Abitur',
+    'Stochastik: Abitur',
     'Mathematische Modelle',
-    'Sachaufgaben: Abitur',
-    'Mathematik in Naturwissenschaften',
+    'Mathematik in der Praxis',
   ];
 
   static Map<String, List<String>> aufgabenbereiche = {

@@ -16,7 +16,7 @@ class HomeState {
   final UserModel user;
   final String? selectedTopic;
   final bool showTasks;
-  final List<String>? generatedTasks;
+  final List<Map<String, String>>? generatedTasks;
   final bool isLoadingTasks;
   final String? taskError;
   final List<String>? lastFeedback; // Feedback der KI-Korrektur
@@ -41,7 +41,7 @@ class HomeState {
     UserModel? user,
     String? selectedTopic,
     bool? showTasks,
-    List<String>? generatedTasks,
+    List<Map<String, String>>? generatedTasks,
     bool? isLoadingTasks,
     String? taskError,
     List<String>? lastFeedback,
@@ -143,27 +143,12 @@ class HomeViewModel extends StateNotifier<HomeState> {
         List.generate(questions.length, (_) => false),
       );
     }
-    final subject = getActiveSubject() ?? '';
-    final topic = state.selectedTopic ?? '';
-    final level = state.user.selectedLevel;
     final answers = getAnswers(controllers);
-
-    try {
-      final feedback = await _kiService!.checkAnswers(
-        subject: subject,
-        topic: topic,
-        level: level,
-        questions: questions,
-        answers: answers,
-      );
-      final isCorrect = feedback.map((f) => f.toLowerCase().startsWith('richtig')).toList();
-      return (feedback, isCorrect);
-    } catch (_) {
-      return (
-        List.generate(questions.length, (_) => "Konnte nicht geprüft werden."),
-        List.generate(questions.length, (_) => false),
-      );
-    }
+    // Nutze die lokal generierten Aufgaben und Lösungen
+    final generatedTasks = state.generatedTasks ?? [];
+    final feedback = _kiService!.checkAnswers(generatedTasks: generatedTasks, userAnswers: answers);
+    final isCorrect = feedback.map((f) => f.toLowerCase().startsWith('richtig')).toList();
+    return (feedback, isCorrect);
   }
 
   Future<void> generateTasksWithKI({
@@ -171,21 +156,21 @@ class HomeViewModel extends StateNotifier<HomeState> {
     required String topic,
     required String level,
     int count = 3,
+    String testMode = "bool", // NEU
   }) async {
     if (_kiService == null) throw Exception("KIService nicht gesetzt");
     state = state.copyWith(isLoadingTasks: true, taskError: null, generatedTasks: null, lastFeedback: null);
     try {
-      // Erzeuge für jeden Aufruf einen neuen Seed, damit die KI garantiert neue Aufgaben generiert
-      final randomSeed =
-          DateTime.now().microsecondsSinceEpoch.toString() +
-          "_" +
-          (DateTime.now().millisecondsSinceEpoch % 1000).toString();
+      final randomSeed = "${DateTime.now().microsecondsSinceEpoch}_${DateTime.now().millisecondsSinceEpoch % 1000}";
+      print("DEBUG: ViewModel ruft KIService.generateTasks auf mit testMode: $testMode");
+      final bool testModeBool = testMode == "bool";
       final tasks = await _kiService!.generateTasks(
         subject: subject,
         topic: topic,
         level: level,
         count: count,
-        extraPrompt: "Seed: $randomSeed", // Seed ist jetzt garantiert immer unterschiedlich
+        extraPrompt: "Seed: $randomSeed",
+        testMode: testModeBool,
       );
       state = state.copyWith(generatedTasks: tasks, isLoadingTasks: false, showTasks: true, lastFeedback: null);
     } catch (e) {
@@ -251,12 +236,6 @@ class HomeViewModel extends StateNotifier<HomeState> {
     );
   }
 
-  // Dummy-Aufgaben für Demo-Zwecke (entfernt, da nicht mehr benötigt)
-  List<String> getDummyTasks(String fach, String topic) {
-    // entfernt
-    return [];
-  }
-
   List<String> getAufgabenbereiche(String fach, String klasse) {
     switch (fach) {
       case 'Mathematik':
@@ -281,14 +260,9 @@ class HomeViewModel extends StateNotifier<HomeState> {
     try {
       final subject = getActiveSubject() ?? '';
       final topic = state.selectedTopic ?? '';
-      final level = state.user.selectedLevel;
-      final feedback = await _kiService!.checkAnswers(
-        subject: subject,
-        topic: topic,
-        level: level,
-        questions: questions,
-        answers: answers,
-      );
+      // Nutze die lokal generierten Aufgaben und Lösungen
+      final generatedTasks = state.generatedTasks ?? [];
+      final feedback = _kiService!.checkAnswers(generatedTasks: generatedTasks, userAnswers: answers);
       // Ergebnisse speichern (lokal)
       final entry = ResultsEntry(
         fach: subject,
@@ -304,7 +278,7 @@ class HomeViewModel extends StateNotifier<HomeState> {
       state = state.copyWith(isCheckingAnswers: false, lastFeedback: feedback, resultsHistory: newHistory);
 
       // Ergebnisse im Backend speichern
-      final userId = state.user.userId; // <-- jetzt aus UserModel
+      final userId = state.user.userId;
       final url = Uri.parse("http://localhost:8000/save_results/$userId");
       await http.post(
         url,

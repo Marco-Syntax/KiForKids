@@ -1,0 +1,25 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.sqlite3
+*.db
+
+# Umgebung & Secrets
+.env
+.venv/
+env/
+venv/
+.idea/
+.vscode/
+
+# Log/Cache
+*.log
+*.cache
+.mypy_cache/
+.ruff_cache/
+coverage/
+
+# Lokale Daten
+results_data/

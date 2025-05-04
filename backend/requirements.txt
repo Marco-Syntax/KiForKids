@@ -1,0 +1,8 @@
+# Enthält alle benötigten Python-Abhängigkeiten für das Backend (FastAPI, OpenAI, etc.)
+fastapi
+uvicorn[standard]
+python-dotenv
+openai
+slowapi
+pydantic
+

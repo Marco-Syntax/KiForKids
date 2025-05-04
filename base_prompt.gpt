@@ -66,7 +66,10 @@ homeschool/
         home_view.dart
         widgets/
           fach_sidebar.dart
+          test_true_false.dart
+          test_mc.dart
           ergebnis_dialog.dart
+          test_input.dart
     assets/
       images/
         youtube.png
@@ -84,17 +87,22 @@ homeschool/
         Dart_SDK.xml
         KotlinJavaRuntime.xml
   backend/
+    .env
     tools/
     app/
       __init__.py
       main.py
+      limiter.py
       results_data/
         demo_user_Mathematik.json
         demo_user_Englisch.json
       models/
         result_entry.py
       api/
+        routes.py
       services/
+        gpt_check.py
+        gpt_tasks.py
     modules/
     store/
       meta/
@@ -116,16 +124,6 @@ Modified at Wed Apr 23 19:26:47 2025 | Lines: 30 | Tokens: 264:
   "Summary": "Dieses Dokument ist ein Flutter Widget-Test, der die Funktionalität eines Zählers überprüft. Die Testumgebung wird mit der WidgetTester-Klasse aus dem flutter_test-Paket eingerichtet. Der Test prüft, ob der Zähler initial bei 0 beginnt und ob er korrekt erhöht wird, wenn auf das '+'-Symbol geklickt wird. Der Test verifiziert, dass beim Klicken auf das Symbol der Zähler von 0 auf 1 erhöht wird. Diese Art von Tests dient dazu, sicherzustellen, dass die Benutzeroberfläche wie erwartet funktioniert und die Logik des Widgets korrekt implementiert ist.",
   "Document type": "Code file",
   "Meta": "Kein spezifisches Datum angegeben"
-}
-```
-
-### /Users/marcogrimme/Repository/homeschool/frontend/web/index.html
-Modified at Wed Apr 23 19:26:47 2025 | Lines: 38 | Tokens: 303:
-```json
-{
-  "Summary": "Die Datei 'index.html' ist der grundlegende HTML-Code für ein Flutter-Webprojekt. Sie enthält metainformationen wie das Zeichensatzformat (UTF-8), die Kompatibilität mit Internet-Explorer und eine Beschreibung des Projekts. Zusätzlich sind iOS-spezifische Metadaten für Web-Apps integriert, wie beispielsweise die Unterstützung für mobile Web-Apps und das Festlegen von Icons. Der 'base href' ist für die korrekte Pfadstruktur beim Hosting entscheidend und wird durch einen build-Befehl ersetzt. Das Favicon wird ebenfalls definiert. Der Hauptinhalt ist ein Skript-Link zu 'flutter_bootstrap.js', das die Funktionalität für die Flutter Web-Anwendung bereitstellt.",
-  "Document type": "Code-Datei",
-  "Meta": "Die Datei scheint Teil eines größeren Flutter-Projekts für das Frontend zu sein."
 }
 ```
 
@@ -169,56 +167,6 @@ Modified at Thu May  1 12:32:31 2025 | Lines: 2 | Tokens: 6:
 }
 ```
 
-### /Users/marcogrimme/Repository/homeschool/frontend/lib/main.dart
-Modified at Fri May  2 12:07:55 2025 | Lines: 22 | Tokens: 159:
-```json
-{
-  "Summary": "Die Datei main.dart ist der Einstiegspunkt für eine Lernplattform, die mit Flutter entwickelt wurde. Sie verwendet das State-Management-Paket Riverpod. Der Hauptzweck der App ist es, eine Benutzeroberfläche für Kinder zu schaffen, in der KI-basierte Lerninhalte bereitgestellt werden. Die App verwendet Material Design und hat eine tiefpurpurne Farbthemen. Die HomeView wird als Startansicht der App festgelegt.",
-  "Document type": "Code file",
-  "Meta": "Erstellt mit Flutter, Dateipfad: /Users/marcogrimme/Repository/homeschool/frontend/lib/main.dart"
-}
-```
-
-### /Users/marcogrimme/Repository/homeschool/frontend/lib/models/mathe_model.dart
-Modified at Fri May  2 18:44:06 2025 | Lines: 141 | Tokens: 952:
-```json
-{
-  "Summary": "Das Dokument enthält die Klasse 'MatheModel', die Aufgabenbereiche für Mathematik der Klassen 5 bis 13 am Gymnasium definiert. Für jede Klasse sind spezifische Themen aufgeführt, die die Schüler lernen sollen, z.B. Addition, Prozentrechnung und Trigonometrie. Die Themen reichen von grundlegenden mathematischen Konzepten in Klasse 5 bis zu komplexeren Analysen und Vorbereitungen auf das Abitur in Klasse 13. Alle Themen sind in einer Map organisiert, die es ermöglicht, die Aufgabenbereiche nach Klassenstufen zuzuordnen.",
-  "Document type": "Code file",
-  "Meta": "Enthält Dummy-Daten zur mathematischen Ausbildung für Gymnasien."
-}
-```
-
-### /Users/marcogrimme/Repository/homeschool/frontend/lib/models/deutsch_model.dart
-Modified at Fri May  2 18:42:41 2025 | Lines: 141 | Tokens: 1018:
-```json
-{
-  "Summary": "Das Dokument enthält die Klasse 'DeutschModel', die eine Sammlung von Aufgabenbereichen für den Deutschunterricht der Klassen 5 bis 13 am Gymnasium bereitstellt. Jeder Jahrgang hat spezifische Themen, wie zum Beispiel Wortarten, Satzarten, Zeitformen, Textinterpretation und Rechtschreibregeln. Die Themen sind in statischen Listen organisiert, die in einer Karte (Map) mit den Klassenbezeichnungen verknüpft sind. Diese Struktur ermöglicht eine einfache Zugänglichkeit und Verwendung der Lehrinhalte für die entsprechend eingeteilten Klassenstufen.",
-  "Document type": "Code file",
-  "Meta": "Die Datei dient als Modell für Bildungsinhalte im Programm zur Unterstützung des Deutschunterrichts."
-}
-```
-
-### /Users/marcogrimme/Repository/homeschool/frontend/lib/models/naturwissenschaften_model.dart
-Modified at Fri May  2 18:44:42 2025 | Lines: 141 | Tokens: 912:
-```json
-{
-  "Summary": "Das Dokument 'naturwissenschaften_model.dart' definiert die Klasse 'NaturwissenschaftenModel', die verschiedene Aufgabenbereiche für Naturwissenschaften für die Klassen 5 bis 13 des Gymnasiums enthält. Es listet Themen wie Photosynthese, Zellbiologie, Genetik und Umweltprobleme auf, die jeweils in einer konstanten Liste für jede Klasse spezifiziert sind. Diese Struktur ermöglicht eine einfache Zuordnung von Themen zu den entsprechenden Klassenstufen, was zur Planung und Durchführung des Unterrichts in Naturwissenschaften beiträgt. Ein zentrales Element ist die statische Map 'aufgabenbereiche', die alle Themen nach Klassen geordnet zusammenfasst.",
-  "Document type": "Code file",
-  "Meta": "Erstellt für die Verwendung im Unterricht, 2023"
-}
-```
-
-### /Users/marcogrimme/Repository/homeschool/frontend/lib/models/sachkunde_model.dart
-Modified at Fri May  2 18:44:21 2025 | Lines: 141 | Tokens: 927:
-```json
-{
-  "Summary": "Das SachkundeModel ist eine Dart-Klasse, die Themengebiete für den Sachkundeunterricht der Klassen 5 bis 13 an Gymnasien bereitstellt. Jede Klasse hat spezifische Themen, die von heimischen Bäumen und Tieren im Wald (Klasse 5) bis zu internationalen Konflikten und Abiturvorbereitungen in der Klasse 13 reichen. Diese Themen umfassen Bereiche wie Umwelt, Politik, Wirtschaft und Technik. Die Klasse speichert die Themen als statische Listen und organisiert sie in einer Map, um den Zugriff zu erleichtern.",
-  "Document type": "Code file",
-  "Meta": "Letzte Bearbeitung: Oktober 2023"
-}
-```
-
 ### /Users/marcogrimme/Repository/homeschool/frontend/lib/models/user_model.dart
 Modified at Fri May  2 16:36:47 2025 | Lines: 24 | Tokens: 209:
 ```json
@@ -259,16 +207,6 @@ Modified at Fri May  2 16:44:09 2025 | Lines: 194 | Tokens: 2240:
 }
 ```
 
-### /Users/marcogrimme/Repository/homeschool/backend/app/main.py
-Modified at Fri May  2 16:56:50 2025 | Lines: 58 | Tokens: 460:
-```json
-{
-  "Summary": "Das Dokument enthält den Code für eine Backend-API, die mit FastAPI entwickelt wurde. Die API ermöglicht die Speicherung und Abfrage von Ergebnisübersichten für Nutzer in verschiedenen Fächern. Die Ergebnisse werden als JSON-Datei pro Nutzer und Fach im Verzeichnis 'results_data' gespeichert. Wichtige Funktionen umfassen eine POST-Methode zur Speicherung von Resultateingaben, die in der Klasse 'ResultEntry' definiert sind, und eine GET-Methode zur Abfrage der Ergebnisse. Das Datenmanagement erfolgt über Dateisystemoperationen, und es sind grundlegende Logging-Funktionen integriert. CORS-Middleware ist für Entwicklungszwecke aktiviert, um Anfragen von verschiedenen Ursprüngen zu erlauben.",
-  "Document type": "Code file",
-  "Meta": "FastAPI Projekt, implementiert grundlegende API-Funktionalitäten für die Ergebnisspeicherung, zuletzt aktualisiert 2023"
-}
-```
-
 ### /Users/marcogrimme/Repository/homeschool/backend/app/models/result_entry.py
 Modified at Fri May  2 16:59:43 2025 | Lines: 43 | Tokens: 351:
 ```json
@@ -276,16 +214,6 @@ Modified at Fri May  2 16:59:43 2025 | Lines: 43 | Tokens: 351:
   "Summary": "Das Dokument definiert das Datenmodell für Ergebnis-Einträge in einer pädagogischen Anwendung. Es beschreibt die Klasse 'ResultEntry', die Felder wie Fach, Thema, Fragen, Nutzereingaben, Feedback und einen Zeitstempel enthält. Die Funktion 'update_results_for_all_subjects' speichert die Ergebnisse eines Nutzers in einer JSON-Datei, die nach Nutzer-ID und Fach benannt ist. Sie prüft, ob die Datei bereits existiert und lädt die bestehenden Daten gegebenenfalls, bevor der neue Eintrag hinzugefügt und gespeichert wird. Fehler bei der Dateispeicherung werden protokolliert, um die Ursachen zu identifizieren und zu beheben.",
   "Document type": "Code file",
   "Meta": "Erstellt für eine Anwendung zur Verwaltung von Nutzerergebnissen, basierend auf dem Pydantic-Modell."
-}
-```
-
-### /Users/marcogrimme/Repository/homeschool/frontend/lib/models/englisch_model.dart
-Modified at Fri May  2 18:43:56 2025 | Lines: 141 | Tokens: 1013:
-```json
-{
-  "Summary": "Das Dokument beschreibt das 'EnglischModel', das Aufgabenbereiche für den Englischunterricht der Klassen 5 bis 13 am Gymnasium enthält. Jede Klasse hat spezifische Themen, die von grundlegenden Vokabeln in Klasse 5 bis hin zu komplexen Textanalysen und Abiturvorbereitungen in Klasse 13 reichen. Die Themen umfassen Grammatik, Leseverständnis, kreatives Schreiben sowie Wortschatzentwicklung in verschiedenen Kontexten. Die Struktur ist in Form von statischen Listen organisiert, die die Lehrinhalte klar gliedern und als Referenz für Lehrkräfte dienen sollen.",
-  "Document type": "Code file",
-  "Meta": "Erstellt für den Englischunterricht; keine spezifischen Daten vorhanden."
 }
 ```
 
@@ -299,43 +227,193 @@ Modified at Fri May  2 18:55:21 2025 | Lines: 67 | Tokens: 556:
 }
 ```
 
-### /Users/marcogrimme/Repository/homeschool/frontend/lib/views/home_view.dart
-Modified at Fri May  2 19:47:27 2025 | Lines: 696 | Tokens: 7575:
+### /Users/marcogrimme/Repository/homeschool/frontend/web/index.html
+Modified at Sat May  3 09:29:16 2025 | Lines: 76 | Tokens: 697:
 ```json
 {
-  "Summary": "Die Datei 'home_view.dart' enthält eine Flutter-Klasse, die eine benutzerfreundliche Benutzeroberfläche für eine Lernplattform gestaltet. Wichtige Funktionen umfassen den Header mit Titel und Untertitel sowie Dropdown-Listen zur Auswahl von Klassen und Levels. Die Sidebar erlaubt die Auswahl von Fächern, während der Hauptbereich Aufgaben darstellt und eine KI-Funktion zur Generierung von Lerninhalten bereitstellt. Nutzer können Aufgaben auswählen, ihre Antworten eingeben und diese überprüfen. Ein Fehler-Handling wurde implementiert, insbesondere beim Laden von Ergebnissen. Die Klasse nutzt das 'Riverpod'-State-Management zur Verwaltung des Anwendungszustands und ist modular aufgebaut, um Wartbarkeit zu gewährleisten.",
+  "Summary": "Die HTML-Datei beschreibt die Webseite \"KiForKids\", eine Lernplattform für Kinder, die interaktive, KI-gestützte Aufgaben bietet. Wichtige Elemente sind: \n- **Meta-Tags** für Suchmaschinenoptimierung (SEO), die Schlüsselwörter wie \"Kinder lernen\" und \"interaktive Lerninhalte\" enthalten.\n- **Open Graph und Twitter Card Tags**, die eine ansprechende Vorschau der Webseite bei sozialen Medien gewährleisten.\n- Die Adresse der Organisation in Göttingen, Niedersachsen, sowie Links zu sozialen Medien.\n- Eine ansprechende Beschreibung der Plattform, die einen spielerischen Ansatz für das Lernen von Kindern fördert. \nDie Datei enthält zudem Verweise zu Icons und einem Manifest für mobile Webanwendungen.",
   "Document type": "Code file",
-  "Meta": "Erstellt am: Unbekannt"
+  "Meta": "Letzte Bearbeitung: Oktober 2023"
 }
 ```
 
-### /Users/marcogrimme/Repository/homeschool/frontend/lib/view_models/home_view_model.dart
-Modified at Fri May  2 19:56:25 2025 | Lines: 378 | Tokens: 3158:
+### /Users/marcogrimme/Repository/homeschool/backend/app/limiter.py
+Modified at Sat May  3 17:02:09 2025 | Lines: 7 | Tokens: 50:
 ```json
 {
-  "Summary": "Die Datei enthält den HomeViewModel für eine Lernanwendung, die mit Flutter und Riverpod entwickelt wurde. Es verwaltet den Zustand eines Benutzers, einschließlich seiner Klasse, seines Niveaus und der gewählten Fächer. Wichtige Funktionen umfassen die Erstellung und Überprüfung von Aufgaben mithilfe eines KI-Services. Der ViewModel speichert Benutzerinformationen, Aufgabenstatistiken und Ergebnisse und ermöglicht es, nach Fächer und Themen zu filtern. Die Logik zur Prüfung der Antworten und zur Generierung neuer Aufgaben unter Verwendung der KI ist ebenfalls integriert. Zudem werden Funktionen bereitgestellt, um Aufgaben zu erstellen, die Benutzerinteraktion zu verwalten und Fortschritte zu speichern. Ein Beispiel für die Nutzung von HTTP-Anfragen zur Speicherung oder Abrufung von Ergebnissen ist ebenfalls vorhanden.",
+  "Summary": "Die Datei enthält eine Instanz des 'Limiter'-Objekts aus der Bibliothek 'slowapi', die verwendet wird, um die Rate von API-Anfragen zu steuern und zirkuläre Importe innerhalb einer Anwendung zu vermeiden. Die Funktion 'get_remote_address' wird als Schlüsselgenerierungsfunktion für den Limiter verwendet, um die IP-Adresse des anfragenden Clients zu ermitteln. Dies sorgt dafür, dass die API-Last gleichmäßig verteilt und Missbrauch durch übermäßige Anfragen durch einen einzelnen Client verhindert wird.",
+  "Document type": "Code file",
+  "Meta": "Datei zur Regelung der API-Nutzung"
+}
+```
+
+### /Users/marcogrimme/Repository/homeschool/frontend/lib/models/sachkunde_model.dart
+Modified at Sat May  3 10:19:25 2025 | Lines: 96 | Tokens: 578:
+```json
+{
+  "Summary": "Der SachkundeModel ist eine Dart-Klasse, die Aufgabenbereiche für die Sachkunde von Klassen 5 bis 13 an Gymnasien definiert. Die Klasse beinhaltet statische Listen für jede Jahrgangsstufe mit relevanten Themenbereichen, darunter Natur, Technik, Politik und Gesellschaft. Jede Klasse hat spezifische Themen, angepasst an den Lehrplan. Die Themen sind in einem Map-Format organisiert, um einen schnellen Zugriff auf die Inhalte zu ermöglichen und somit eine strukturierte Übersicht über die behandelten Sachgebiete zu bieten.",
+  "Document type": "Code file",
+  "Meta": "Erstellt für ein Bildungsprogramm zur Unterstützung der Lehrplangestaltung."
+}
+```
+
+### /Users/marcogrimme/Repository/homeschool/frontend/lib/models/mathe_model.dart
+Modified at Sat May  3 10:03:37 2025 | Lines: 96 | Tokens: 595:
+```json
+{
+  "Summary": "Die Datei 'mathe_model.dart' definiert einen Dart-Code, der die mathematischen Themenbereiche für Schüler der Klassen 5 bis 13 am Gymnasium enthält. Für jede Klasse werden spezifische Themen in Form von Listen dargestellt, die Aufgabenbereiche wie 'Zahlen & Rechnen' (Klasse 5) oder 'Analysis: Abitur' (Klasse 13) abdecken. Alle Themen werden in einer Map zusammengefasst, die die Zuordnung von Klassen zu ihren jeweiligen Themen ermöglicht und somit eine strukturierte Übersicht über den Mathematikunterricht bietet.",
+  "Document type": "Code file",
+  "Meta": "Dieser Code bietet eine Grundlage für die Bildung von Übungsmaterialien im Bereich Mathematik."
+}
+```
+
+### /Users/marcogrimme/Repository/homeschool/frontend/lib/models/englisch_model.dart
+Modified at Sat May  3 10:16:46 2025 | Lines: 96 | Tokens: 565:
+```json
+{
+  "Summary": "Der EnglischModel ist eine Dart-Klasse, die Lerninhalte für den Englischunterricht der Klassen 5 bis 13 am Gymnasium bereitstellt. Die Klasse definiert verschiedene Themenbereiche, die für jede Jahrgangsstufe relevant sind, einschließlich Grammatik, Leseverständnis, Textanalyse und schriftliche Ausdrucksformen. Jedes Jahr stellt spezifische Aufgabenbereiche zusammen, um die Schüler auf Prüfungen, insbesondere das Abitur, vorzubereiten. Die Struktur ermöglicht eine einfache Erweiterung oder Anpassung der Themen und bietet einen klaren Überblick über den Lehrplan für Lehrer und Schüler.",
+  "Document type": "Code file",
+  "Meta": "Dart-Datei für ein Schulmodell, das im Bildungskontext verwendet wird."
+}
+```
+
+### /Users/marcogrimme/Repository/homeschool/frontend/lib/models/naturwissenschaften_model.dart
+Modified at Sat May  3 10:18:17 2025 | Lines: 96 | Tokens: 572:
+```json
+{
+  "Summary": "Das NaturwissenschaftenModel ist eine Dart-Klasse, die Aufgabenbereiche für das Fach Naturwissenschaften für die Klassen 5 bis 13 im Gymnasium definiert. Jede Klassenstufe hat eine eigene Liste von Themen, die die Schüler durch verschiedene Aspekte der Naturwissenschaften führen. Die Themen reichen von Lebewesen und Gesundheit in der 5. Klasse bis zu komplexen Konzepten wie Molekulargenetik und Quantenphysik in der 12. Klasse. Insgesamt werden zehn verschiedene Themen für jede Klasse angeboten, die den Lehrplan unterstützen und einen breiten Überblick über verschiedene naturwissenschaftliche Disziplinen geben. Strukturierte Daten werden in einer Map gespeichert, die die Klassen als Schlüssel und die entsprechenden Themenlisten als Werte enthält.",
+  "Document type": "Code file",
+  "Meta": "Erstellt für Bildungszwecke, keine speziellen Daten vorhanden."
+}
+```
+
+### /Users/marcogrimme/Repository/homeschool/frontend/lib/views/widgets/test_input.dart
+Modified at Sat May  3 15:23:11 2025 | Lines: 200 | Tokens: 1838:
+```json
+{
+  "Summary": "Der Code definiert ein Flutter-Widget namens TestInput, das eine Freitext-Eingabe für Aufgaben ermöglicht. Es verwendet Provider zur Verwaltung von Zuständen und überprüft die eingegebenen Antworten mithilfe einer KI. Wichtige Funktionen umfassen das Erstellen von TextEditingControllers, das Prüfen der Antworten und das Bereitstellen von Feedback. Bei der Erstellung werden die Aufgaben, Akzent- und Kartenfarben sowie eine Callback-Funktion übergeben. Das Widget zeigt die Fragen an, erfasst die Eingaben des Benutzers und wertet diese aus. Das Layout beinhaltet visuelle Rückmeldungen über die Richtigkeit der Antworten. Außerdem gibt es Progress-Indikatoren und Ergebnisse, die die Nutzer über ihre Leistung informieren. Der Code ist durch eine klare Struktur in Klassen und Methoden gekennzeichnet, um die Wiederverwendbarkeit und Lesbarkeit zu fördern.",
   "Document type": "Code file",
   "Meta": "Datum: Oktober 2023"
 }
 ```
 
-### /Users/marcogrimme/Repository/homeschool/frontend/lib/util/ki_service.dart
-Modified at Fri May  2 19:54:55 2025 | Lines: 250 | Tokens: 3750:
+### /Users/marcogrimme/Repository/homeschool/frontend/pubspec.yaml
+Modified at Sat May  3 16:00:08 2025 | Lines: 38 | Tokens: 155:
 ```json
 {
-  "Summary": "Die Datei enthält eine Dart-Klasse namens 'KIService', die mit der OpenAI API (Modell GPT-4.1-nano) interagiert, um Aufgaben für Schüler zu generieren und deren Antworten zu prüfen. Die Klasse bietet Methoden zur Generierung spezifischer Aufgaben für Fächer wie Mathe, Deutsch und Englisch, basierend auf vorgegebenen Themen und Schwierigkeitsgraden. Die Aufgaben erfordern Antworten mit einem Wort und sind kurz gehalten. Zudem besteht die Möglichkeit, Antworten der Schüler zu bewerten und Feedback zu geben, ob diese richtig oder falsch sind, wobei die korrekten Lösungen bereitgestellt werden. Die Funktionen nutzen HTTP-Anfragen zur Kommunikation mit der API und verarbeiten die Antworten entsprechend der Anforderungen. Die Struktur umfasst Methoden zur Generierung von System- und Aufgaben-Prompts sowie für die Rückmeldung zu Antworten.",
+  "Summary": "Das Dokument ist eine YAML-Datei für ein Flutter-Projekt mit dem Namen 'frontend'. Es beschreibt die Projektumgebung und Abhängigkeiten. Die Flutter-Version ist auf ^3.7.2 festgelegt. Zu den wichtigsten Abhängigkeiten gehören 'flutter', 'cupertino_icons', 'flutter_riverpod' und 'go_router'. Zusätzlich werden Bibliotheken für das State Management, Routing und die Verwendung von APIs benötigt. Im Abschnitt 'dev_dependencies' sind Werkzeuge zum Testen und zur Code-Optimierung aufgeführt. Das Projekt verwendet Material Design und enthält Assets für Bilder und Texte.",
+  "Document type": "Code file",
+  "Meta": "Version: 1.0.0+1, keine Veröffentlichung geplant"
+}
+```
+
+### /Users/marcogrimme/Repository/homeschool/frontend/lib/main.dart
+Modified at Sat May  3 15:46:51 2025 | Lines: 22 | Tokens: 157:
+```json
+{
+  "Summary": "Die Datei enthält den Hauptcode für eine Lernplattform namens 'KI-For-Kids', die mit dem Flutter-Framework entwickelt wurde. Sie verwendet Riverpod für das State-Management. Der Einstiegspunkt der Anwendung ist die Funktion 'main', die das Widget 'MyApp' innerhalb eines 'ProviderScope' bereitstellt. 'MyApp' ist ein stateless Widget, das eine MaterialApp erstellt, deren Design und Farbeinstellungen konfiguriert sind. Die Hauptansicht wird durch 'HomeView' dargestellt, während die Debug-Anzeige des Modus deaktiviert ist, um ein sauberes Benutzererlebnis zu gewährleisten. Die Anwendung nutzt modernste Material Design-Elemente, um die Benutzeroberfläche ansprechend zu gestalten.",
+  "Document type": "Code file",
+  "Meta": "Erstellt mit Flutter, Nutzung von Riverpod für State-Management."
+}
+```
+
+### /Users/marcogrimme/Repository/homeschool/frontend/lib/views/home_view.dart
+Modified at Sat May  3 17:13:55 2025 | Lines: 510 | Tokens: 6505:
+```json
+{
+  "Summary": "Das Dokument beschreibt die Implementierung der 'HomeView'-Klasse in einer Flutter-Anwendung für eine strukturierte Lernplattform. Die Benutzeroberfläche umfasst: \n- Ein Header mit Titel und Untertitel sowie Auswahlmöglichkeiten für Klassen und Niveau. \n- Eine Sidebar zum Auswählen von Fächern und einen Content-Bereich zur Anzeige von Aufgaben. \n- Die Möglichkeit, zwischen verschiedenen Testmodi (Richtig/Falsch, Eingabe, Multiple Choice) zu wechseln. \n- Die initiale Begrüßung wird dynamisch geladen. \n- Die Benutzer können Aufgaben generieren, die durch einen KI-Service unterstützt werden. \n- Fehlerbehandlung, z.B. bei der Anzeige der Ergebnisse, ist implementiert. \n\nDie Struktur des Codes spiegelt ein fortgeschrittenes Flutter-Design wider, basierend auf dem Provider-Muster zur Zustandsverwaltung.",
+  "Document type": "Code file",
+  "Meta": "Date: Oktober 2023"
+}
+```
+
+### /Users/marcogrimme/Repository/homeschool/frontend/lib/models/deutsch_model.dart
+Modified at Sat May  3 10:06:32 2025 | Lines: 90 | Tokens: 550:
+```json
+{
+  "Summary": "Das DeutschModel ist ein Dart-Code, der Lehrinhalte für das Fach Deutsch in den Klassen 5 bis 13 eines Gymnasiums definiert. Der Code enthält statische Listen, die verschiedene Themenbereiche für jede Jahrgangsstufe auflisten. Für jede Klasse werden spezifische Aspekte des Deutschunterrichts behandelt, darunter Wortarten, Satzbau, Rechtschreibung, Textinterpretation, Rhetorik und Medienkompetenz. Die Informationen sind in einem Map-Objekt strukturiert, das die Klassen als Schlüssel und die zugehörigen Themenlisten als Werte enthält. Dies ermöglicht eine einfache Zuordnung und Zugriff auf die Lehrinhalte je nach Jahrgangsstufe.",
+  "Document type": "Code file",
+  "Meta": "Dies ist eine strukturierte Datenrepräsentation für den Deutschunterricht, die als Grundlage für Lehrpläne oder Lernressourcen dienen kann."
+}
+```
+
+### /Users/marcogrimme/Repository/homeschool/backend/app/api/routes.py
+Modified at Sat May  3 17:02:03 2025 | Lines: 38 | Tokens: 327:
+```json
+{
+  "Summary": "Das Dokument ist ein Code-File für eine FastAPI-Anwendung, das API-Routen für GPT-Dienste zur Generierung von Aufgaben und zur Überprüfung von Antworten definiert. Es umfasst zwei Haupt-Endpoints: \n\n- /generate_tasks: Erwartet JSON-Daten (Fach, Thema, Niveau, Testmodus, verwendete Fragen, Klassenthemen) und gibt eine Liste generierter Aufgaben zurück. Es gibt eine Anfragebegrenzung von 10 Anfragen pro Minute. \n- /check_answers: Erwartet JSON-Daten (Fach, Thema, Niveau, Fragen, Antworten) und liefert Feedback für die Antworten. Diese Route hat eine Begrenzung von 30 Anfragen pro Minute. Bei Fehlern wird eine HTTP-Exception mit dem Statuscode 500 ausgelöst.\n\nDie Nutzung eines globalen Limiters zur Kontrolle der Anzahl der Anfragen zeigt die Wichtigkeit von Performance und Stabilität in der API.",
+  "Document type": "Code file",
+  "Meta": "Entwickelt zur Nutzung mit FastAPI, keine spezifischen Daten angegeben"
+}
+```
+
+### /Users/marcogrimme/Repository/homeschool/backend/app/main.py
+Modified at Sat May  3 17:02:05 2025 | Lines: 69 | Tokens: 565:
+```json
+{
+  "Summary": "Das bereitgestellte Python-Backend verwendet FastAPI zur Entwicklung einer API, die es Nutzern ermöglicht, Ergebnisübersichten pro Fach zu speichern und abzurufen. Ergebnisse werden in JSON-Dateien pro Nutzer und Fach gespeichert. Es gibt zwei Hauptendpunkte: einen POST-Endpunkt (/save_results/{user_id}) zum Speichern der Ergebnisse und einen GET-Endpunkt (/get_results/{user_id}/{fach}) zum Abrufen der gespeicherten Daten. Zusätzlich wird eine Ratenbegrenzung implementiert, um die Nutzung der API zu steuern. Der Code beinhaltet Middleware für CORS und Fehlerbehandlungen für übermäßige Anfragen. Die Struktur umfasst die Definition der ResultEntry-Datenmodelle und die Organisation der Daten in einem spezifischen Verzeichnis.",
   "Document type": "Code file",
   "Meta": "Letzte Aktualisierung: Oktober 2023"
 }
 ```
 
-### /Users/marcogrimme/Repository/homeschool/frontend/pubspec.yaml
-Modified at Fri May  2 19:53:34 2025 | Lines: 37 | Tokens: 150:
+### /Users/marcogrimme/Repository/homeschool/frontend/lib/views/widgets/test_true_false.dart
+Modified at Sat May  3 15:23:14 2025 | Lines: 261 | Tokens: 2411:
 ```json
 {
-  "Summary": "Das Dokument ist eine Konfigurationsdatei für ein Flutter-Projekt mit dem Namen 'frontend'. Es beschreibt die grundlegenden Projektinformationen wie Version, Abhängigkeiten und Umgebungsanforderungen. Die Datei legt fest, dass das Projekt mit der Flutter SDK Version 3.7.2 kompatibel ist. Sie listet mehrere externe Pakete auf, darunter 'flutter_riverpod' für State Management, 'go_router' für Routing, und 'shared_preferences' für die Speicherung von Daten. Zudem enthält sie Entwicklungsabhängigkeiten wie 'flutter_test' für Tests und 'flutter_lints' für Linting. Das Projekt unterstützt Material Design und hat spezifische Assets für Bilder und Texte definiert.",
+  "Summary": "Das Dokument enthält einen Widget-Code für Richtig/Falsch-Aufgaben in Flutter mit Riverpod-Anbindung. Der Widget \"TestTrueFalse\" ermöglicht es Benutzern, Aufgaben zu beantworten und die Antworten über KI-basierte Prüfmethoden zu überprüfen. Wichtigste Funktionen: 1. Initialisierung von Aufgaben und Auswahlmöglichkeiten. 2. Überprüfung der Antworten mit einer KI, die Feedback liefert. 3. Anzeige von Ergebnissen sowie die Möglichkeit, den Test zu beenden oder fortzufahren mit neuen Aufgaben. Das Layout umfasst Fragen in einer Scroll-Ansicht, Toggle-Buttons für die Antwortauswahl und visuelles Feedback für die Antworten. Logik inkludiert auch Methoden für die Aktualisierung des Widgets und die Verarbeitung von Benutzerinteraktionen. Es wird ein Zustand für die Anzeige des Ergebnisses und die Kontrolle des Fortschritts verwendet.",
   "Document type": "Code file",
-  "Meta": "Kein spezifisches Datum angegeben."
+  "Meta": "Flutter, Riverpod, Widget-Entwicklung, KI-Integration"
+}
+```
+
+### /Users/marcogrimme/Repository/homeschool/backend/app/services/gpt_tasks.py
+Modified at Sat May  3 16:49:44 2025 | Lines: 72 | Tokens: 695:
+```json
+{
+  "Summary": "Das Dokument ist ein Python-Service-Modul zur Generierung von Aufgaben mithilfe der OpenAI GPT-API. Es lädt den API-Key aus einer .env-Datei und definiert eine asynchrone Funktion namens 'generate_tasks', die Aufgaben basierend auf einem übergebenen Daten-Dictionary erzeugt. Wichtige Parameter sind 'subject', 'topic', 'level', 'testMode', 'usedQuestions' und 'classTopics'. Die Funktion erstellt einen entsprechenden Prompt für GPT, um zehn spezifische Aufgaben zu generieren, die den angegebenen Kriterien entsprechen. Die Ergebnisse werden als nummerierte Liste zurückgegeben. Die robuste Verarbeitung ermöglicht die Erkennung verschiedener Nummerierungsformate und gewährleistet die Rückgabe gültiger Aufgaben selbst bei unerwarteten Eingaben.",
+  "Document type": "Code file",
+  "Meta": "Das Modul ist Teil eines größeren Backends für Bildungsanwendungen."
+}
+```
+
+### /Users/marcogrimme/Repository/homeschool/frontend/lib/views/widgets/test_mc.dart
+Modified at Sat May  3 15:23:12 2025 | Lines: 35 | Tokens: 235:
+```json
+{
+  "Summary": "Das Dokument ist ein Code-File für ein Platzhalter-Widget in Flutter, das für Multiple-Choice-Tests verwendet wird. Es zeigt eine Liste von Aufgaben (tasks) an und enthält Stil- und Layout-Anpassungen über Farben und Textgrößen. Die Hauptkomponenten sind: 1. Eine Überschrift für den Test, die anzeigt, dass sich der Test in der Entwicklung befindet. 2. Eine dynamische Anzeige der Aufgaben mittels einer Schleife, die jede Aufgabe als Text mit Abstand anzeigt. 3. Ein Button, um den Test abzuschließen, wobei eine Callback-Funktion (onTestFinished) ausgeführt wird, wenn der Button gedrückt wird. Dieses Widget ist modular und kann in anderen Teilen der Anwendung wiederverwendet werden.",
+  "Document type": "Code file",
+  "Meta": "Erstellt zur Implementierung eines Multiple-Choice-Tests in einer Flutter-Anwendung"
+}
+```
+
+### /Users/marcogrimme/Repository/homeschool/backend/app/services/gpt_check.py
+Modified at Sat May  3 17:27:23 2025 | Lines: 77 | Tokens: 868:
+```json
+{
+  "Summary": "Das Dokument ist ein Python-Code für einen Service zur KI-gestützten Prüfung von Schülerantworten mithilfe von OpenAI's GPT. Es lädt den API-Key aus einer .env-Datei und enthält eine asynchrone Funktion 'check_answers', die ein Dictionary mit den Feldern Fach, Thema, Niveau, Fragen und Antworten erwartet. Die Funktion erstellt einen Prompt für die KI, um Schülerantworten zu bewerten und entsprechend Feedback zu geben. Die Rückmeldungen erfolgen in einem festgelegten Format, wobei jede Antwort als 'richtig' oder 'falsch (richtige Lösung: ... )' gekennzeichnet wird. Der Code berücksichtigt einige Fehlerbehandlungen, um eine robuste Nutzung sicherzustellen, und protokolliert die Rohantworten von GPT zur Analyse. Insgesamt bietet das Modul eine automatisierte Möglichkeit zur korrekten Rückmeldung über Schülerleistungen.",
+  "Document type": "Code file",
+  "Meta": "Letzte Aktualisierung: Oktober 2023"
+}
+```
+
+### /Users/marcogrimme/Repository/homeschool/frontend/lib/view_models/home_view_model.dart
+Modified at Sat May  3 17:29:50 2025 | Lines: 381 | Tokens: 3189:
+```json
+{
+  "Summary": "Der Code ist ein Teil einer Flutter-App, die für den Bildungsbereich gestaltet wurde. Die \"HomeViewModel\"-Klasse verwaltet den Zustand der Benutzeroberfläche und hält Informationen über Benutzer, gewählte Fächer, Themen und Aufgaben. Wichtige Funktionen umfassen die Erstellung von Aufgaben mithilfe eines KI-Services, die Überprüfung von Antworten und das Speichern von Ergebnissen im Backend. Das Datenmodell umfasst Klassen wie \"UserModel\" und \"ResultsEntry\", die Benutzerdaten und Ergebnisse speichern. Die Anwendung unterstützt mehrere Fächer (Mathematik, Deutsch, etc.) und Klassenstufen. Es gibt umfangreiche Methoden zur Verwaltung von Benutzerinteraktionen und zur Generierung sowie Bewertung von Aufgaben. Die Struktur ist so angelegt, dass sie eine reibungslose Benutzererfahrung im Lernprozess fördert.",
+  "Document type": "Code file",
+  "Meta": "Keine spezifischen zusätzlichen Notizen"
+}
+```
+
+### /Users/marcogrimme/Repository/homeschool/frontend/lib/util/ki_service.dart
+Modified at Sat May  3 17:29:31 2025 | Lines: 247 | Tokens: 3683:
+```json
+{
+  "Summary": "Der KIService ist eine Dart-Klasse, die Aufgaben generiert und Ein-Wort-Antworten über die OpenAI API überprüft. Wichtige Punkte sind:  \n- Verwendung des GPT-4.1-nano Modells.  \n- Anpassung spezifischer Systemprompts je nach Fach (Mathematik, Deutsch, Englisch, Sachkunde, Naturwissenschaften).  \n- Generierung von Aufgaben gemäß den Lehrplänen für Gymnasien in Deutschland, mit dem Fokus auf ein Wort als Antwort.  \n- Methoden zur Erstellung von Aufgaben ('generateTasks') und zur Überprüfung von Antworten ('checkAnswers') sind implementiert.  \n- Antworten werden auf Richtigkeit geprüft und es wird Feedback gegeben, ob sie korrekt sind oder eine richtige Lösung bereitgestellt wird.  \nDie Korrekturmethodik ist positiv und unterstützend gestaltet.",
+  "Document type": "Code file",
+  "Meta": "Letzte Änderung: Oktober 2023"
 }
 ```
 
@@ -362,6 +440,7 @@ dependencies:
   vit_gpt_dart_api: ^5.1.0
   intl: ^0.20.2
   http: ^1.3.0
+  logging: ^1.3.0
 
 dev_dependencies:
   flutter_test:
