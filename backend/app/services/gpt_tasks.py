@@ -10,6 +10,7 @@ from dotenv import load_dotenv
 import openai
 import logging
 from app.models.request_models import TaskRequest
+from fastapi.responses import JSONResponse
 
 # Logger-Konfiguration
 logger = logging.getLogger("gpt_tasks")
@@ -94,9 +95,11 @@ def generate_tasks(data: TaskRequest) -> List[dict]:
             q = question_part
             if q and q[0].isdigit():
                 q = q.lstrip("0123456789.:-) ").strip()
-            tasks.append({"question": q, "answer": answer_part})
+            question = q.encode("utf-8").decode("utf-8")
+            answer = answer_part.encode("utf-8").decode("utf-8")
+            tasks.append({"question": question, "answer": answer})
     if not tasks:
         # Fallback: gib alle Zeilen als Frage ohne Antwort zurück
         tasks = [{"question": l, "answer": ""} for l in lines]
     logger.info(f"Extrahierte Aufgaben: {tasks}")
-    return tasks
+    return JSONResponse(content={"tasks": tasks}, ensure_ascii=False)

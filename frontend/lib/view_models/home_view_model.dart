@@ -187,21 +187,16 @@ class HomeViewModel extends StateNotifier<HomeState> {
   }
 
   void toggleSubject(String subject) {
-    final subjects = [...state.user.selectedSubjects];
-    if (subjects.contains(subject)) {
-      subjects.remove(subject);
-    } else {
-      subjects.add(subject);
-    }
-    // Setze das zuletzt angeklickte Fach als aktiv
-    state = state.copyWith(
-      user: state.user.copyWith(selectedSubjects: subjects),
+    // Immer alles zurücksetzen beim Fachwechsel
+    state = HomeState(
+      user: state.user.copyWith(
+        selectedSubjects: [subject],
+        selectedClass: state.user.selectedClass,
+        selectedLevel: state.user.selectedLevel,
+        userId: state.user.userId,
+      ),
       activeSubject: subject,
-      selectedTopic: null,
-      showTasks: false,
-      generatedTasks: null,
-      lastFeedback: null,
-      taskError: null,
+      // alle anderen Felder bleiben auf Default/null
     );
   }
 

@@ -36,7 +36,7 @@ class KIService {
     };
     final response = await http.post(url, headers: {'Content-Type': 'application/json'}, body: jsonEncode(body));
     if (response.statusCode == 200) {
-      final data = jsonDecode(response.body);
+      final data = jsonDecode(utf8.decode(response.bodyBytes));
       final tasks =
           (data['tasks'] as List).map((e) => (e as Map).map((k, v) => MapEntry(k.toString(), v.toString()))).toList();
       return tasks;

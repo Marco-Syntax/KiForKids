@@ -5,6 +5,7 @@ import 'package:frontend/view_models/home_view_model.dart';
 import 'widgets/test_true_false.dart';
 import 'widgets/test_input.dart';
 import 'widgets/test_mc.dart';
+import 'dart:html' as html; // <--- am Anfang hinzufügen
 
 part 'widgets/ergebnis_dialog.dart';
 part 'widgets/fach_sidebar.dart';
@@ -74,431 +75,527 @@ class _HomeViewState extends ConsumerState<HomeView> {
       backgroundColor: background,
       body: SafeArea(
         child: SingleChildScrollView(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 32.0, vertical: 24),
-            child: Column(
-              children: [
-                // Header-Bereich (zentriert, Ergebnis-Button oben rechts)
-                Stack(
+          child: ConstrainedBox(
+            constraints: BoxConstraints(
+              minHeight: MediaQuery.of(context).size.height - MediaQuery.of(context).padding.top,
+            ),
+            child: IntrinsicHeight(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 32.0, vertical: 40),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    // Zentrierter Header-Inhalt
-                    Align(
-                      alignment: Alignment.center,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Text(
-                            "KI---For---Kids",
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 32,
-                              color: accent,
-                              letterSpacing: 0.5,
-                            ),
-                            textAlign: TextAlign.center,
-                          ),
-                          const SizedBox(height: 8),
-                          Text(
-                            "Finde spannende Aufgaben für jede Klassenstufe",
-                            style: TextStyle(color: fadedText, fontSize: 18, fontWeight: FontWeight.w400),
-                            textAlign: TextAlign.center,
-                          ),
-                          const SizedBox(height: 20),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
+                    // Header-Bereich (zentriert, Ergebnis-Button oben rechts)
+                    Stack(
+                      children: [
+                        // Zentrierter Header-Inhalt
+                        Align(
+                          alignment: Alignment.center,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
-                              // Klassen-Dropdown
-                              Container(
-                                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 2),
-                                decoration: BoxDecoration(
-                                  color: cardColor,
-                                  borderRadius: BorderRadius.circular(10),
-                                  border: Border.all(color: accent.withOpacity(0.15)),
+                              Text(
+                                "KI---For---Kids",
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 32,
+                                  color: accent,
+                                  letterSpacing: 0.5,
                                 ),
-                                child: DropdownButtonHideUnderline(
-                                  child: DropdownButton<String>(
-                                    value: state.user.selectedClass,
-                                    items:
-                                        classes
-                                            .map(
-                                              (c) => DropdownMenuItem(
-                                                value: c,
-                                                child: Text(
-                                                  c,
-                                                  style: const TextStyle(fontSize: 16, color: Colors.white),
-                                                ),
-                                              ),
-                                            )
-                                            .toList(),
-                                    onChanged: (value) {
-                                      if (value != null) vm.selectClass(value);
-                                    },
-                                    dropdownColor: cardColor,
-                                    iconEnabledColor: accent,
-                                    style: const TextStyle(fontSize: 16, color: Colors.white),
-                                  ),
-                                ),
+                                textAlign: TextAlign.center,
                               ),
-                              const SizedBox(width: 18),
-                              // Level-Dropdown
-                              Container(
-                                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 2),
-                                decoration: BoxDecoration(
-                                  color: cardColor,
-                                  borderRadius: BorderRadius.circular(10),
-                                  border: Border.all(color: accent.withOpacity(0.15)),
-                                ),
-                                child: DropdownButtonHideUnderline(
-                                  child: DropdownButton<String>(
-                                    value: state.user.selectedLevel,
-                                    items:
-                                        levels
-                                            .map(
-                                              (l) => DropdownMenuItem(
-                                                value: l,
-                                                child: Text(
-                                                  l,
-                                                  style: const TextStyle(fontSize: 16, color: Colors.white),
-                                                ),
-                                              ),
-                                            )
-                                            .toList(),
-                                    onChanged: (value) {
-                                      if (value != null) vm.selectLevel(value);
-                                    },
-                                    dropdownColor: cardColor,
-                                    iconEnabledColor: accent,
-                                    style: const TextStyle(fontSize: 16, color: Colors.white),
+                              const SizedBox(height: 8),
+                              Text(
+                                "Finde spannende Aufgaben für jede Klassenstufe",
+                                style: TextStyle(color: fadedText, fontSize: 18, fontWeight: FontWeight.w400),
+                                textAlign: TextAlign.center,
+                              ),
+                              const SizedBox(height: 20),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  // Klassen-Dropdown
+                                  Container(
+                                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 2),
+                                    decoration: BoxDecoration(
+                                      color: cardColor,
+                                      borderRadius: BorderRadius.circular(10),
+                                      border: Border.all(color: accent.withOpacity(0.15)),
+                                    ),
+                                    child: DropdownButtonHideUnderline(
+                                      child: DropdownButton<String>(
+                                        value: state.user.selectedClass,
+                                        items:
+                                            classes
+                                                .map(
+                                                  (c) => DropdownMenuItem(
+                                                    value: c,
+                                                    child: Text(
+                                                      c,
+                                                      style: const TextStyle(fontSize: 16, color: Colors.white),
+                                                    ),
+                                                  ),
+                                                )
+                                                .toList(),
+                                        onChanged: (value) {
+                                          if (value != null) vm.selectClass(value);
+                                        },
+                                        dropdownColor: cardColor,
+                                        iconEnabledColor: accent,
+                                        style: const TextStyle(fontSize: 16, color: Colors.white),
+                                      ),
+                                    ),
                                   ),
-                                ),
+                                  const SizedBox(width: 18),
+                                  // Level-Dropdown
+                                  Container(
+                                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 2),
+                                    decoration: BoxDecoration(
+                                      color: cardColor,
+                                      borderRadius: BorderRadius.circular(10),
+                                      border: Border.all(color: accent.withOpacity(0.15)),
+                                    ),
+                                    child: DropdownButtonHideUnderline(
+                                      child: DropdownButton<String>(
+                                        value: state.user.selectedLevel,
+                                        items:
+                                            levels
+                                                .map(
+                                                  (l) => DropdownMenuItem(
+                                                    value: l,
+                                                    child: Text(
+                                                      l,
+                                                      style: const TextStyle(fontSize: 16, color: Colors.white),
+                                                    ),
+                                                  ),
+                                                )
+                                                .toList(),
+                                        onChanged: (value) {
+                                          if (value != null) vm.selectLevel(value);
+                                        },
+                                        dropdownColor: cardColor,
+                                        iconEnabledColor: accent,
+                                        style: const TextStyle(fontSize: 16, color: Colors.white),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(height: 24),
+                              // Testmodus-Auswahl-Buttons
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  ElevatedButton(
+                                    onPressed:
+                                        _testLocked
+                                            ? null
+                                            : () {
+                                              setState(() {
+                                                _testMode = "bool";
+                                              });
+                                            },
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: _testMode == "bool" ? accent : cardColor,
+                                      foregroundColor: Colors.white,
+                                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                                      elevation: 0,
+                                      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                                    ),
+                                    child: const Text("Richtig/Falsch"),
+                                  ),
+                                  const SizedBox(width: 16),
+                                  ElevatedButton(
+                                    onPressed:
+                                        _testLocked
+                                            ? null
+                                            : () {
+                                              setState(() {
+                                                _testMode = "input";
+                                              });
+                                            },
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: _testMode == "input" ? accent : cardColor,
+                                      foregroundColor: Colors.white,
+                                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                                      elevation: 0,
+                                      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                                    ),
+                                    child: const Text("Eingabe-Test"),
+                                  ),
+                                  const SizedBox(width: 16),
+                                  ElevatedButton(
+                                    onPressed:
+                                        _testLocked
+                                            ? null
+                                            : () {
+                                              setState(() {
+                                                _testMode = "mc";
+                                              });
+                                            },
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: _testMode == "mc" ? accent : cardColor,
+                                      foregroundColor: Colors.white,
+                                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                                      elevation: 0,
+                                      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                                    ),
+                                    child: const Text("Multiple Choice"),
+                                  ),
+                                ],
                               ),
                             ],
                           ),
-                          const SizedBox(height: 24),
-                          // Testmodus-Auswahl-Buttons
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
+                        ),
+                        // Ergebnis-Button oben rechts
+                        Positioned(
+                          right: 0,
+                          top: 0,
+                          child: ElevatedButton.icon(
+                            icon: const Icon(Icons.list_alt),
+                            label: const Text("Ergebnisse"),
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: accent,
+                              foregroundColor: Colors.white,
+                              padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 14),
+                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                              elevation: 0,
+                            ),
+                            onPressed: () async {
+                              if (activeSubject == null) return;
+                              try {
+                                final data = await vm.getResultsFromBackend(activeSubject);
+                                if (!mounted) return;
+                                showDialog(
+                                  context: context,
+                                  builder:
+                                      (ctx) => ErgebnisDialog(
+                                        activeSubject: activeSubject,
+                                        accent: accent,
+                                        fadedText: fadedText,
+                                        data: data,
+                                      ),
+                                );
+                              } catch (e) {
+                                if (!mounted) return;
+                                showDialog(
+                                  context: context,
+                                  builder:
+                                      (ctx) => AlertDialog(
+                                        title: const Text("Fehler"),
+                                        content: Text("Fehler beim Laden der Ergebnisse: $e"),
+                                        actions: [
+                                          TextButton(onPressed: () => Navigator.of(ctx).pop(), child: const Text("OK")),
+                                        ],
+                                      ),
+                                );
+                              }
+                            },
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 20),
+                    // Hauptbereich: Sidebar + Content
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        // Sidebar
+                        FachSidebar(
+                          subjects: subjects,
+                          selectedSubjects: selectedSubjects,
+                          activeSubject: state.activeSubject,
+                          accent: accent,
+                          fadedText: fadedText,
+                          onToggle: (subject) {
+                            // Immer alles zurücksetzen beim Fachwechsel UND Testmodus entsperren
+                            ref.read(homeViewModelProvider.notifier).toggleSubject(subject);
+                            setState(() {
+                              _testLocked = false;
+                            });
+                          },
+                        ),
+                        const SizedBox(width: 32),
+                        // Content-Bereich
+                        Expanded(
+                          child: Container(
+                            padding: const EdgeInsets.all(32),
+                            decoration: BoxDecoration(
+                              color: cardColor,
+                              borderRadius: BorderRadius.circular(18),
+                              border: Border.all(color: accent.withOpacity(0.07)),
+                              boxShadow: [
+                                BoxShadow(color: accent.withOpacity(0.04), blurRadius: 8, offset: const Offset(0, 2)),
+                              ],
+                            ),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Row(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    Expanded(
+                                      child: Text(
+                                        greeting,
+                                        style: TextStyle(
+                                          fontSize: 26,
+                                          fontWeight: FontWeight.bold,
+                                          color: greetingColor,
+                                        ),
+                                      ),
+                                    ),
+                                    ElevatedButton.icon(
+                                      icon: const Icon(Icons.refresh),
+                                      label: const Text("Zurücksetzen"),
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor: accent,
+                                        foregroundColor: Colors.white,
+                                        padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 14),
+                                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                                        elevation: 0,
+                                      ),
+                                      onPressed: () {
+                                        ref.read(homeViewModelProvider.notifier).resetAll();
+                                        setState(() {
+                                          _testLocked = false; // Testmodus-Buttons wieder aktivieren
+                                        });
+                                      },
+                                    ),
+                                  ],
+                                ),
+                                const SizedBox(height: 24),
+                                Text(
+                                  "Wähle bitte dein Unterrichtsfach aus.",
+                                  style: TextStyle(fontSize: 18, color: fadedText),
+                                ),
+                                // Aufgabenbereiche-Übersicht (nur wenn Fach gewählt)
+                                if (activeSubject != null && !showTasks)
+                                  Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        'Aufgabenbereiche für $activeSubject (${state.user.selectedClass}):',
+                                        style: TextStyle(fontWeight: FontWeight.bold, color: accent, fontSize: 18),
+                                      ),
+                                      const SizedBox(height: 12),
+                                      Wrap(
+                                        spacing: 10,
+                                        runSpacing: 10,
+                                        children:
+                                            aufgabenbereiche
+                                                .map(
+                                                  (bereich) => ChoiceChip(
+                                                    label: Text(bereich),
+                                                    selected: selectedTopic == bereich,
+                                                    selectedColor: accent,
+                                                    backgroundColor: cardColor,
+                                                    labelStyle: TextStyle(
+                                                      color: selectedTopic == bereich ? Colors.white : fadedText,
+                                                      fontWeight:
+                                                          selectedTopic == bereich
+                                                              ? FontWeight.bold
+                                                              : FontWeight.normal,
+                                                    ),
+                                                    onSelected: (_) {
+                                                      vm.selectTopic(bereich);
+                                                      vm.hideTasks();
+                                                    },
+                                                  ),
+                                                )
+                                                .toList(),
+                                      ),
+                                    ],
+                                  ),
+                                // Aufgabenanzeige
+                                if (showTasks && activeSubject != null)
+                                  Builder(
+                                    builder: (context) {
+                                      if (state.isLoadingTasks) {
+                                        return const Padding(
+                                          padding: EdgeInsets.all(24),
+                                          child: Center(child: CircularProgressIndicator()),
+                                        );
+                                      }
+                                      if (state.taskError != null) {
+                                        return Padding(
+                                          padding: const EdgeInsets.all(24),
+                                          child: Text(state.taskError!, style: const TextStyle(color: Colors.red)),
+                                        );
+                                      }
+                                      if (state.generatedTasks != null && state.generatedTasks!.isNotEmpty) {
+                                        final questions =
+                                            state.generatedTasks!.map((task) => task["question"] ?? "").toList();
+                                        if (_testMode == "bool") {
+                                          return TestTrueFalse(
+                                            tasks: questions,
+                                            accent: accent,
+                                            cardColor: cardColor,
+                                            onTestFinished: _onTestFinished,
+                                          );
+                                        } else if (_testMode == "input") {
+                                          return TestInput(
+                                            tasks: questions,
+                                            accent: accent,
+                                            cardColor: cardColor,
+                                            onTestFinished: _onTestFinished,
+                                          );
+                                        } else if (_testMode == "mc") {
+                                          return TestMC(
+                                            tasks: questions,
+                                            accent: accent,
+                                            cardColor: cardColor,
+                                            onTestFinished: _onTestFinished,
+                                          );
+                                        }
+                                      }
+                                      return const Text("Keine Aufgaben gefunden.");
+                                    },
+                                  ),
+                                if (!showTasks && activeSubject != null && selectedTopic != null)
+                                  Padding(
+                                    padding: const EdgeInsets.only(top: 24),
+                                    child: Row(
+                                      children: [
+                                        ElevatedButton.icon(
+                                          icon: const Icon(Icons.auto_awesome),
+                                          label: const Text("Aufgabe generieren"),
+                                          style: ElevatedButton.styleFrom(
+                                            backgroundColor: accent,
+                                            foregroundColor: Colors.white,
+                                          ),
+                                          onPressed:
+                                              state.isLoadingTasks || _testLocked
+                                                  ? null
+                                                  : () async {
+                                                    setState(() {
+                                                      _testLocked = true;
+                                                    });
+                                                    // Anzahl Aufgaben je nach Testmodus
+                                                    int count = 1;
+                                                    if (_testMode == "input" || _testMode == "bool") {
+                                                      count = 5;
+                                                    }
+                                                    await vm.generateTasksWithKI(
+                                                      subject: activeSubject,
+                                                      topic: selectedTopic,
+                                                      level: state.user.selectedLevel,
+                                                      count: count,
+                                                      testMode: _testMode,
+                                                    );
+                                                  },
+                                        ),
+                                        if (state.isLoadingTasks)
+                                          const Padding(
+                                            padding: EdgeInsets.only(left: 16),
+                                            child: SizedBox(
+                                              width: 24,
+                                              height: 24,
+                                              child: CircularProgressIndicator(strokeWidth: 2),
+                                            ),
+                                          ),
+                                        if (state.taskError != null)
+                                          Padding(
+                                            padding: const EdgeInsets.only(left: 16),
+                                            child: Text(state.taskError!, style: const TextStyle(color: Colors.red)),
+                                          ),
+                                      ],
+                                    ),
+                                  ),
+                                if (activeSubject != null && results.isNotEmpty)
+                                  Padding(
+                                    padding: const EdgeInsets.only(top: 32),
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        // Ergebnisse werden nach Reset nicht mehr angezeigt
+                                      ],
+                                    ),
+                                  ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    // --- Footer ---
+                    const SizedBox(height: 30),
+                    Divider(color: Colors.grey, thickness: 0.3),
+                    Container(
+                      width: double.infinity,
+                      padding: EdgeInsets.symmetric(vertical: 12),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(
+                            "© 2025 KiForKids - Interaktive Lernplattform für Kinder",
+                            style: TextStyle(color: Colors.grey, fontSize: 12),
+                          ),
+                          SizedBox(height: 4),
+                          GestureDetector(
+                            onTap: () {
+                              html.window.open("https://marcogrimme.de", "_blank");
+                            },
+                            child: Text(
+                              "Erstellt von Marco Grimme – kreative Unterstützung durch generative KI",
+                              style: TextStyle(
+                                color: Colors.blueAccent,
+                                fontSize: 12,
+                                decoration: TextDecoration.underline,
+                              ),
+                            ),
+                          ),
+                          SizedBox(height: 6),
+                          Wrap(
+                            alignment: WrapAlignment.center,
+                            spacing: 16,
                             children: [
-                              ElevatedButton(
-                                onPressed:
-                                    _testLocked
-                                        ? null
-                                        : () {
-                                          setState(() {
-                                            _testMode = "bool";
-                                          });
-                                        },
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: _testMode == "bool" ? accent : cardColor,
-                                  foregroundColor: Colors.white,
-                                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-                                  elevation: 0,
-                                  padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                              TextButton(
+                                onPressed: () {
+                                  html.window.open('/datenschutz.html', '_blank');
+                                },
+                                child: const Text(
+                                  "Datenschutz",
+                                  style: TextStyle(
+                                    color: Colors.blueAccent,
+                                    decoration: TextDecoration.underline,
+                                    fontSize: 12,
+                                  ),
                                 ),
-                                child: const Text("Richtig/Falsch"),
                               ),
-                              const SizedBox(width: 16),
-                              ElevatedButton(
-                                onPressed:
-                                    _testLocked
-                                        ? null
-                                        : () {
-                                          setState(() {
-                                            _testMode = "input";
-                                          });
-                                        },
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: _testMode == "input" ? accent : cardColor,
-                                  foregroundColor: Colors.white,
-                                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-                                  elevation: 0,
-                                  padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                              TextButton(
+                                onPressed: () {
+                                  html.window.open('/agb.html', '_blank');
+                                },
+                                child: const Text(
+                                  "AGB",
+                                  style: TextStyle(
+                                    color: Colors.blueAccent,
+                                    decoration: TextDecoration.underline,
+                                    fontSize: 12,
+                                  ),
                                 ),
-                                child: const Text("Eingabe-Test"),
                               ),
-                              const SizedBox(width: 16),
-                              ElevatedButton(
-                                onPressed:
-                                    _testLocked
-                                        ? null
-                                        : () {
-                                          setState(() {
-                                            _testMode = "mc";
-                                          });
-                                        },
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: _testMode == "mc" ? accent : cardColor,
-                                  foregroundColor: Colors.white,
-                                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-                                  elevation: 0,
-                                  padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                              TextButton(
+                                onPressed: () {
+                                  html.window.open('/impressum.html', '_blank');
+                                },
+                                child: const Text(
+                                  "Impressum",
+                                  style: TextStyle(
+                                    color: Colors.blueAccent,
+                                    decoration: TextDecoration.underline,
+                                    fontSize: 12,
+                                  ),
                                 ),
-                                child: const Text("Multiple Choice"),
                               ),
                             ],
                           ),
                         ],
                       ),
                     ),
-                    // Ergebnis-Button oben rechts
-                    Positioned(
-                      right: 0,
-                      top: 0,
-                      child: ElevatedButton.icon(
-                        icon: const Icon(Icons.list_alt),
-                        label: const Text("Ergebnisse"),
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: accent,
-                          foregroundColor: Colors.white,
-                          padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 14),
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-                          elevation: 0,
-                        ),
-                        onPressed: () async {
-                          if (activeSubject == null) return;
-                          try {
-                            final data = await vm.getResultsFromBackend(activeSubject);
-                            if (!mounted) return;
-                            showDialog(
-                              context: context,
-                              builder:
-                                  (ctx) => ErgebnisDialog(
-                                    activeSubject: activeSubject,
-                                    accent: accent,
-                                    fadedText: fadedText,
-                                    data: data,
-                                  ),
-                            );
-                          } catch (e) {
-                            if (!mounted) return;
-                            showDialog(
-                              context: context,
-                              builder:
-                                  (ctx) => AlertDialog(
-                                    title: const Text("Fehler"),
-                                    content: Text("Fehler beim Laden der Ergebnisse: $e"),
-                                    actions: [
-                                      TextButton(onPressed: () => Navigator.of(ctx).pop(), child: const Text("OK")),
-                                    ],
-                                  ),
-                            );
-                          }
-                        },
-                      ),
-                    ),
                   ],
                 ),
-                const SizedBox(height: 20),
-                // Hauptbereich: Sidebar + Content
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    // Sidebar
-                    FachSidebar(
-                      subjects: subjects,
-                      selectedSubjects: selectedSubjects,
-                      activeSubject: state.activeSubject,
-                      accent: accent,
-                      fadedText: fadedText,
-                      onToggle: vm.toggleSubject,
-                    ),
-                    const SizedBox(width: 32),
-                    // Content-Bereich
-                    Expanded(
-                      child: Container(
-                        padding: const EdgeInsets.all(32),
-                        decoration: BoxDecoration(
-                          color: cardColor,
-                          borderRadius: BorderRadius.circular(18),
-                          border: Border.all(color: accent.withOpacity(0.07)),
-                          boxShadow: [
-                            BoxShadow(color: accent.withOpacity(0.04), blurRadius: 8, offset: const Offset(0, 2)),
-                          ],
-                        ),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Row(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                Expanded(
-                                  child: Text(
-                                    greeting,
-                                    style: TextStyle(fontSize: 26, fontWeight: FontWeight.bold, color: greetingColor),
-                                  ),
-                                ),
-                                ElevatedButton.icon(
-                                  icon: const Icon(Icons.refresh),
-                                  label: const Text("Zurücksetzen"),
-                                  style: ElevatedButton.styleFrom(
-                                    backgroundColor: accent,
-                                    foregroundColor: Colors.white,
-                                    padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 14),
-                                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-                                    elevation: 0,
-                                  ),
-                                  onPressed: () {
-                                    ref.read(homeViewModelProvider.notifier).resetAll();
-                                    setState(() {
-                                      _testLocked = false; // Testmodus-Buttons wieder aktivieren
-                                    });
-                                  },
-                                ),
-                              ],
-                            ),
-                            const SizedBox(height: 24),
-                            Text(
-                              "Wähle bitte dein Unterrichtsfach aus.",
-                              style: TextStyle(fontSize: 18, color: fadedText),
-                            ),
-                            // Aufgabenbereiche-Übersicht (nur wenn Fach gewählt)
-                            if (activeSubject != null && !showTasks)
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    'Aufgabenbereiche für $activeSubject (${state.user.selectedClass}):',
-                                    style: TextStyle(fontWeight: FontWeight.bold, color: accent, fontSize: 18),
-                                  ),
-                                  const SizedBox(height: 12),
-                                  Wrap(
-                                    spacing: 10,
-                                    runSpacing: 10,
-                                    children:
-                                        aufgabenbereiche
-                                            .map(
-                                              (bereich) => ChoiceChip(
-                                                label: Text(bereich),
-                                                selected: selectedTopic == bereich,
-                                                selectedColor: accent,
-                                                backgroundColor: cardColor,
-                                                labelStyle: TextStyle(
-                                                  color: selectedTopic == bereich ? Colors.white : fadedText,
-                                                  fontWeight:
-                                                      selectedTopic == bereich ? FontWeight.bold : FontWeight.normal,
-                                                ),
-                                                onSelected: (_) {
-                                                  vm.selectTopic(bereich);
-                                                  vm.hideTasks();
-                                                },
-                                              ),
-                                            )
-                                            .toList(),
-                                  ),
-                                ],
-                              ),
-                            // Aufgabenanzeige
-                            if (showTasks && activeSubject != null)
-                              Builder(
-                                builder: (context) {
-                                  if (state.isLoadingTasks) {
-                                    return const Padding(
-                                      padding: EdgeInsets.all(24),
-                                      child: Center(child: CircularProgressIndicator()),
-                                    );
-                                  }
-                                  if (state.taskError != null) {
-                                    return Padding(
-                                      padding: const EdgeInsets.all(24),
-                                      child: Text(state.taskError!, style: const TextStyle(color: Colors.red)),
-                                    );
-                                  }
-                                  if (state.generatedTasks != null && state.generatedTasks!.isNotEmpty) {
-                                    final questions =
-                                        state.generatedTasks!.map((task) => task["question"] ?? "").toList();
-                                    if (_testMode == "bool") {
-                                      return TestTrueFalse(
-                                        tasks: questions,
-                                        accent: accent,
-                                        cardColor: cardColor,
-                                        onTestFinished: _onTestFinished,
-                                      );
-                                    } else if (_testMode == "input") {
-                                      return TestInput(
-                                        tasks: questions,
-                                        accent: accent,
-                                        cardColor: cardColor,
-                                        onTestFinished: _onTestFinished,
-                                      );
-                                    } else if (_testMode == "mc") {
-                                      return TestMC(
-                                        tasks: questions,
-                                        accent: accent,
-                                        cardColor: cardColor,
-                                        onTestFinished: _onTestFinished,
-                                      );
-                                    }
-                                  }
-                                  return const Text("Keine Aufgaben gefunden.");
-                                },
-                              ),
-                            if (!showTasks && activeSubject != null && selectedTopic != null)
-                              Padding(
-                                padding: const EdgeInsets.only(top: 24),
-                                child: Row(
-                                  children: [
-                                    ElevatedButton.icon(
-                                      icon: const Icon(Icons.auto_awesome),
-                                      label: const Text("Aufgabe generieren"),
-                                      style: ElevatedButton.styleFrom(
-                                        backgroundColor: accent,
-                                        foregroundColor: Colors.white,
-                                      ),
-                                      onPressed:
-                                          state.isLoadingTasks || _testLocked
-                                              ? null
-                                              : () async {
-                                                setState(() {
-                                                  _testLocked = true;
-                                                });
-                                                // Anzahl Aufgaben je nach Testmodus
-                                                int count = 1;
-                                                if (_testMode == "input" || _testMode == "bool") {
-                                                  count = 5;
-                                                }
-                                                await vm.generateTasksWithKI(
-                                                  subject: activeSubject,
-                                                  topic: selectedTopic,
-                                                  level: state.user.selectedLevel,
-                                                  count: count,
-                                                  testMode: _testMode,
-                                                );
-                                              },
-                                    ),
-                                    if (state.isLoadingTasks)
-                                      const Padding(
-                                        padding: EdgeInsets.only(left: 16),
-                                        child: SizedBox(
-                                          width: 24,
-                                          height: 24,
-                                          child: CircularProgressIndicator(strokeWidth: 2),
-                                        ),
-                                      ),
-                                    if (state.taskError != null)
-                                      Padding(
-                                        padding: const EdgeInsets.only(left: 16),
-                                        child: Text(state.taskError!, style: const TextStyle(color: Colors.red)),
-                                      ),
-                                  ],
-                                ),
-                              ),
-                            if (activeSubject != null && results.isNotEmpty)
-                              Padding(
-                                padding: const EdgeInsets.only(top: 32),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    // Ergebnisse werden nach Reset nicht mehr angezeigt
-                                  ],
-                                ),
-                              ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ],
+              ),
             ),
           ),
         ),
