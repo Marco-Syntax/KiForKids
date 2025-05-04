@@ -2,7 +2,7 @@
 API-Routen für GPT-Services: Aufgaben-Generierung und Antwort-Check.
 """
 
-from fastapi import APIRouter, HTTPException ,Request
+from fastapi import APIRouter, HTTPException, Request
 from app.services.gpt_tasks import generate_tasks
 from app.limiter import limiter  # Importiere globalen Limiter
 from app.models.request_models import TaskRequest
@@ -23,7 +23,8 @@ async def generate_tasks_endpoint(request: Request, request_data: TaskRequest):
         raise HTTPException(status_code=500, detail=str(e))
 
 @router.get("/ping")
-async def ping():
+@limiter.limit("1/minute")
+async def ping(request: Request):
     """
     Gesundheitscheck-Endpunkt.
     Gibt 'pong' zurück, um die Erreichbarkeit des Backends zu prüfen.
