@@ -10,7 +10,6 @@ from dotenv import load_dotenv
 import openai
 import logging
 from app.models.request_models import TaskRequest
-from fastapi.responses import JSONResponse
 
 # Logger-Konfiguration
 logger = logging.getLogger("gpt_tasks")
@@ -102,4 +101,4 @@ def generate_tasks(data: TaskRequest) -> List[dict]:
         # Fallback: gib alle Zeilen als Frage ohne Antwort zurück
         tasks = [{"question": l, "answer": ""} for l in lines]
     logger.info(f"Extrahierte Aufgaben: {tasks}")
-    return JSONResponse(content={"tasks": tasks})
+    return tasks

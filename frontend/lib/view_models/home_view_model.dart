@@ -171,6 +171,8 @@ class HomeViewModel extends StateNotifier<HomeState> {
         count: count,
         extraPrompt: "Seed: $randomSeed",
         testMode: testModeBool,
+        usedQuestions: [],
+        classTopics: [],
       );
       state = state.copyWith(generatedTasks: tasks, isLoadingTasks: false, showTasks: true, lastFeedback: null);
     } catch (e) {

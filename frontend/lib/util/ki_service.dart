@@ -37,9 +37,19 @@ class KIService {
     final response = await http.post(url, headers: {'Content-Type': 'application/json'}, body: jsonEncode(body));
     if (response.statusCode == 200) {
       final data = jsonDecode(utf8.decode(response.bodyBytes));
-      final tasks =
-          (data['tasks'] as List).map((e) => (e as Map).map((k, v) => MapEntry(k.toString(), v.toString()))).toList();
-      return tasks;
+      try {
+        if (data['tasks'] is List) {
+          final tasks =
+              (data['tasks'] as List)
+                  .map((e) => (e as Map).map((k, v) => MapEntry(k.toString(), v.toString())))
+                  .toList();
+          return tasks;
+        } else {
+          throw Exception("Unerwartetes Format: tasks ist kein List-Objekt");
+        }
+      } catch (e) {
+        throw Exception('Fehler beim Parsen der Aufgaben: $e');
+      }
     } else {
       throw Exception('Aufgaben konnten nicht geladen werden: ${response.body}');
     }
