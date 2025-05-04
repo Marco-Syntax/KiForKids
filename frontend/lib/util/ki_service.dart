@@ -8,7 +8,7 @@ import 'package:http/http.dart' as http;
 
 class KIService {
   // Backend-Basis-URL für alle API-Aufrufe (anpassen je nach Umgebung)
-  static const String backendBaseUrl = "http://localhost:8000";
+  static const String backendBaseUrl = "https://api.kiforkids.de";
 
   final String backendUrl;
 
