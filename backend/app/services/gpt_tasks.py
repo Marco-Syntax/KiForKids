@@ -102,4 +102,4 @@ def generate_tasks(data: TaskRequest) -> List[dict]:
         # Fallback: gib alle Zeilen als Frage ohne Antwort zurück
         tasks = [{"question": l, "answer": ""} for l in lines]
     logger.info(f"Extrahierte Aufgaben: {tasks}")
-    return JSONResponse(content={"tasks": tasks}, ensure_ascii=False)
+    return JSONResponse(content={"tasks": tasks})
