@@ -274,11 +274,10 @@ class HomeViewModel extends StateNotifier<HomeState> {
       newHistory[subject] = [...newHistory[subject]!, entry];
       state = state.copyWith(isCheckingAnswers: false, lastFeedback: feedback, resultsHistory: newHistory);
 
-      // Ergebnisse im Backend speichern
-      final userId = state.user.userId;
-      final url = Uri.parse("http://localhost:8000/save_results/$userId");
+      final userId = state.user.userId.isNotEmpty ? state.user.userId : "demo_user";
+      final saveUrl = Uri.parse("https://api.kiforkids.de/save_results/$userId");
       await http.post(
-        url,
+        saveUrl,
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode({
           "fach": subject,
@@ -317,7 +316,7 @@ class HomeViewModel extends StateNotifier<HomeState> {
   Future<List<Map<String, dynamic>>> getResultsFromBackend(String fach) async {
     // Fallback für userId, falls leer
     final userId = (state.user.userId.isNotEmpty ? state.user.userId : "demo_user");
-    final url = Uri.parse("http://localhost:8000/get_results/$userId/$fach");
+    final url = Uri.parse("https://api.kiforkids.de/get_results/$userId/$fach");
     final response = await http.get(url);
     if (response.statusCode == 200) {
       final body = response.body.trim();

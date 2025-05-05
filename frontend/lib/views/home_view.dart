@@ -88,29 +88,32 @@ class _HomeViewState extends ConsumerState<HomeView> {
                     // Header-Bereich (zentriert, Ergebnis-Button oben rechts)
                     Stack(
                       children: [
+                        // Logo links-mittig (anpassbare Position)
+                        Positioned(
+                          left:
+                              50, // Anpassbar: Erhöhe diesen Wert, um das Bild nach rechts zu verschieben (0 = ganz links)
+                          top: 0, // Anpassbar: Erhöhe diesen Wert, um das Bild nach unten zu verschieben
+                          child: Image.asset(
+                            'assets/images/bg_3.png',
+                            width: 250, // Anpassbar: Bildbreite
+                            height: 250, // Anpassbar: Bildhöhe
+                            fit: BoxFit.contain,
+                          ),
+                        ),
                         // Zentrierter Header-Inhalt
                         Align(
                           alignment: Alignment.center,
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
-                              Text(
-                                "KI---For---Kids",
-                                style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 32,
-                                  color: accent,
-                                  letterSpacing: 0.5,
-                                ),
-                                textAlign: TextAlign.center,
-                              ),
+                              Image.asset('assets/images/header_1.png', height: 200, fit: BoxFit.contain),
                               const SizedBox(height: 8),
                               Text(
                                 "Finde spannende Aufgaben für jede Klassenstufe",
                                 style: TextStyle(color: fadedText, fontSize: 18, fontWeight: FontWeight.w400),
                                 textAlign: TextAlign.center,
                               ),
-                              const SizedBox(height: 20),
+                              const SizedBox(height: 8),
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
@@ -536,7 +539,7 @@ class _HomeViewState extends ConsumerState<HomeView> {
                               html.window.open("https://marcogrimme.de", "_blank");
                             },
                             child: Text(
-                              "Erstellt von Marco Grimme – kreative Unterstützung durch generative KI",
+                              "Entwickelt von Marco Grimme – Inspiriert von Jonas Grimme – KI-generierte Aufgaben",
                               style: TextStyle(
                                 color: Colors.blueAccent,
                                 fontSize: 12,

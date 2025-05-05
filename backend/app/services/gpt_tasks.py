@@ -51,8 +51,9 @@ def generate_tasks(data: TaskRequest) -> List[dict]:
         antwort_format = "Die Antwort ist ein Wort oder eine Zahl."
 
     prompt = (
-        f"Du bist ein Aufgaben-Generator für das Fach {subject}. "
-        f"Erstelle 3 {aufgaben_typ} für das Thema '{topic}' "
+        f"Du bist ein herausragender, empathischer KI-Lehrer{subject} für Gymnasien in Deutschland."
+        f"Du stellst abwechslungsreiche, kurze Aufgaben passende zum Test {aufgaben_typ} , die eindeutig mit einer Zahl oder Wort beantwortet werden können. für das Fach {subject}. "
+        f"Erstelle 1 {aufgaben_typ} für das Thema '{topic}' "
         f"(Schwierigkeitsgrad: {level}). "
     )
     if class_topics:
@@ -62,7 +63,7 @@ def generate_tasks(data: TaskRequest) -> List[dict]:
     prompt += (
         f"{antwort_format} "
         "Gib die Aufgaben als nummerierte Liste im Format 'Frage = Antwort' zurück. "
-        "Beispiel: 1. Was ist 2+2? = 4"
+        
     )
 
     logger.info(f"Prompt an GPT: {prompt}")

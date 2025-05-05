@@ -18,11 +18,16 @@ from .models.result_entry import ResultEntry
 from app.services.result_service import update_results_for_all_subjects
 from app.api.routes import router
 from app.limiter import limiter
+from app.database import engine, SessionLocal
+from app.models.result import Base as ResultBase
 
 app = FastAPI()
 app.include_router(router)
 app.state.limiter = limiter
 app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
+
+# Initialisiere die Datenbanktabellen
+ResultBase.metadata.create_all(bind=engine)
 
 app.add_middleware(
     CORSMiddleware,
@@ -35,25 +40,54 @@ app.add_middleware(
 DATA_DIR = os.path.join(os.path.dirname(__file__), "results_data")
 os.makedirs(DATA_DIR, exist_ok=True)
 
-# Speichern der Ergebnisse (POST)
+from app.models.result import Result
+from sqlalchemy.orm import Session
+from fastapi import Depends
+
+def get_db():
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
+
 @app.post("/save_results/{user_id}")
 @limiter.limit("10/minute")
-async def save_results(user_id: str, request: Request):
-    # Nutze die Hilfsfunktion aus result_entry.py
-    update_results_for_all_subjects(user_id, request)
-    return {"status": "ok"}
+async def save_results(user_id: str, request: Request, db: Session = Depends(get_db)):
+    try:
+        body = await request.json()
+        new_result = Result(
+            user_id=user_id,
+            fach=body["fach"],
+            topic=body["topic"],
+            questions=json.dumps(body["questions"]),
+            user_answers=json.dumps(body["userAnswers"]),
+            feedback=json.dumps(body["feedback"]),
+            timestamp=body["timestamp"],
+        )
+        db.add(new_result)
+        db.commit()
+        return {"status": "ok"}
+    except Exception as e:
+        logging.error(f"Fehler beim Speichern in die DB: {e}")
+        raise HTTPException(status_code=500, detail="Fehler beim Speichern")
 
-# Abrufen der Ergebnisse (GET)
 @app.get("/get_results/{user_id}/{fach}")
 @limiter.limit("20/minute")
-async def get_results(user_id: str, fach: str, request: Request):
-    # Dateinamen normalisieren (z.B. Leerzeichen durch Unterstrich, alles klein)
-    safe_fach = fach.replace(" ", "_")
-    file_path = os.path.join(DATA_DIR, f"{user_id}_{safe_fach}.json")
-    logging.info(f"Suche Datei: {file_path}")
-    if not os.path.exists(file_path) or not os.path.getsize(file_path):
-        logging.warning(f"Datei nicht gefunden oder leer: {file_path}")
-        return []
-    with open(file_path, "r", encoding="utf-8") as f:
-        data = json.load(f)
-    return data
+async def get_results(user_id: str, fach: str, request: Request, db: Session = Depends(get_db)):
+    try:
+        results = db.query(Result).filter(Result.user_id == user_id, Result.fach == fach).all()
+        return [
+            {
+                "fach": r.fach,
+                "topic": r.topic,
+                "questions": json.loads(r.questions),
+                "userAnswers": json.loads(r.user_answers),
+                "feedback": json.loads(r.feedback),
+                "timestamp": r.timestamp
+            }
+            for r in results
+        ]
+    except Exception as e:
+        logging.error(f"Fehler beim Abrufen der Ergebnisse: {e}")
+        raise HTTPException(status_code=500, detail="Fehler beim Abrufen der Ergebnisse")

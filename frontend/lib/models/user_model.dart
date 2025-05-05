@@ -1,13 +1,13 @@
-/// UserModel speichert relevante Nutzerdaten wie Klasse, Level, gewählte Fächer und userId für das Backend.
+import 'dart:math';
 
 class UserModel {
-  final String userId; // NEU: userId für Backend
+  final String userId;
   final String selectedClass;
   final String selectedLevel;
   final List<String> selectedSubjects;
 
   const UserModel({
-    this.userId = "demo_user", // Default-Wert gesetzt
+    required this.userId,
     required this.selectedClass,
     required this.selectedLevel,
     this.selectedSubjects = const [],
@@ -19,6 +19,21 @@ class UserModel {
       selectedClass: selectedClass ?? this.selectedClass,
       selectedLevel: selectedLevel ?? this.selectedLevel,
       selectedSubjects: selectedSubjects ?? this.selectedSubjects,
+    );
+  }
+
+  factory UserModel.generate({
+    required String selectedClass,
+    required String selectedLevel,
+    List<String> selectedSubjects = const [],
+  }) {
+    final random = Random();
+    final randomId = List.generate(12, (_) => random.nextInt(10)).join();
+    return UserModel(
+      userId: "user_$randomId",
+      selectedClass: selectedClass,
+      selectedLevel: selectedLevel,
+      selectedSubjects: selectedSubjects,
     );
   }
 }
