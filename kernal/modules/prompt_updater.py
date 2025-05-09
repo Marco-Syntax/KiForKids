@@ -2,36 +2,10 @@
 
 import os
 import time
-from pathlib import Path
 from globals.KernalBasics import *
 from tools.project_structure import ProjectStructure
-from tools.file_database import FileDatabase
 
 logger = get_logger(__name__)
-
-def get_file_summaries():
-    """Load file summaries from the database."""
-    try:
-        # Initialize the file database
-        db_path = os.path.join("store", "file_sums", "sum_db.pkl")
-        
-        # Load summaries from database
-        db = FileDatabase(db_path, incremental=False)
-        summaries = db.items()
-        
-        # Format summaries for inclusion in the prompt
-        formatted_summaries = "## FILE SUMMARIES:\n\n"
-        for file_path, summary in summaries.items():
-            if "kernal/" in file_path:
-                continue
-            # Format the file path and summary
-            formatted_summaries += f"### {file_path}\n{summary}\n\n"
-        
-        db.close()
-        return formatted_summaries
-    except Exception as e:
-        logger.error(f"Error loading file summaries: {e}")
-        return "## FILE SUMMARIES:\n\nError loading summaries\n\n"
 
 
 def read_file_content(file_path):
@@ -67,7 +41,7 @@ def update_prompt_file():
     final_content = (
         basic_prompt_content + 
         "\n\n## PROJECT STRUCTURE:\n\n" + structure_content + "\n\n" +
-        get_file_summaries() + "## DEPENDENCIES:\n\n" + pubspec_content
+        "## DEPENDENCIES:\n\n" + pubspec_content
     )
     
     # Write to base_prompt.gpt

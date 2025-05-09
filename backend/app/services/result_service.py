@@ -1,16 +1,15 @@
-
 import os
 import json
 import logging
 from app.models.result_entry import ResultEntry
 
-def update_results_for_all_subjects(user_id: str, entry: ResultEntry, data_dir: str):
+def update_results_for_all_subjects(entry: ResultEntry, data_dir: str):
     """
-    Speichert das Ergebnis für das jeweilige Fach des Users in der passenden JSON-Datei.
+    Speichert das Ergebnis für das jeweilige Fach in der passenden JSON-Datei.
     Legt die Datei an, falls sie nicht existiert.
     """
     fach = entry.fach
-    file_path = os.path.join(data_dir, f"{user_id}_{fach}.json")
+    file_path = os.path.join(data_dir, f"results_{fach}.json")
     logging.info(f"Speichere Ergebnis in: {file_path}")
     os.makedirs(data_dir, exist_ok=True)
     try:

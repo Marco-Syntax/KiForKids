@@ -1,5 +1,3 @@
-/// MatheModel enthält Aufgabenbereiche für Mathematik, Klassen 5–13 Gymnasium (Dummy-Daten).
-
 class MatheModel {
   // Themen für Klasse 5
   static const List<String> _klasse5 = [

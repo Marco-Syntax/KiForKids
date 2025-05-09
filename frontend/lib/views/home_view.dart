@@ -2,60 +2,40 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:frontend/util/ki_service.dart';
 import 'package:frontend/view_models/home_view_model.dart';
+import 'package:frontend/views/widgets/ergebnis_dialog.dart';
+import 'package:frontend/views/widgets/fach_sidebar.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'widgets/test_true_false.dart';
 import 'widgets/test_input.dart';
 import 'widgets/test_mc.dart';
-import 'dart:html' as html; // <--- am Anfang hinzufügen
 
-part 'widgets/ergebnis_dialog.dart';
-part 'widgets/fach_sidebar.dart';
-
-/// HomeView: Strukturierte Lernplattform-UI.
-/// Header mit Titel, Untertitel, Klassen- und Levelwahl.
-/// Sidebar mit Fächern, Content-Bereich mit Aufgaben.
-
-class HomeView extends ConsumerStatefulWidget {
+class HomeView extends ConsumerWidget {
   const HomeView({super.key});
 
-  @override
-  ConsumerState<HomeView> createState() => _HomeViewState();
-}
-
-class _HomeViewState extends ConsumerState<HomeView> {
-  String greeting = "Hallo Schüler!";
-
-  // Testmodus: "bool" = Richtig/Falsch, "input" = Eingabe, "mc" = Multiple Choice
-  String _testMode = "bool";
-  bool _testLocked = false; // NEU: Buttons sperren, solange Test läuft
-
-  @override
-  void initState() {
-    super.initState();
-    // Setze den KIService im ViewModel, falls noch nicht gesetzt
-    final vm = ref.read(homeViewModelProvider.notifier);
-    vm.setKIService(KIService());
-    // Begrüßungstext laden
-    _loadGreeting();
-  }
-
-  Future<void> _loadGreeting() async {
-    final vm = ref.read(homeViewModelProvider.notifier);
-    final newGreeting = await vm.getGreetingText();
-    setState(() {
-      greeting = newGreeting;
-    });
+  // Hilfsfunktion zum Öffnen von URLs
+  Future<void> _launchUrl(String urlString) async {
+    final Uri url = Uri.parse(urlString);
+    if (!await launchUrl(url, mode: LaunchMode.externalApplication)) {
+      throw Exception('Konnte URL nicht öffnen: $urlString');
+    }
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     const background = Colors.black;
     const cardColor = Color(0xFF16203A);
     const accent = Color(0xFF2196F3);
     const fadedText = Color(0xFF90A4AE);
     const greetingColor = Color(0xFF42A5F5);
 
-    final state = ref.watch(homeViewModelProvider);
+    // Initialisiere KI-Service, falls noch nicht geschehen
     final vm = ref.read(homeViewModelProvider.notifier);
+    if (vm.kiService == null) {
+      vm.setKIService(KIService());
+      // Begrüßungstext wird automatisch im ViewModel-Konstruktor geladen
+    }
+
+    final state = ref.watch(homeViewModelProvider);
 
     // Zugriff auf Listen über das ViewModel
     final subjects = HomeViewModel.subjects;
@@ -70,6 +50,10 @@ class _HomeViewState extends ConsumerState<HomeView> {
     final selectedTopic = state.selectedTopic;
     final showTasks = state.showTasks == true;
     final results = activeSubject != null ? vm.getResultsForSubject(activeSubject) : [];
+
+    // Testmodus und Sperrstatus aus dem State
+    final testMode = state.testMode;
+    final testLocked = state.testLocked;
 
     return Scaffold(
       backgroundColor: background,
@@ -123,7 +107,7 @@ class _HomeViewState extends ConsumerState<HomeView> {
                                     decoration: BoxDecoration(
                                       color: cardColor,
                                       borderRadius: BorderRadius.circular(10),
-                                      border: Border.all(color: accent.withOpacity(0.15)),
+                                      border: Border.all(color: accent.withValues(alpha: 0.15)),
                                     ),
                                     child: DropdownButtonHideUnderline(
                                       child: DropdownButton<String>(
@@ -156,7 +140,7 @@ class _HomeViewState extends ConsumerState<HomeView> {
                                     decoration: BoxDecoration(
                                       color: cardColor,
                                       borderRadius: BorderRadius.circular(10),
-                                      border: Border.all(color: accent.withOpacity(0.15)),
+                                      border: Border.all(color: accent.withValues(alpha: 0.15)),
                                     ),
                                     child: DropdownButtonHideUnderline(
                                       child: DropdownButton<String>(
@@ -190,16 +174,9 @@ class _HomeViewState extends ConsumerState<HomeView> {
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
                                   ElevatedButton(
-                                    onPressed:
-                                        _testLocked
-                                            ? null
-                                            : () {
-                                              setState(() {
-                                                _testMode = "bool";
-                                              });
-                                            },
+                                    onPressed: testLocked ? null : () => vm.setTestMode("bool"),
                                     style: ElevatedButton.styleFrom(
-                                      backgroundColor: _testMode == "bool" ? accent : cardColor,
+                                      backgroundColor: testMode == "bool" ? accent : cardColor,
                                       foregroundColor: Colors.white,
                                       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
                                       elevation: 0,
@@ -209,16 +186,9 @@ class _HomeViewState extends ConsumerState<HomeView> {
                                   ),
                                   const SizedBox(width: 16),
                                   ElevatedButton(
-                                    onPressed:
-                                        _testLocked
-                                            ? null
-                                            : () {
-                                              setState(() {
-                                                _testMode = "input";
-                                              });
-                                            },
+                                    onPressed: testLocked ? null : () => vm.setTestMode("input"),
                                     style: ElevatedButton.styleFrom(
-                                      backgroundColor: _testMode == "input" ? accent : cardColor,
+                                      backgroundColor: testMode == "input" ? accent : cardColor,
                                       foregroundColor: Colors.white,
                                       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
                                       elevation: 0,
@@ -228,16 +198,9 @@ class _HomeViewState extends ConsumerState<HomeView> {
                                   ),
                                   const SizedBox(width: 16),
                                   ElevatedButton(
-                                    onPressed:
-                                        _testLocked
-                                            ? null
-                                            : () {
-                                              setState(() {
-                                                _testMode = "mc";
-                                              });
-                                            },
+                                    onPressed: testLocked ? null : () => vm.setTestMode("mc"),
                                     style: ElevatedButton.styleFrom(
-                                      backgroundColor: _testMode == "mc" ? accent : cardColor,
+                                      backgroundColor: testMode == "mc" ? accent : cardColor,
                                       foregroundColor: Colors.white,
                                       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
                                       elevation: 0,
@@ -250,50 +213,72 @@ class _HomeViewState extends ConsumerState<HomeView> {
                             ],
                           ),
                         ),
-                        // Ergebnis-Button oben rechts
+                        // Ergebnis-Button oben rechts mit Proxy-Bild
                         Positioned(
                           right: 0,
                           top: 0,
-                          child: ElevatedButton.icon(
-                            icon: const Icon(Icons.list_alt),
-                            label: const Text("Ergebnisse"),
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: accent,
-                              foregroundColor: Colors.white,
-                              padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 14),
-                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-                              elevation: 0,
-                            ),
-                            onPressed: () async {
-                              if (activeSubject == null) return;
-                              try {
-                                final data = await vm.getResultsFromBackend(activeSubject);
-                                if (!mounted) return;
-                                showDialog(
-                                  context: context,
-                                  builder:
-                                      (ctx) => ErgebnisDialog(
-                                        activeSubject: activeSubject,
-                                        accent: accent,
-                                        fadedText: fadedText,
-                                        data: data,
-                                      ),
-                                );
-                              } catch (e) {
-                                if (!mounted) return;
-                                showDialog(
-                                  context: context,
-                                  builder:
-                                      (ctx) => AlertDialog(
-                                        title: const Text("Fehler"),
-                                        content: Text("Fehler beim Laden der Ergebnisse: $e"),
-                                        actions: [
-                                          TextButton(onPressed: () => Navigator.of(ctx).pop(), child: const Text("OK")),
-                                        ],
-                                      ),
-                                );
-                              }
-                            },
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.end,
+                            children: [
+                              // Ergebnis-Button
+                              ElevatedButton.icon(
+                                icon: const Icon(Icons.list_alt),
+                                label: const Text("Ergebnisse"),
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: accent,
+                                  foregroundColor: Colors.white,
+                                  padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 14),
+                                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                                  elevation: 0,
+                                ),
+                                onPressed: () async {
+                                  if (activeSubject == null) return;
+                                  try {
+                                    final data = await vm.getResultsFromBackend(activeSubject);
+                                    if (!context.mounted) return;
+                                    showDialog(
+                                      context: context,
+                                      builder:
+                                          (ctx) => ErgebnisDialog(
+                                            activeSubject: activeSubject,
+                                            accent: accent,
+                                            fadedText: fadedText,
+                                            data: data,
+                                          ),
+                                    );
+                                  } catch (e) {
+                                    if (!context.mounted) return;
+                                    showDialog(
+                                      context: context,
+                                      builder:
+                                          (ctx) => AlertDialog(
+                                            title: const Text("Fehler"),
+                                            content: Text("Fehler beim Laden der Ergebnisse: $e"),
+                                            actions: [
+                                              TextButton(
+                                                onPressed: () => Navigator.of(ctx).pop(),
+                                                child: const Text("OK"),
+                                              ),
+                                            ],
+                                          ),
+                                    );
+                                  }
+                                },
+                              ),
+                              // Proxy-Bild unter dem Ergebnis-Button, etwas nach links versetzt
+                              Transform.translate(
+                                offset: const Offset(-100, 0), // 60 Pixel nach links versetzt
+                                child: Padding(
+                                  padding: const EdgeInsets.only(top: 24),
+                                  child: Image.asset(
+                                    'assets/images/proxy.png',
+                                    width: 280, // Etwas kleinere Breite
+                                    height: 280, // Entsprechend angepasste Höhe
+                                    fit: BoxFit.contain,
+                                  ),
+                                ),
+                              ),
+                            ],
                           ),
                         ),
                       ],
@@ -303,7 +288,7 @@ class _HomeViewState extends ConsumerState<HomeView> {
                     Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        // Sidebar
+                        // Sidebar - keine Expanded-Nutzung, damit die Sidebar ihre natürliche Größe behält
                         FachSidebar(
                           subjects: subjects,
                           selectedSubjects: selectedSubjects,
@@ -312,41 +297,49 @@ class _HomeViewState extends ConsumerState<HomeView> {
                           fadedText: fadedText,
                           onToggle: (subject) {
                             // Immer alles zurücksetzen beim Fachwechsel UND Testmodus entsperren
-                            ref.read(homeViewModelProvider.notifier).toggleSubject(subject);
-                            setState(() {
-                              _testLocked = false;
-                            });
+                            vm.toggleSubject(subject);
+                            vm.setTestLocked(false);
                           },
                         ),
                         const SizedBox(width: 32),
-                        // Content-Bereich
-                        Expanded(
+                        // Mittlere Box: Flexible statt Expanded verwenden
+                        Flexible(
                           child: Container(
                             padding: const EdgeInsets.all(32),
                             decoration: BoxDecoration(
                               color: cardColor,
                               borderRadius: BorderRadius.circular(18),
-                              border: Border.all(color: accent.withOpacity(0.07)),
+                              border: Border.all(color: accent.withValues(alpha: 0.07)),
                               boxShadow: [
-                                BoxShadow(color: accent.withOpacity(0.04), blurRadius: 8, offset: const Offset(0, 2)),
+                                BoxShadow(
+                                  color: accent.withValues(alpha: 0.04),
+                                  blurRadius: 8,
+                                  offset: const Offset(0, 2),
+                                ),
                               ],
                             ),
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
+                                // Header-Zeile mit Text links und Button ganz am rechten Rand
                                 Row(
-                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween, // Maximaler Abstand zwischen Elementen
                                   children: [
-                                    Expanded(
+                                    // Text mit Flexible für natürliche Größe
+                                    Flexible(
                                       child: Text(
-                                        greeting,
+                                        state.greeting,
                                         style: TextStyle(
                                           fontSize: 26,
                                           fontWeight: FontWeight.bold,
                                           color: greetingColor,
                                         ),
+                                        overflow: TextOverflow.ellipsis,
                                       ),
                                     ),
+
+                                    // Button am rechten Rand
                                     ElevatedButton.icon(
                                       icon: const Icon(Icons.refresh),
                                       label: const Text("Zurücksetzen"),
@@ -358,29 +351,30 @@ class _HomeViewState extends ConsumerState<HomeView> {
                                         elevation: 0,
                                       ),
                                       onPressed: () {
-                                        ref.read(homeViewModelProvider.notifier).resetAll();
-                                        setState(() {
-                                          _testLocked = false; // Testmodus-Buttons wieder aktivieren
-                                        });
+                                        vm.resetAll();
                                       },
                                     ),
                                   ],
                                 ),
                                 const SizedBox(height: 24),
+                                // Aufforderungstext - kein Expanded nötig
                                 Text(
                                   "Wähle bitte dein Unterrichtsfach aus.",
                                   style: TextStyle(fontSize: 18, color: fadedText),
                                 ),
-                                // Aufgabenbereiche-Übersicht (nur wenn Fach gewählt)
+
+                                // Aufgabenbereiche-Übersicht mit flexiblem Layout ohne Expanded
                                 if (activeSubject != null && !showTasks)
                                   Column(
                                     crossAxisAlignment: CrossAxisAlignment.start,
+                                    mainAxisSize: MainAxisSize.min, // Vermeidet unnötige Ausdehnung
                                     children: [
                                       Text(
                                         'Aufgabenbereiche für $activeSubject (${state.user.selectedClass}):',
                                         style: TextStyle(fontWeight: FontWeight.bold, color: accent, fontSize: 18),
                                       ),
                                       const SizedBox(height: 12),
+                                      // Wrap ist bereits flexibel, kein Expanded notwendig
                                       Wrap(
                                         spacing: 10,
                                         runSpacing: 10,
@@ -409,55 +403,67 @@ class _HomeViewState extends ConsumerState<HomeView> {
                                       ),
                                     ],
                                   ),
-                                // Aufgabenanzeige
+
+                                // Test-Bereich - keine Expanded-Nutzung, sondern in einen anpassungsfähigen Container verpacken
                                 if (showTasks && activeSubject != null)
-                                  Builder(
-                                    builder: (context) {
-                                      if (state.isLoadingTasks) {
-                                        return const Padding(
-                                          padding: EdgeInsets.all(24),
-                                          child: Center(child: CircularProgressIndicator()),
-                                        );
-                                      }
-                                      if (state.taskError != null) {
-                                        return Padding(
-                                          padding: const EdgeInsets.all(24),
-                                          child: Text(state.taskError!, style: const TextStyle(color: Colors.red)),
-                                        );
-                                      }
-                                      if (state.generatedTasks != null && state.generatedTasks!.isNotEmpty) {
-                                        final questions =
-                                            state.generatedTasks!.map((task) => task["question"] ?? "").toList();
-                                        if (_testMode == "bool") {
-                                          return TestTrueFalse(
-                                            tasks: questions,
-                                            accent: accent,
-                                            cardColor: cardColor,
-                                            onTestFinished: _onTestFinished,
-                                          );
-                                        } else if (_testMode == "input") {
-                                          return TestInput(
-                                            tasks: questions,
-                                            accent: accent,
-                                            cardColor: cardColor,
-                                            onTestFinished: _onTestFinished,
-                                          );
-                                        } else if (_testMode == "mc") {
-                                          return TestMC(
-                                            tasks: questions,
-                                            accent: accent,
-                                            cardColor: cardColor,
-                                            onTestFinished: _onTestFinished,
-                                          );
-                                        }
-                                      }
-                                      return const Text("Keine Aufgaben gefunden.");
-                                    },
+                                  ConstrainedBox(
+                                    constraints: const BoxConstraints(
+                                      minHeight: 200, // Mindesthöhe für den Test-Bereich
+                                      maxHeight: 600, // Maximalhöhe, kann angepasst werden
+                                    ),
+                                    child: SingleChildScrollView(
+                                      child: Builder(
+                                        builder: (context) {
+                                          if (state.isLoadingTasks) {
+                                            return const Padding(
+                                              padding: EdgeInsets.all(24),
+                                              child: Center(child: CircularProgressIndicator()),
+                                            );
+                                          }
+                                          if (state.taskError != null) {
+                                            return Padding(
+                                              padding: const EdgeInsets.all(24),
+                                              child: Text(state.taskError!, style: const TextStyle(color: Colors.red)),
+                                            );
+                                          }
+                                          if (state.generatedTasks != null && state.generatedTasks!.isNotEmpty) {
+                                            final questions =
+                                                state.generatedTasks!.map((task) => task["question"] ?? "").toList();
+                                            if (testMode == "bool") {
+                                              return TestTrueFalse(
+                                                tasks: questions,
+                                                accent: accent,
+                                                cardColor: cardColor,
+                                                onTestFinished: () => vm.onTestFinished(),
+                                              );
+                                            } else if (testMode == "input") {
+                                              return TestInput(
+                                                tasks: questions,
+                                                accent: accent,
+                                                cardColor: cardColor,
+                                                onTestFinished: () => vm.onTestFinished(),
+                                              );
+                                            } else if (testMode == "mc") {
+                                              return TestMC(
+                                                tasks: questions,
+                                                accent: accent,
+                                                cardColor: cardColor,
+                                                onTestFinished: () => vm.onTestFinished(),
+                                              );
+                                            }
+                                          }
+                                          return const Text("Keine Aufgaben gefunden.");
+                                        },
+                                      ),
+                                    ),
                                   ),
+
+                                // Button zum Generieren von Aufgaben
                                 if (!showTasks && activeSubject != null && selectedTopic != null)
                                   Padding(
                                     padding: const EdgeInsets.only(top: 24),
                                     child: Row(
+                                      mainAxisSize: MainAxisSize.min, // Nur so breit wie nötig
                                       children: [
                                         ElevatedButton.icon(
                                           icon: const Icon(Icons.auto_awesome),
@@ -467,23 +473,19 @@ class _HomeViewState extends ConsumerState<HomeView> {
                                             foregroundColor: Colors.white,
                                           ),
                                           onPressed:
-                                              state.isLoadingTasks || _testLocked
+                                              state.isLoadingTasks || testLocked
                                                   ? null
                                                   : () async {
-                                                    setState(() {
-                                                      _testLocked = true;
-                                                    });
-                                                    // Anzahl Aufgaben je nach Testmodus
-                                                    int count = 1;
-                                                    if (_testMode == "input" || _testMode == "bool") {
-                                                      count = 5;
-                                                    }
+                                                    // Anzahl der Fragen auf 3 reduzieren
+                                                    const int count = 3;
+                                                    debugPrint('Generiere $count Fragen vom Typ: $testMode');
+
                                                     await vm.generateTasksWithKI(
                                                       subject: activeSubject,
                                                       topic: selectedTopic,
                                                       level: state.user.selectedLevel,
                                                       count: count,
-                                                      testMode: _testMode,
+                                                      testMode: testMode,
                                                     );
                                                   },
                                         ),
@@ -497,22 +499,26 @@ class _HomeViewState extends ConsumerState<HomeView> {
                                             ),
                                           ),
                                         if (state.taskError != null)
-                                          Padding(
-                                            padding: const EdgeInsets.only(left: 16),
-                                            child: Text(state.taskError!, style: const TextStyle(color: Colors.red)),
+                                          Flexible(
+                                            // Hier Flexible für Fehlertext
+                                            child: Padding(
+                                              padding: const EdgeInsets.only(left: 16),
+                                              child: Text(
+                                                state.taskError!,
+                                                style: const TextStyle(color: Colors.red),
+                                                overflow: TextOverflow.ellipsis,
+                                              ),
+                                            ),
                                           ),
                                       ],
                                     ),
                                   ),
+
+                                // Ergebnisbereich - kein Expanded nötig
                                 if (activeSubject != null && results.isNotEmpty)
-                                  Padding(
-                                    padding: const EdgeInsets.only(top: 32),
-                                    child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        // Ergebnisse werden nach Reset nicht mehr angezeigt
-                                      ],
-                                    ),
+                                  const Padding(
+                                    padding: EdgeInsets.only(top: 32),
+                                    child: SizedBox(), // Platzhalter für Ergebnisse
                                   ),
                               ],
                             ),
@@ -525,20 +531,20 @@ class _HomeViewState extends ConsumerState<HomeView> {
                     Divider(color: Colors.grey, thickness: 0.3),
                     Container(
                       width: double.infinity,
-                      padding: EdgeInsets.symmetric(vertical: 12),
+                      padding: const EdgeInsets.symmetric(vertical: 12),
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          Text(
+                          const Text(
                             "© 2025 KiForKids - Interaktive Lernplattform für Kinder",
                             style: TextStyle(color: Colors.grey, fontSize: 12),
                           ),
-                          SizedBox(height: 4),
+                          const SizedBox(height: 4),
                           GestureDetector(
                             onTap: () {
-                              html.window.open("https://marcogrimme.de", "_blank");
+                              _launchUrl("https://marcogrimme.de");
                             },
-                            child: Text(
+                            child: const Text(
                               "Entwickelt von Marco Grimme – Inspiriert von Jonas Grimme – KI-generierte Aufgaben",
                               style: TextStyle(
                                 color: Colors.blueAccent,
@@ -547,14 +553,14 @@ class _HomeViewState extends ConsumerState<HomeView> {
                               ),
                             ),
                           ),
-                          SizedBox(height: 6),
+                          const SizedBox(height: 6),
                           Wrap(
                             alignment: WrapAlignment.center,
                             spacing: 16,
                             children: [
                               TextButton(
                                 onPressed: () {
-                                  html.window.open('/datenschutz.html', '_blank');
+                                  _launchUrl('/datenschutz.html');
                                 },
                                 child: const Text(
                                   "Datenschutz",
@@ -567,7 +573,7 @@ class _HomeViewState extends ConsumerState<HomeView> {
                               ),
                               TextButton(
                                 onPressed: () {
-                                  html.window.open('/agb.html', '_blank');
+                                  _launchUrl('/agb.html');
                                 },
                                 child: const Text(
                                   "AGB",
@@ -580,7 +586,7 @@ class _HomeViewState extends ConsumerState<HomeView> {
                               ),
                               TextButton(
                                 onPressed: () {
-                                  html.window.open('/impressum.html', '_blank');
+                                  _launchUrl('/impressum.html');
                                 },
                                 child: const Text(
                                   "Impressum",
@@ -604,13 +610,5 @@ class _HomeViewState extends ConsumerState<HomeView> {
         ),
       ),
     );
-  }
-
-  // NEU: Callback wenn Test beendet wurde
-  void _onTestFinished() {
-    setState(() {
-      _testLocked = false;
-    });
-    ref.read(homeViewModelProvider.notifier).hideTasks();
   }
 }

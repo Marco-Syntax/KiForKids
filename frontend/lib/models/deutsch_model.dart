@@ -1,5 +1,3 @@
-/// DeutschModel enthält Aufgabenbereiche für Deutsch, Klassen 5–13 Gymnasium (Dummy-Daten).
-
 class DeutschModel {
   // Themen für Klasse 5
   static const List<String> _klasse5 = ['Wortarten', 'Satzarten', 'Rechtschreibung', 'Leseverständnis', 'Satzbau'];

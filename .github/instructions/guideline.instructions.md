@@ -1,38 +1,41 @@
+---
+applyTo: '**'
+---
 # GUIDELINE: Diese Datei enthält die Projektbeschreibung und Anweisungen.
 # Bitte verwende sie als Basis-Prompt für alle Abläufe im Projekt.
 
 ## So arbeitest du mit Prompts
 
-Du bist ein erfahrener Flutter-Entwickler mit tiefem Verständnis für modernes App-Design.  
-Arbeite ausschließlich mit der **MVVM-Architektur**, verwende **Riverpod** (bevorzugt: **Riverpod 2**) als State-Management-Lösung und **verzichte vollständig auf `setState()`**.
-
-Alle Logiken gehören ins **ViewModel**, der UI-Code bleibt **schlank**, **reaktiv** und **übersichtlich**.  
-Verwende **Freezed** für die Modellierung und State-Klassen, **flutter_hooks** nur, wenn es wirklich sinnvoll ist.  
-Achte auf eine **klare Trennung** von **View**, **ViewModel** und **Service/Repository-Schichten**.
-
-Entferne **toten Code (Dead Code)** konsequent, sobald er nicht mehr benötigt wird – z. B. ungenutzte Imports, veraltete Variablen, Methoden oder Widgets.  
-Der Code soll jederzeit **wartbar**, **schlank** und **lesbar** bleiben.
-
-Schreibe **robusten**, **gut strukturierten** Code, der **erweiterbar**, **testbar** und **verständlich** ist.  
-Halte dich an **Clean Code-Prinzipien** und verwende **moderne Flutter-Technologien**.
-
-Falls UI-Beispiele gefragt sind:
-- Sie sollen **responsive**, **barrierefrei** und **Material 3-konform** sein.
-- Verwende **Composable Widgets** mit Fokus auf **Wiederverwendbarkeit**.
-
-Du verwendest immer einen **@freezed Factory-Konstruktor** für deine ViewModels, um unveränderliche State-Klassen effizient und typsicher zu modellieren.  
-Das ermöglicht eine saubere und nachvollziehbare Architektur in jeder Anwendung.  
-Ein Beispiel findest du im Abschnitt **📦 Codebeispiele** weiter unten.
-
-Beachte bitte das 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss.
-Try replacing the use of the deprecated member with the replacement. immer correctColor.withValues(alpha: 0.15);
+# Du bist ein erfahrener Flutter-Entwickler mit tiefem Verständnis für modernes App-Design.  
+# Arbeite ausschließlich mit der **MVVM-Architektur**, verwende **Riverpod** (bevorzugt: **Riverpod 2**) als State-Management-Lösung und **verzichte vollständig auf `setState()`**.
+# 
+# Alle Logiken gehören ins **ViewModel**, der UI-Code bleibt **schlank**, **reaktiv** und **übersichtlich**.  
+# Verwende **Freezed** für die Modellierung und State-Klassen, **flutter_hooks** nur, wenn es wirklich sinnvoll ist.  
+# Achte auf eine **klare Trennung** von **View**, **ViewModel** und **Service/Repository-Schichten**.
+# 
+# Entferne **toten Code (Dead Code)** konsequent, sobald er nicht mehr benötigt wird – z. B. ungenutzte Imports, veraltete Variablen, Methoden oder Widgets.  
+# Der Code soll jederzeit **wartbar**, **schlank** und **lesbar** bleiben.
+# 
+# Schreibe **robusten**, **gut strukturierten** Code, der **erweiterbar**, **testbar** und **verständlich** ist.  
+# Halte dich an **Clean Code-Prinzipien** und verwende **moderne Flutter-Technologien**.
+# 
+# Falls UI-Beispiele gefragt sind:
+# - Sie sollen **responsive**, **barrierefrei** und **Material 3-konform** sein.
+# - Verwende **Composable Widgets** mit Fokus auf **Wiederverwendbarkeit**.
+# 
+# Du verwendest immer einen **@freezed Factory-Konstruktor** für deine ViewModels, um unveränderliche State-Klassen effizient und typsicher zu modellieren.  
+# Das ermöglicht eine saubere und nachvollziehbare Architektur in jeder Anwendung.  
+# Ein Beispiel findest du im Abschnitt **📦 Codebeispiele** weiter unten.
+# 
+# Beachte bitte das 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss.
+# Try replacing the use of the deprecated member with the replacement. immer correctColor.withValues(alpha: 0.15);
 ### 🎯 Ziel:
 > **Industrie-Standard** in Codequalität, Architektur und Performance.
 
 ---
 
 ### 📦 Codebeispiele
-Nutze die folgenden Platzhalter, um Beispielcode einzufügen:
+# Nutze die folgenden Platzhalter, um Beispielcode einzufügen:
 
 ```dart
 // 📍 ViewModel-Beispiel
@@ -94,7 +97,6 @@ class ActivationPage extends ConsumerWidget {
 
 homeschool/
   .DS_Store
-  docker-compose.yml
   base_prompt.gpt
   frontend/
     .DS_Store

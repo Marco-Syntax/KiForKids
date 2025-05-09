@@ -1,4 +1,4 @@
-part of '../home_view.dart';
+import 'package:flutter/material.dart';
 
 class FachSidebar extends StatelessWidget {
   final List<String> subjects;
@@ -25,7 +25,7 @@ class FachSidebar extends StatelessWidget {
       decoration: BoxDecoration(
         color: const Color(0xFF1A2337),
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: accent.withOpacity(0.08)),
+        border: Border.all(color: accent.withValues(alpha: 0.08)),
       ),
       padding: const EdgeInsets.symmetric(vertical: 28, horizontal: 16),
       child: Column(
@@ -37,7 +37,7 @@ class FachSidebar extends StatelessWidget {
             (s) => Container(
               margin: const EdgeInsets.only(bottom: 8),
               decoration: BoxDecoration(
-                color: activeSubject == s ? accent.withOpacity(0.35) : Colors.transparent,
+                color: activeSubject == s ? accent.withValues(alpha: 0.35) : Colors.transparent,
                 borderRadius: BorderRadius.circular(8),
               ),
               child: ListTile(

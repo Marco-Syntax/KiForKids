@@ -1,11 +1,9 @@
-/// Widget für Richtig/Falsch-Aufgaben mit Riverpod-Anbindung.
-/// Prüft Antworten per KI und zeigt Feedback an.
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../view_models/home_view_model.dart';
+import 'package:frontend/view_models/home_view_model.dart';
+import 'package:frontend/views/widgets/answer_button.dart';
 
-class TestTrueFalse extends ConsumerStatefulWidget {
+class TestTrueFalse extends ConsumerWidget {
   final List<String> tasks;
   final Color accent;
   final Color cardColor;
@@ -20,240 +18,372 @@ class TestTrueFalse extends ConsumerStatefulWidget {
   });
 
   @override
-  ConsumerState<TestTrueFalse> createState() => _TestTrueFalseState();
-}
+  Widget build(BuildContext context, WidgetRef ref) {
+    final homeState = ref.watch(homeViewModelProvider);
+    final homeViewModel = ref.read(homeViewModelProvider.notifier);
 
-class _TestTrueFalseState extends ConsumerState<TestTrueFalse> {
-  late List<String?> _selectedAnswers;
-  bool _showResult = false;
-  late List<bool> _isCorrect;
-  List<String> _feedback = [];
-  bool _isChecking = false;
-  bool _canContinue = false;
-
-  @override
-  void initState() {
-    super.initState();
-    _selectedAnswers = List.generate(widget.tasks.length, (_) => null);
-    _isCorrect = List.generate(widget.tasks.length, (_) => false);
-    _feedback = List.generate(widget.tasks.length, (_) => "");
-    _canContinue = false;
-  }
-
-  @override
-  void didUpdateWidget(covariant TestTrueFalse oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    if (oldWidget.tasks.length != widget.tasks.length) {
-      _selectedAnswers = List.generate(widget.tasks.length, (_) => null);
-      _isCorrect = List.generate(widget.tasks.length, (_) => false);
-      _feedback = List.generate(widget.tasks.length, (_) => "");
-      _showResult = false;
-      _canContinue = false;
-      setState(() {});
-    }
-  }
-
-  bool _allAnswered() => _selectedAnswers.every((a) => a != null);
-
-  Future<void> _checkAnswers() async {
-    setState(() {
-      _showResult = false;
-      _isChecking = true;
-      _canContinue = false;
-    });
-    final vm = ref.read(homeViewModelProvider.notifier);
-    final generatedTasks = ref.read(homeViewModelProvider).generatedTasks ?? [];
-    final answers = _selectedAnswers.map((a) => a ?? "").toList();
-    final feedback =
-        vm.kiService?.checkAnswers(generatedTasks: generatedTasks, userAnswers: answers) ??
-        List.generate(widget.tasks.length, (_) => "Keine Lösung vorhanden.");
-    setState(() {
-      _feedback = feedback;
-      _isCorrect = feedback.map((f) => f.toLowerCase().startsWith('richtig')).toList();
-      _showResult = true;
-      _isChecking = false;
-      _canContinue = true;
-    });
-  }
-
-  Future<void> _onContinue() async {
-    final vm = ref.read(homeViewModelProvider.notifier);
-    final state = ref.read(homeViewModelProvider);
-    final subject = state.user.selectedSubjects.isNotEmpty ? state.user.selectedSubjects.first : '';
-    final topic = state.selectedTopic ?? '';
-    final level = state.user.selectedLevel;
-
-    setState(() {
-      _showResult = false;
-      _canContinue = false;
-      _selectedAnswers = List.generate(widget.tasks.length, (_) => null);
-      _isCorrect = List.generate(widget.tasks.length, (_) => false);
-      _feedback = List.generate(widget.tasks.length, (_) => "");
-      _isChecking = true;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (homeState.currentTestTasks.isEmpty || homeState.currentTestTasks.length != tasks.length) {
+        homeViewModel.initTest(tasks);
+      }
     });
 
-    await vm.generateTasksWithKI(subject: subject, topic: topic, level: level, count: 5);
+    // State aus dem ViewModel
+    final bool showResult = homeState.showTestResult;
+    final bool isChecking = homeState.isCheckingTest;
+    final bool canContinue = homeState.canContinueTest;
+    final List<bool> isCorrect = homeState.testIsCorrect;
+    final List<String> feedback = homeState.testFeedback;
+    final List<String?> answers = homeState.trueFalseAnswers;
 
-    setState(() {
-      _isChecking = false;
-    });
-  }
+    // Prüfen, ob alle Antworten ausgewählt wurden (für Button-Anzeige)
+    final bool hasEnoughAnswers = answers.length >= tasks.length;
+    final bool allAnswered = hasEnoughAnswers && answers.take(tasks.length).every((answer) => answer != null);
 
-  Future<void> _onFinish() async {
-    ref.read(homeViewModelProvider.notifier).resetAll();
-    widget.onTestFinished();
-    if (Navigator.of(context).canPop()) {
-      Navigator.of(context).pop();
-    }
-  }
+    // Farben für das verbesserte Layout
+    final correctColor = Colors.green.shade400;
+    final wrongColor = Colors.redAccent;
+    final neutralColor = accent.withValues(alpha: 0.7);
 
-  @override
-  Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('Fragen:', style: TextStyle(fontWeight: FontWeight.bold, color: widget.accent, fontSize: 22)),
-        const SizedBox(height: 18),
-        ...List.generate(widget.tasks.length, (i) {
-          return Container(
-            margin: const EdgeInsets.only(bottom: 24),
-            padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 18),
-            decoration: BoxDecoration(
-              color: widget.cardColor.withOpacity(0.95),
-              borderRadius: BorderRadius.circular(14),
-              border: Border.all(color: widget.accent.withOpacity(0.18)),
-              boxShadow: [BoxShadow(color: widget.accent.withOpacity(0.06), blurRadius: 8, offset: const Offset(0, 2))],
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              'Richtig oder Falsch?',
+              style: TextStyle(fontWeight: FontWeight.bold, color: accent, fontSize: 24, letterSpacing: 0.5),
             ),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Icon(Icons.help_outline, color: widget.accent, size: 28),
-                const SizedBox(width: 16),
-                Expanded(
-                  child: Text(
-                    widget.tasks[i],
-                    style: const TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.w500, height: 1.4),
-                  ),
+            if (!showResult)
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                decoration: BoxDecoration(
+                  color: accent.withValues(alpha: 0.1),
+                  borderRadius: BorderRadius.circular(16),
+                  border: Border.all(color: accent.withValues(alpha: 0.3)),
                 ),
-                const SizedBox(width: 24),
-                ToggleButtons(
-                  isSelected: [_selectedAnswers[i] == "richtig", _selectedAnswers[i] == "falsch"],
-                  onPressed:
-                      _showResult
-                          ? null
-                          : (index) {
-                            setState(() {
-                              _selectedAnswers[i] = index == 0 ? "richtig" : "falsch";
-                            });
-                          },
-                  borderRadius: BorderRadius.circular(8),
-                  selectedColor: Colors.white,
-                  fillColor: widget.accent,
-                  color: Colors.white70,
-                  children: const [
-                    Padding(padding: EdgeInsets.symmetric(horizontal: 12), child: Text("Richtig")),
-                    Padding(padding: EdgeInsets.symmetric(horizontal: 12), child: Text("Falsch")),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const Icon(Icons.info_outline, size: 18, color: Colors.white70),
+                    const SizedBox(width: 6),
+                    Text(
+                      '${answers.where((a) => a != null).length}/${tasks.length} beantwortet',
+                      style: const TextStyle(color: Colors.white70, fontWeight: FontWeight.w500),
+                    ),
                   ],
                 ),
-                if (_showResult)
-                  Padding(
-                    padding: const EdgeInsets.only(left: 12, top: 8),
-                    child: Icon(
-                      _isCorrect[i] ? Icons.check_circle : Icons.cancel,
-                      color: _isCorrect[i] ? Colors.green : Colors.red,
-                      size: 26,
+              ),
+          ],
+        ),
+        const SizedBox(height: 8),
+        Text(
+          'Entscheide, ob die folgenden Aussagen richtig oder falsch sind.',
+          style: TextStyle(color: Colors.white70, fontSize: 16),
+        ),
+        const SizedBox(height: 24),
+        ...List.generate(tasks.length, (i) {
+          // Stelle sicher, dass wir gültige Indizes für answers haben
+          final bool hasAnswer = answers.length > i && answers[i] != null;
+
+          // Status-abhängige Farben und Icons
+          Color borderColor = accent.withValues(alpha: 0.18);
+          Color bgColor = cardColor.withValues(alpha: 0.95);
+          IconData statusIcon = Icons.help_outline;
+          Color iconColor = neutralColor;
+
+          if (showResult && isCorrect.length > i) {
+            if (isCorrect[i]) {
+              borderColor = correctColor.withValues(alpha: 0.5);
+              bgColor = correctColor.withValues(alpha: 0.05);
+              statusIcon = Icons.check_circle_outline;
+              iconColor = correctColor;
+            } else {
+              borderColor = wrongColor.withValues(alpha: 0.5);
+              bgColor = wrongColor.withValues(alpha: 0.05);
+              statusIcon = Icons.cancel_outlined;
+              iconColor = wrongColor;
+            }
+          } else if (hasAnswer) {
+            borderColor = accent.withValues(alpha: 0.4);
+            statusIcon = Icons.check_box;
+            iconColor = accent;
+          }
+
+          return Container(
+            margin: const EdgeInsets.only(bottom: 24),
+            padding: const EdgeInsets.all(0),
+            decoration: BoxDecoration(
+              color: bgColor,
+              borderRadius: BorderRadius.circular(16),
+              border: Border.all(color: borderColor, width: 1.5),
+              boxShadow: [BoxShadow(color: accent.withValues(alpha: 0.06), blurRadius: 8, offset: const Offset(0, 2))],
+            ),
+            child: Column(
+              children: [
+                // Frage und Icon in der oberen Zeile
+                Padding(
+                  padding: const EdgeInsets.all(18),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Icon(statusIcon, color: iconColor, size: 28),
+                      const SizedBox(width: 16),
+                      Expanded(
+                        child: Text(
+                          tasks[i],
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 18,
+                            fontWeight: FontWeight.w500,
+                            height: 1.4,
+                            letterSpacing: 0.2,
+                          ),
+                        ),
+                      ),
+                      // Feedback-Icon nur bei Ergebnisanzeige
+                      if (showResult && isCorrect.length > i)
+                        Icon(
+                          isCorrect[i] ? Icons.check_circle : Icons.cancel,
+                          color: isCorrect[i] ? correctColor : wrongColor,
+                          size: 26,
+                        ),
+                    ],
+                  ),
+                ),
+                // Buttons in unterer Leiste mit farblicher Hervorhebung
+                ClipRRect(
+                  borderRadius: const BorderRadius.only(
+                    bottomLeft: Radius.circular(15),
+                    bottomRight: Radius.circular(15),
+                  ),
+                  child: Container(
+                    width: double.infinity,
+                    height: 56,
+                    decoration: BoxDecoration(
+                      color: cardColor.withValues(alpha: 0.7),
+                      border: Border(top: BorderSide(color: accent.withValues(alpha: 0.15), width: 1)),
+                    ),
+                    child: Row(
+                      children: [
+                        // RICHTIG-Button
+                        Expanded(
+                          child: AnswerButton(
+                            label: "RICHTIG",
+                            icon: Icons.check_rounded,
+                            isSelected: hasAnswer && answers[i] == "richtig",
+                            isCorrect:
+                                showResult &&
+                                isCorrect.length > i &&
+                                ((answers[i] == "richtig" && isCorrect[i]) ||
+                                    (answers[i] != "richtig" && !isCorrect[i] && feedback[i].contains("richtig"))),
+                            accent: accent,
+                            correctColor: correctColor,
+                            wrongColor: wrongColor,
+                            showResult: showResult,
+                            onPressed: showResult ? null : () => homeViewModel.setTrueFalseAnswer(i, "richtig"),
+                          ),
+                        ),
+                        // Trennlinie
+                        Container(width: 1, color: accent.withValues(alpha: 0.2), height: double.infinity),
+                        // FALSCH-Button
+                        Expanded(
+                          child: AnswerButton(
+                            label: "FALSCH",
+                            icon: Icons.close_rounded,
+                            isSelected: hasAnswer && answers[i] == "falsch",
+                            isCorrect:
+                                showResult &&
+                                isCorrect.length > i &&
+                                ((answers[i] == "falsch" && isCorrect[i]) ||
+                                    (answers[i] != "falsch" && !isCorrect[i] && feedback[i].contains("falsch"))),
+                            accent: accent,
+                            correctColor: correctColor,
+                            wrongColor: wrongColor,
+                            showResult: showResult,
+                            onPressed: showResult ? null : () => homeViewModel.setTrueFalseAnswer(i, "falsch"),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                // Feedback-Text unter dem Container
+                if (showResult && feedback.length > i)
+                  Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 18),
+                    margin: const EdgeInsets.only(top: 8),
+                    decoration: BoxDecoration(
+                      color:
+                          (isCorrect.length > i && isCorrect[i])
+                              ? correctColor.withValues(alpha: 0.1)
+                              : wrongColor.withValues(alpha: 0.1),
+                      borderRadius: BorderRadius.circular(10),
+                      border: Border.all(
+                        color:
+                            (isCorrect.length > i && isCorrect[i])
+                                ? correctColor.withValues(alpha: 0.3)
+                                : wrongColor.withValues(alpha: 0.3),
+                      ),
+                    ),
+                    child: Text(
+                      feedback[i],
+                      style: TextStyle(
+                        color: (isCorrect.length > i && isCorrect[i]) ? correctColor : wrongColor,
+                        fontWeight: FontWeight.w500,
+                        fontSize: 15,
+                      ),
                     ),
                   ),
               ],
             ),
           );
         }),
-        if (_isChecking)
-          const Padding(
-            padding: EdgeInsets.only(left: 60, bottom: 8),
+
+        if (isChecking)
+          Container(
+            width: double.infinity,
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+            margin: const EdgeInsets.only(bottom: 20),
+            decoration: BoxDecoration(
+              color: accent.withValues(alpha: 0.1),
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(color: accent.withValues(alpha: 0.2)),
+            ),
             child: Row(
               children: [
-                SizedBox(width: 22, height: 22, child: CircularProgressIndicator(strokeWidth: 2)),
-                SizedBox(width: 12),
-                Text("Antworten werden geprüft...", style: TextStyle(color: Colors.white70)),
-              ],
-            ),
-          ),
-        if (_showResult)
-          ...List.generate(widget.tasks.length, (i) {
-            return Padding(
-              padding: const EdgeInsets.only(left: 60, bottom: 8),
-              child: Text(
-                _feedback[i],
-                style: TextStyle(
-                  color: _isCorrect[i] ? Colors.green : Colors.red,
-                  fontWeight: FontWeight.w500,
-                  fontSize: 15,
-                ),
-              ),
-            );
-          }),
-        if (!_showResult && _allAnswered() && !_isChecking)
-          Align(
-            alignment: Alignment.centerLeft,
-            child: ElevatedButton.icon(
-              icon: const Icon(Icons.check),
-              label: const Text("Ergebnisse anzeigen"),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: widget.accent,
-                foregroundColor: Colors.white,
-                padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 14),
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-                elevation: 0,
-              ),
-              onPressed: _checkAnswers,
-            ),
-          ),
-        if (_showResult)
-          Padding(
-            padding: const EdgeInsets.only(top: 16),
-            child: Text(
-              _isCorrect.every((v) => v)
-                  ? "Super, alle Fragen richtig beantwortet!"
-                  : "Bitte überprüfe deine Antworten.",
-              style: TextStyle(
-                color: _isCorrect.every((v) => v) ? Colors.green : Colors.red,
-                fontWeight: FontWeight.bold,
-                fontSize: 18,
-              ),
-            ),
-          ),
-        if (_showResult && _canContinue)
-          Padding(
-            padding: const EdgeInsets.only(top: 24),
-            child: Row(
-              children: [
-                ElevatedButton.icon(
-                  icon: const Icon(Icons.arrow_forward),
-                  label: const Text("Weiter"),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: widget.accent,
-                    foregroundColor: Colors.white,
-                    padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 14),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-                    elevation: 0,
-                  ),
-                  onPressed: _onContinue,
+                SizedBox(
+                  width: 24,
+                  height: 24,
+                  child: CircularProgressIndicator(strokeWidth: 2, valueColor: AlwaysStoppedAnimation<Color>(accent)),
                 ),
                 const SizedBox(width: 16),
-                ElevatedButton.icon(
-                  icon: const Icon(Icons.exit_to_app),
-                  label: const Text("Beenden"),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.redAccent,
-                    foregroundColor: Colors.white,
-                    padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 14),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-                    elevation: 0,
-                  ),
-                  onPressed: _onFinish,
+                const Text(
+                  "Antworten werden überprüft...",
+                  style: TextStyle(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 16),
                 ),
               ],
+            ),
+          ),
+
+        // Ergebnisanzeige am Ende des Tests
+        if (showResult)
+          Container(
+            width: double.infinity,
+            padding: const EdgeInsets.all(20),
+            margin: const EdgeInsets.only(top: 12),
+            decoration: BoxDecoration(
+              color: isCorrect.every((v) => v) ? correctColor.withValues(alpha: 0.1) : accent.withValues(alpha: 0.1),
+              borderRadius: BorderRadius.circular(16),
+              border: Border.all(
+                color: isCorrect.every((v) => v) ? correctColor.withValues(alpha: 0.3) : accent.withValues(alpha: 0.2),
+              ),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.all(12),
+                      decoration: BoxDecoration(
+                        color:
+                            isCorrect.every((v) => v)
+                                ? correctColor.withValues(alpha: 0.2)
+                                : accent.withValues(alpha: 0.2),
+                        shape: BoxShape.circle,
+                      ),
+                      child: Icon(
+                        isCorrect.every((v) => v) ? Icons.emoji_events_rounded : Icons.fitness_center_rounded,
+                        size: 28,
+                        color: isCorrect.every((v) => v) ? correctColor : accent,
+                      ),
+                    ),
+                    const SizedBox(width: 16),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            isCorrect.every((v) => v) ? "Toll gemacht!" : "Guter versuch!",
+                            style: TextStyle(
+                              color: isCorrect.every((v) => v) ? correctColor : accent,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 20,
+                            ),
+                          ),
+                          const SizedBox(height: 4),
+                          Text(
+                            isCorrect.every((v) => v)
+                                ? "Du hast alle Fragen richtig beantwortet!"
+                                : "Du hast ${isCorrect.where((v) => v).length} von ${isCorrect.length} Fragen richtig beantwortet.",
+                            style: TextStyle(color: Colors.white70, fontSize: 16),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+                if (canContinue)
+                  Padding(
+                    padding: const EdgeInsets.only(top: 20),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        OutlinedButton.icon(
+                          icon: const Icon(Icons.exit_to_app),
+                          label: const Text("Beenden"),
+                          style: OutlinedButton.styleFrom(
+                            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+                            side: BorderSide(color: accent.withValues(alpha: 0.6)),
+                            foregroundColor: Colors.white,
+                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                          ),
+                          onPressed: () {
+                            homeViewModel.finishTest(onTestFinished);
+                            if (Navigator.of(context).canPop()) {
+                              Navigator.of(context).pop();
+                            }
+                          },
+                        ),
+                        const SizedBox(width: 16),
+                        FilledButton.icon(
+                          icon: const Icon(Icons.arrow_forward_rounded),
+                          label: const Text("Weiter"),
+                          style: FilledButton.styleFrom(
+                            backgroundColor: accent,
+                            foregroundColor: Colors.white,
+                            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                            elevation: 0,
+                          ),
+                          onPressed: () => homeViewModel.continueTest(),
+                        ),
+                      ],
+                    ),
+                  ),
+              ],
+            ),
+          ),
+
+        // "Ergebnisse anzeigen" Button - Nur anzeigen wenn Antworten da UND nicht in anderen Zuständen
+        if (!showResult && !isChecking)
+          Container(
+            width: double.infinity,
+            padding: const EdgeInsets.only(top: 20),
+            child: FilledButton.icon(
+              icon: const Icon(Icons.check_circle_outline_rounded),
+              label: Text(allAnswered ? "Antworten überprüfen" : "Bitte alle Fragen beantworten"),
+              style: FilledButton.styleFrom(
+                backgroundColor: allAnswered ? accent : Colors.grey.shade700,
+                foregroundColor: Colors.white,
+                padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 18),
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                elevation: 0,
+              ),
+              onPressed: allAnswered ? () => homeViewModel.checkTestAnswers() : null,
             ),
           ),
       ],

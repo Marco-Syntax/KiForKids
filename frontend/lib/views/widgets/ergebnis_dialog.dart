@@ -1,4 +1,4 @@
-part of '../home_view.dart';
+import 'package:flutter/material.dart';
 
 class ErgebnisDialog extends StatelessWidget {
   final String activeSubject;
@@ -73,7 +73,7 @@ class ErgebnisDialog extends StatelessWidget {
                     children:
                         data.reversed.map((entry) {
                           return Card(
-                            color: cardColor.withOpacity(0.95),
+                            color: cardColor.withValues(alpha: 0.95),
                             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
                             margin: const EdgeInsets.only(bottom: 18),
                             child: Padding(
@@ -121,7 +121,7 @@ class ErgebnisDialog extends StatelessWidget {
                                     String? correct;
                                     if (!isCorrect) {
                                       final match = RegExp(r'richtige[r]? Lösung: (.+?)\)?$').firstMatch(feedback);
-                                      correct = match != null ? match.group(1) : null;
+                                      correct = match?.group(1);
                                     }
                                     return Padding(
                                       padding: const EdgeInsets.only(left: 24, bottom: 2),

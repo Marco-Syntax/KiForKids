@@ -1,5 +1,3 @@
-/// SachkundeModel enthält Aufgabenbereiche für Sachkunde, Klassen 5–13 Gymnasium (Dummy-Daten).
-
 class SachkundeModel {
   // Themen für Klasse 5
   static const List<String> _klasse5 = [

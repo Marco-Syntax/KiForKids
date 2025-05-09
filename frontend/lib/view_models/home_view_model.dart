@@ -1,84 +1,68 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../models/user_model.dart';
-import '../models/mathe_model.dart';
-import '../models/deutsch_model.dart';
-import '../models/englisch_model.dart';
-import '../models/sachkunde_model.dart';
-import '../models/naturwissenschaften_model.dart';
-import '../util/ki_service.dart';
 import 'dart:convert';
-import 'package:http/http.dart' as http;
 import 'dart:math';
 
-// HomeState speichert UserModel (Klasse, Level, Fächer)
-class HomeState {
-  final UserModel user;
-  final String? selectedTopic;
-  final bool showTasks;
-  final List<Map<String, String>>? generatedTasks;
-  final bool isLoadingTasks;
-  final String? taskError;
-  final List<String>? lastFeedback; // Feedback der KI-Korrektur
-  final bool isCheckingAnswers; // Status für Antwortprüfung
-  final String? activeSubject; // NEU: aktuell aktives Fach
-  final Map<String, List<ResultsEntry>> resultsHistory; // NEU: Ergebnisse pro Fach
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:frontend/models/deutsch_model.dart';
+import 'package:frontend/models/englisch_model.dart';
+import 'package:frontend/models/mathe_model.dart';
+import 'package:frontend/models/naturwissenschaften_model.dart';
+import 'package:frontend/models/sachkunde_model.dart';
+import 'package:frontend/models/user_model.dart';
+import 'package:frontend/util/ki_service.dart';
+import 'package:http/http.dart' as http;
 
-  const HomeState({
-    required this.user,
-    this.selectedTopic,
-    this.showTasks = false,
-    this.generatedTasks,
-    this.isLoadingTasks = false,
-    this.taskError,
-    this.lastFeedback,
-    this.isCheckingAnswers = false,
-    this.activeSubject, // NEU
-    this.resultsHistory = const {},
-  });
+part 'home_view_model.freezed.dart';
 
-  HomeState copyWith({
-    UserModel? user,
-    String? selectedTopic,
-    bool? showTasks,
-    List<Map<String, String>>? generatedTasks,
-    bool? isLoadingTasks,
-    String? taskError,
-    List<String>? lastFeedback,
-    bool? isCheckingAnswers,
-    String? activeSubject, // NEU
-    Map<String, List<ResultsEntry>>? resultsHistory,
-  }) => HomeState(
-    user: user ?? this.user,
-    selectedTopic: selectedTopic ?? this.selectedTopic,
-    showTasks: showTasks ?? this.showTasks,
-    generatedTasks: generatedTasks,
-    isLoadingTasks: isLoadingTasks ?? this.isLoadingTasks,
-    taskError: taskError,
-    lastFeedback: lastFeedback ?? this.lastFeedback,
-    isCheckingAnswers: isCheckingAnswers ?? this.isCheckingAnswers,
-    activeSubject: activeSubject ?? this.activeSubject, // NEU
-    resultsHistory: resultsHistory ?? this.resultsHistory,
-  );
+// Ergebnis-Eintrag für die Übersicht als @freezed-Klasse
+@freezed
+abstract class ResultsEntry with _$ResultsEntry {
+  const factory ResultsEntry({
+    required String fach,
+    required String topic,
+    required List<String> questions,
+    required List<String> userAnswers,
+    required List<String> feedback,
+    required DateTime timestamp,
+  }) = _ResultsEntry;
 }
 
-// Ergebnis-Eintrag für die Übersicht
-class ResultsEntry {
-  final String fach;
-  final String topic;
-  final List<String> questions;
-  final List<String> userAnswers;
-  final List<String> feedback;
-  final DateTime timestamp;
+// HomeState als @freezed-Klasse
+@freezed
+abstract class HomeState with _$HomeState {
+  const factory HomeState({
+    required UserModel user,
+    String? selectedTopic,
+    @Default(false) bool showTasks,
+    List<Map<String, String>>? generatedTasks,
+    @Default(false) bool isLoadingTasks,
+    String? taskError,
+    List<String>? lastFeedback, // Feedback der KI-Korrektur
+    @Default(false) bool isCheckingAnswers, // Status für Antwortprüfung
+    String? activeSubject, // aktuell aktives Fach
+    @Default({}) Map<String, List<ResultsEntry>> resultsHistory, // Ergebnisse pro Fach
+    @Default("Hallo Lehrling!") String greeting, // Begrüßungstext
+    @Default("bool") String testMode, // Testmodus
+    @Default(false) bool testLocked, // Sperrstatus für Testmodus-Buttons
+    // Wieder hinzugefügte Test-Felder
+    // Für alle Test-Typen gemeinsam
+    @Default([]) List<String> currentTestTasks,
+    @Default(false) bool showTestResult,
+    @Default([]) List<bool> testIsCorrect,
+    @Default([]) List<String> testFeedback,
+    @Default(false) bool isCheckingTest,
+    @Default(false) bool canContinueTest,
 
-  ResultsEntry({
-    required this.fach,
-    required this.topic,
-    required this.questions,
-    required this.userAnswers,
-    required this.feedback,
-    required this.timestamp,
-  });
+    // Spezifisch für Text-Eingabe Tests
+    @Default([]) List<String> textInputAnswers,
+
+    // Spezifisch für True/False Tests
+    @Default([]) List<String?> trueFalseAnswers,
+
+    // Spezifisch für MC Tests
+    @Default([]) List<String?> mcAnswers,
+  }) = _HomeState;
 }
 
 class HomeViewModel extends StateNotifier<HomeState> {
@@ -96,16 +80,12 @@ class HomeViewModel extends StateNotifier<HomeState> {
     'Klasse 13',
   ];
   static const List<String> levels = ['Einsteiger', 'Fortgeschritten', 'Experte'];
-  HomeViewModel()
-    : super(
-        HomeState(
-          user: const UserModel(
-            userId: 'demo_user', // Standard-UserId
-            selectedClass: 'Klasse 5',
-            selectedLevel: 'Einsteiger',
-          ),
-        ),
-      );
+
+  HomeViewModel() : super(HomeState(user: UserModel(selectedClass: 'Klasse 5', selectedLevel: 'Einsteiger'))) {
+    // Begrüßungstext beim Start laden
+    loadGreeting();
+  }
+
   KIService? _kiService;
 
   // Getter für Zugriff aus der View
@@ -155,28 +135,48 @@ class HomeViewModel extends StateNotifier<HomeState> {
     required String subject,
     required String topic,
     required String level,
-    int count = 3,
-    String testMode = "bool", // NEU
+    int count = 3, // Standardwert auf 3 geändert (vorher 5)
+    String testMode = "bool",
   }) async {
     if (_kiService == null) throw Exception("KIService nicht gesetzt");
-    state = state.copyWith(isLoadingTasks: true, taskError: null, generatedTasks: null, lastFeedback: null);
+    state = state.copyWith(
+      isLoadingTasks: true,
+      taskError: null,
+      generatedTasks: null,
+      lastFeedback: null,
+      testLocked: true,
+    );
     try {
       final randomSeed = "${DateTime.now().microsecondsSinceEpoch}_${DateTime.now().millisecondsSinceEpoch % 1000}";
-      print("DEBUG: ViewModel ruft KIService.generateTasks auf mit testMode: $testMode");
       final bool testModeBool = testMode == "bool";
+      debugPrint(
+        "TaskGeneration: Starte Anfrage. Fach: $subject, Thema: $topic, Level: $level, Anzahl: $count, Testmodus: $testMode",
+      );
+
       final tasks = await _kiService!.generateTasks(
         subject: subject,
         topic: topic,
         level: level,
-        count: count,
+        count: count, // Explizit 5 Aufgaben anfordern
         extraPrompt: "Seed: $randomSeed",
         testMode: testModeBool,
         usedQuestions: [],
         classTopics: [],
       );
+
+      debugPrint("TaskGeneration: Aufgaben erhalten. Anzahl: ${tasks.length}");
+      debugPrint("TaskGeneration: Aufgaben-Details: $tasks");
+
       state = state.copyWith(generatedTasks: tasks, isLoadingTasks: false, showTasks: true, lastFeedback: null);
     } catch (e) {
-      state = state.copyWith(taskError: e.toString(), isLoadingTasks: false, generatedTasks: null, lastFeedback: null);
+      debugPrint("TaskGeneration: Fehler: $e");
+      state = state.copyWith(
+        taskError: e.toString(),
+        isLoadingTasks: false,
+        generatedTasks: null,
+        lastFeedback: null,
+        testLocked: false,
+      );
     }
   }
 
@@ -189,16 +189,19 @@ class HomeViewModel extends StateNotifier<HomeState> {
   }
 
   void toggleSubject(String subject) {
-    // Immer alles zurücksetzen beim Fachwechsel
+    // Den aktuellen Testmodus beibehalten
+    final currentTestMode = state.testMode;
+
+    // Alles zurücksetzen beim Fachwechsel UND Testmodus entsperren
     state = HomeState(
       user: state.user.copyWith(
         selectedSubjects: [subject],
         selectedClass: state.user.selectedClass,
         selectedLevel: state.user.selectedLevel,
-        userId: state.user.userId,
       ),
       activeSubject: subject,
-      // alle anderen Felder bleiben auf Default/null
+      testMode: currentTestMode, // Testmodus beibehalten!
+      // alle anderen Felder bleiben auf Default-Werten
     );
   }
 
@@ -220,16 +223,9 @@ class HomeViewModel extends StateNotifier<HomeState> {
 
   void resetAll() {
     state = HomeState(
-      user: const UserModel(selectedClass: 'Klasse 5', selectedLevel: 'Einsteiger', userId: ''),
-      selectedTopic: null,
-      showTasks: false,
-      generatedTasks: null,
-      isLoadingTasks: false,
-      taskError: null,
-      lastFeedback: null,
-      isCheckingAnswers: false,
-      activeSubject: null,
-      resultsHistory: const {},
+      user: UserModel(selectedClass: 'Klasse 5', selectedLevel: 'Einsteiger'),
+      testLocked: false, // Testmodus-Buttons entsperren
+      // Andere Werte behalten ihre Default-Werte aus der @freezed-Definition
     );
   }
 
@@ -253,13 +249,24 @@ class HomeViewModel extends StateNotifier<HomeState> {
   /// Prüft die Antworten mit der KI, speichert das Feedback UND die Ergebnisse im State und Backend.
   Future<void> checkAnswersWithKI({required List<String> questions, required List<String> answers}) async {
     if (_kiService == null) return;
-    state = state.copyWith(isCheckingAnswers: true, lastFeedback: null);
+
+    debugPrint("Antwortprüfung: Starte mit ${questions.length} Fragen und ${answers.length} Antworten");
+
+    // Wir setzen isCheckingAnswers nicht, da dies im TestViewModel bereits geschieht
     try {
       final subject = getActiveSubject() ?? '';
       final topic = state.selectedTopic ?? '';
-      // Nutze die lokal generierten Aufgaben und Lösungen
-      final generatedTasks = state.generatedTasks ?? [];
-      final feedback = _kiService!.checkAnswers(generatedTasks: generatedTasks, userAnswers: answers);
+
+      // Wenn Feedback bereits generiert wurde (z.B. vom TestViewModel), verwenden wir das
+      List<String> feedback;
+      if (state.lastFeedback != null && state.lastFeedback!.length == answers.length) {
+        feedback = state.lastFeedback!;
+      } else {
+        // Nutze die lokal generierten Aufgaben und Lösungen
+        final generatedTasks = state.generatedTasks ?? [];
+        feedback = _kiService!.checkAnswers(generatedTasks: generatedTasks, userAnswers: answers);
+      }
+
       // Ergebnisse speichern (lokal)
       final entry = ResultsEntry(
         fach: subject,
@@ -269,14 +276,26 @@ class HomeViewModel extends StateNotifier<HomeState> {
         feedback: feedback,
         timestamp: DateTime.now(),
       );
-      final newHistory = Map<String, List<ResultsEntry>>.from(state.resultsHistory);
-      newHistory.putIfAbsent(subject, () => []);
-      newHistory[subject] = [...newHistory[subject]!, entry];
-      state = state.copyWith(isCheckingAnswers: false, lastFeedback: feedback, resultsHistory: newHistory);
 
-      final userId = state.user.userId.isNotEmpty ? state.user.userId : "demo_user";
-      final saveUrl = Uri.parse("https://api.kiforkids.de/save_results/$userId");
-      await http.post(
+      // Map kopieren und aktualisieren mit neuem Eintrag
+      final currentHistory = state.resultsHistory;
+      final List<ResultsEntry> subjectEntries = List.from(currentHistory[subject] ?? []);
+      subjectEntries.add(entry);
+
+      final newHistory = Map<String, List<ResultsEntry>>.from(currentHistory);
+      newHistory[subject] = subjectEntries;
+
+      state = state.copyWith(lastFeedback: feedback, resultsHistory: newHistory);
+
+      // Lokale URL für lokale Entwicklung, ansonsten die Production-URL
+      final baseUrl =
+          const bool.fromEnvironment('dart.vm.product') ? "https://api.kiforkids.de" : "http://localhost:8000";
+
+      final saveUrl = Uri.parse("$baseUrl/save_results/${state.user.id}");
+
+      debugPrint("Sende Ergebnis an: $saveUrl");
+
+      final response = await http.post(
         saveUrl,
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode({
@@ -288,11 +307,46 @@ class HomeViewModel extends StateNotifier<HomeState> {
           "timestamp": entry.timestamp.toIso8601String(),
         }),
       );
+
+      if (response.statusCode != 200) {
+        debugPrint("Fehler beim Speichern: Status ${response.statusCode}, Antwort: ${response.body}");
+      } else {
+        final responseData = jsonDecode(response.body);
+        final resultId = responseData["id"];
+        debugPrint("Ergebnis erfolgreich gespeichert! ID: $resultId");
+      }
     } catch (e) {
-      state = state.copyWith(
-        isCheckingAnswers: false,
-        lastFeedback: List.generate(questions.length, (_) => "Konnte nicht geprüft werden."),
-      );
+      // Fehler beim Speichern protokollieren, aber nicht den UI-Status ändern
+      debugPrint("Fehler beim Speichern der Ergebnisse: $e");
+    }
+  }
+
+  /// Lädt die Ergebnisse für das aktuelle Fach und User vom Backend.
+  Future<List<Map<String, dynamic>>> getResultsFromBackend(String fach) async {
+    try {
+      // Lokale URL für lokale Entwicklung, ansonsten die Production-URL
+      final baseUrl =
+          const bool.fromEnvironment('dart.vm.product') ? "https://api.kiforkids.de" : "http://localhost:8000";
+
+      final url = Uri.parse("$baseUrl/get_results/${state.user.id}/$fach");
+
+      debugPrint("Lade Ergebnisse von: $url");
+
+      final response = await http.get(url);
+
+      if (response.statusCode == 200) {
+        final body = response.body.trim();
+        if (body.isEmpty) return [];
+        final List<dynamic> data = jsonDecode(body);
+        debugPrint("Ergebnisse geladen: ${data.length}");
+        return data.cast<Map<String, dynamic>>();
+      } else {
+        debugPrint("Fehler beim Laden: Status ${response.statusCode}, Antwort: ${response.body}");
+        throw Exception("Fehler beim Laden der Ergebnisse: ${response.statusCode}");
+      }
+    } catch (e) {
+      debugPrint("Exception beim Laden der Ergebnisse: $e");
+      throw Exception("Fehler beim Laden der Ergebnisse: $e");
     }
   }
 
@@ -312,21 +366,7 @@ class HomeViewModel extends StateNotifier<HomeState> {
     return null;
   }
 
-  /// Lädt die Ergebnisse für das aktuelle Fach und User vom Backend.
-  Future<List<Map<String, dynamic>>> getResultsFromBackend(String fach) async {
-    // Fallback für userId, falls leer
-    final userId = (state.user.userId.isNotEmpty ? state.user.userId : "demo_user");
-    final url = Uri.parse("https://api.kiforkids.de/get_results/$userId/$fach");
-    final response = await http.get(url);
-    if (response.statusCode == 200) {
-      final body = response.body.trim();
-      if (body.isEmpty) return [];
-      final List<dynamic> data = jsonDecode(body);
-      return data.cast<Map<String, dynamic>>();
-    } else {
-      throw Exception("Fehler beim Laden der Ergebnisse: ${response.statusCode}");
-    }
-  }
+  // Diese Methode ist bereits weiter oben definiert, daher wird diese entfernt
 
   /// Gibt einen zufälligen motivierenden Begrüßungstext zurück.
   Future<String> getGreetingText() async {
@@ -338,13 +378,184 @@ class HomeViewModel extends StateNotifier<HomeState> {
       "Super, dass du heute lernst!",
       "Lernen macht dich stark – leg los!",
       "Hallo! Heute wirst du wieder schlauer!",
-      "Toll, dass du dich wieder zu sehen!",
+      "Toll, schön dich wieder zu sehen!",
       "Auf geht's zu neuen Aufgaben!",
       "Jeder Tag ist ein Lerntag – viel Erfolg!",
       "Du bist spitze – viel Spaß mit den Aufgaben!",
     ];
     final rnd = Random();
     return greetings[rnd.nextInt(greetings.length)];
+  }
+
+  // Begrüßungstext laden und im State speichern
+  Future<void> loadGreeting() async {
+    final newGreeting = await getGreetingText();
+    state = state.copyWith(greeting: newGreeting);
+  }
+
+  // Testmodus ändern
+  void setTestMode(String mode) {
+    state = state.copyWith(testMode: mode);
+  }
+
+  // Test-Sperrstatus ändern
+  void setTestLocked(bool locked) {
+    state = state.copyWith(testLocked: locked);
+  }
+
+  // Callback wenn Test beendet wurde
+  void onTestFinished() {
+    state = state.copyWith(testLocked: false);
+    hideTasks();
+  }
+
+  // Wieder hinzugefügte Test-Methoden
+
+  // Initialisierung für beide Test-Typen
+  void initTest(List<String> tasks) {
+    state = state.copyWith(
+      currentTestTasks: tasks,
+      showTestResult: false,
+      testIsCorrect: List.generate(tasks.length, (_) => false),
+      testFeedback: List.generate(tasks.length, (_) => ""),
+      isCheckingTest: false,
+      canContinueTest: false,
+      textInputAnswers: List.generate(tasks.length, (_) => ""),
+      trueFalseAnswers: List.generate(tasks.length, (_) => null),
+      mcAnswers: List.generate(tasks.length, (_) => null),
+    );
+  }
+
+  // Methoden für TestInput
+  void setTestAnswer(int index, String answer) {
+    final newAnswers = List<String>.from(state.textInputAnswers);
+    newAnswers[index] = answer.trim();
+    state = state.copyWith(textInputAnswers: newAnswers);
+  }
+
+  bool allTestAnswersFilled() {
+    return state.textInputAnswers.every((a) => a.isNotEmpty);
+  }
+
+  // Methoden für True/False Test
+  void setTrueFalseAnswer(int index, String answer) {
+    // Wenn der Array noch nicht initialisiert oder zu klein ist
+    List<String?> newAnswers;
+    if (state.trueFalseAnswers.isEmpty || state.trueFalseAnswers.length <= index) {
+      // Ein neues Array mit der benötigten Größe erstellen
+      newAnswers = List<String?>.filled(max(state.currentTestTasks.length, index + 1), null);
+      // Bestehende Antworten übernehmen
+      for (int i = 0; i < state.trueFalseAnswers.length; i++) {
+        newAnswers[i] = state.trueFalseAnswers[i];
+      }
+    } else {
+      // Bestehenden Array kopieren
+      newAnswers = List<String?>.from(state.trueFalseAnswers);
+    }
+
+    // Antwort setzen
+    newAnswers[index] = answer;
+
+    // State aktualisieren, aber keine anderen Flags ändern, die den Button beeinflussen könnten
+    state = state.copyWith(
+      trueFalseAnswers: newAnswers,
+      // showTestResult und isCheckingTest bleiben unverändert
+    );
+  }
+
+  // Methode für MC Test
+  void setMCAnswer(int index, String option) {
+    // Wenn der Array noch nicht initialisiert oder zu klein ist
+    List<String?> newAnswers;
+    if (state.mcAnswers.isEmpty || state.mcAnswers.length <= index) {
+      // Ein neues Array mit der benötigten Größe erstellen
+      newAnswers = List<String?>.filled(max(state.currentTestTasks.length, index + 1), null);
+      // Bestehende Antworten übernehmen
+      for (int i = 0; i < state.mcAnswers.length; i++) {
+        newAnswers[i] = state.mcAnswers[i];
+      }
+    } else {
+      // Bestehenden Array kopieren
+      newAnswers = List<String?>.from(state.mcAnswers);
+    }
+
+    // Antwort setzen
+    newAnswers[index] = option;
+
+    // State aktualisieren, aber keine anderen Flags ändern
+    state = state.copyWith(mcAnswers: newAnswers);
+  }
+
+  // Gemeinsame Test-Funktionen
+  Future<void> checkTestAnswers() async {
+    if (_kiService == null) {
+      state = state.copyWith(
+        testFeedback: List.generate(state.currentTestTasks.length, (_) => "KI-Service nicht verfügbar"),
+        showTestResult: true,
+        isCheckingTest: false,
+      );
+      return;
+    }
+
+    state = state.copyWith(showTestResult: false, isCheckingTest: true, canContinueTest: false);
+
+    List<String> answers;
+    // Antworten je nach Testtyp zusammenstellen
+    if (state.trueFalseAnswers.any((a) => a != null)) {
+      // True/False Test - Achtung: Null-Werte durch leere Strings ersetzen
+      answers = state.trueFalseAnswers.map((a) => a ?? "").toList();
+    } else if (state.mcAnswers.any((a) => a != null)) {
+      // MC Test - Achtung: Null-Werte durch leere Strings ersetzen
+      answers = state.mcAnswers.map((a) => a ?? "").toList();
+    } else {
+      // Input Test
+      answers = state.textInputAnswers;
+    }
+
+    try {
+      final generatedTasks = state.generatedTasks ?? [];
+      final feedback = _kiService!.checkAnswers(generatedTasks: generatedTasks, userAnswers: answers);
+      final isCorrect = feedback.map((f) => f.toLowerCase().startsWith('richtig')).toList();
+
+      state = state.copyWith(
+        testFeedback: feedback,
+        testIsCorrect: isCorrect,
+        showTestResult: true,
+        isCheckingTest: false,
+        canContinueTest: true,
+      );
+
+      // Auch für die Ergebnishistorie speichern
+      checkAnswersWithKI(questions: state.currentTestTasks, answers: answers);
+    } catch (e) {
+      state = state.copyWith(
+        testFeedback: List.generate(state.currentTestTasks.length, (_) => "Fehler bei der Überprüfung: $e"),
+        isCheckingTest: false,
+        showTestResult: true,
+        canContinueTest: false,
+      );
+    }
+  }
+
+  Future<void> continueTest() async {
+    state = state.copyWith(showTestResult: false, isCheckingTest: true, canContinueTest: false);
+
+    final subject = state.user.selectedSubjects.isNotEmpty ? state.user.selectedSubjects.first : '';
+    final topic = state.selectedTopic ?? '';
+    final level = state.user.selectedLevel;
+
+    // Hier explizit 3 Aufgaben anfordern
+    await generateTasksWithKI(subject: subject, topic: topic, level: level, count: 3);
+
+    final newTasks = state.generatedTasks?.map((t) => t['question'] ?? '').toList() ?? [];
+    initTest(newTasks);
+
+    state = state.copyWith(isCheckingTest: false);
+  }
+
+  void finishTest(VoidCallback onFinished) {
+    resetAll();
+    onFinished();
   }
 }
 
