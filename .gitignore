@@ -1,0 +1,16 @@
+# Umgebungsvariablen
+.env
+.env.*
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+
+# Datenbanken
+*.db
+*.sqlite3
+
+# Logs, Caches
+*.log
+.mypy_cache/

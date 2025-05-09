@@ -94,6 +94,8 @@ class ActivationPage extends ConsumerWidget {
 
 homeschool/
   .DS_Store
+  .gitignore
+  .env
   docker-compose.yml
   base_prompt.gpt
   frontend/
@@ -171,6 +173,7 @@ homeschool/
     .DS_Store
     requirements.txt
     Dockerfile
+    init.sql
     .dockerignore
     .gitignore
     results.db
@@ -194,6 +197,8 @@ homeschool/
         gpt_check.py
         gpt_tasks.py
         result_service.py
+    backend/
+      results_data/
   .vscode/
     settings.json
     launch.json
