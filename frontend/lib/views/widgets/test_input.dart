@@ -48,41 +48,50 @@ class TestInput extends ConsumerWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text(
-              'Bitte beantworte die Fragen:',
-              style: TextStyle(fontWeight: FontWeight.bold, color: accent, fontSize: 24, letterSpacing: 0.5),
-            ),
-            if (!showResult)
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                decoration: BoxDecoration(
-                  color: accent.withValues(alpha: 0.1),
-                  borderRadius: BorderRadius.circular(16),
-                  border: Border.all(color: accent.withValues(alpha: 0.3)),
-                ),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    const Icon(Icons.info_outline, size: 18, color: Colors.white70),
-                    const SizedBox(width: 6),
-                    Text(
-                      '${answers.where((a) => a.isNotEmpty).length}/${tasks.length} beantwortet',
-                      style: const TextStyle(color: Colors.white70, fontWeight: FontWeight.w500),
-                    ),
-                  ],
-                ),
+        // Header mit Fortschrittsanzeige
+        Container(
+          margin: const EdgeInsets.only(bottom: 16),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                'Bitte beantworte die Fragen:',
+                style: TextStyle(fontWeight: FontWeight.bold, color: accent, fontSize: 22, letterSpacing: 0.5),
               ),
-          ],
+              if (!showResult)
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                  decoration: BoxDecoration(
+                    color: accent.withValues(alpha: 0.1),
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(color: accent.withValues(alpha: 0.3)),
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const Icon(Icons.playlist_add_check_rounded, size: 16, color: Colors.white70),
+                      const SizedBox(width: 6),
+                      Text(
+                        '${answers.where((a) => a.isNotEmpty).length}/${tasks.length}',
+                        style: const TextStyle(color: Colors.white70, fontWeight: FontWeight.w500),
+                      ),
+                    ],
+                  ),
+                ),
+            ],
+          ),
         ),
-        const SizedBox(height: 8),
-        Text(
-          'Beantworte die folgenden Fragen mit eigenen Worten.',
-          style: TextStyle(color: Colors.white70, fontSize: 16),
+
+        // Beschreibungstext
+        Container(
+          margin: const EdgeInsets.only(bottom: 16),
+          child: Text(
+            'Beantworte die folgenden Fragen mit eigenen Worten.',
+            style: TextStyle(color: Colors.white70, fontSize: 15),
+          ),
         ),
-        const SizedBox(height: 24),
+
+        // Fragen und Eingabefelder - kompakter und stilvoller
         ...List.generate(tasks.length, (i) {
           // Status-abhängige Farben und Icons
           Color borderColor = accent.withValues(alpha: 0.18);
@@ -109,32 +118,32 @@ class TestInput extends ConsumerWidget {
           }
 
           return Container(
-            margin: const EdgeInsets.only(bottom: 24),
+            margin: const EdgeInsets.only(bottom: 16), // Reduzierter Abstand
             decoration: BoxDecoration(
               color: bgColor,
-              borderRadius: BorderRadius.circular(16),
+              borderRadius: BorderRadius.circular(14),
               border: Border.all(color: borderColor, width: 1.5),
-              boxShadow: [BoxShadow(color: accent.withValues(alpha: 0.06), blurRadius: 8, offset: const Offset(0, 2))],
+              boxShadow: [BoxShadow(color: accent.withValues(alpha: 0.06), blurRadius: 6, offset: const Offset(0, 2))],
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Frage und Icon
+                // Frage und Icon - kompakter
                 Padding(
-                  padding: const EdgeInsets.all(18),
+                  padding: const EdgeInsets.fromLTRB(16, 14, 16, 12),
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Icon(statusIcon, color: iconColor, size: 28),
-                      const SizedBox(width: 16),
+                      Icon(statusIcon, color: iconColor, size: 24),
+                      const SizedBox(width: 14),
                       Expanded(
                         child: Text(
                           tasks[i],
                           style: const TextStyle(
                             color: Colors.white,
-                            fontSize: 18,
+                            fontSize: 16,
                             fontWeight: FontWeight.w500,
-                            height: 1.4,
+                            height: 1.35,
                           ),
                         ),
                       ),
@@ -142,35 +151,35 @@ class TestInput extends ConsumerWidget {
                   ),
                 ),
 
-                // Eingabefeld
+                // Eingabefeld mit optimiertem Layout
                 Padding(
-                  padding: const EdgeInsets.fromLTRB(18, 0, 18, 18),
+                  padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
                   child: Container(
                     decoration: BoxDecoration(
                       color: cardColor.withValues(alpha: 0.8),
-                      borderRadius: BorderRadius.circular(12),
+                      borderRadius: BorderRadius.circular(10),
                       border: Border.all(color: accent.withValues(alpha: 0.15)),
                     ),
                     child: TextField(
                       controller: TextEditingController(text: answers.length > i ? answers[i] : ''),
                       onChanged: (value) => homeViewModel.setTestAnswer(i, value),
                       enabled: !showResult,
-                      style: const TextStyle(color: Colors.white, fontSize: 16),
-                      minLines: 2,
-                      maxLines: 4,
+                      style: const TextStyle(color: Colors.white, fontSize: 15),
+                      minLines: 1, // Reduziert
+                      maxLines: 3, // Reduziert
                       decoration: InputDecoration(
                         labelText: 'Deine Antwort',
-                        labelStyle: TextStyle(color: accent, fontWeight: FontWeight.w400),
+                        labelStyle: TextStyle(color: accent, fontWeight: FontWeight.w400, fontSize: 14),
                         hintText: 'Hier deine Antwort eingeben...',
-                        hintStyle: const TextStyle(color: Colors.white54),
+                        hintStyle: const TextStyle(color: Colors.white54, fontSize: 14),
                         border: InputBorder.none,
-                        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                        contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
                         suffixIcon:
                             showResult && isCorrect.length > i
                                 ? Icon(
                                   isCorrect[i] ? Icons.check_circle : Icons.cancel,
                                   color: isCorrect[i] ? correctColor : wrongColor,
-                                  size: 26,
+                                  size: 22,
                                 )
                                 : null,
                       ),
@@ -178,23 +187,24 @@ class TestInput extends ConsumerWidget {
                   ),
                 ),
 
-                // Feedback-Text für Ergebnis
+                // Feedback mit eleganterem Layout
                 if (showResult && feedback.length > i)
                   Container(
                     width: double.infinity,
-                    padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 18),
-                    margin: const EdgeInsets.only(bottom: 18, left: 18, right: 18),
+                    padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+                    margin: const EdgeInsets.only(bottom: 10, left: 12, right: 12),
                     decoration: BoxDecoration(
                       color:
                           (isCorrect.length > i && isCorrect[i])
                               ? correctColor.withValues(alpha: 0.1)
                               : wrongColor.withValues(alpha: 0.1),
-                      borderRadius: BorderRadius.circular(10),
+                      borderRadius: BorderRadius.circular(8),
                       border: Border.all(
                         color:
                             (isCorrect.length > i && isCorrect[i])
                                 ? correctColor.withValues(alpha: 0.3)
                                 : wrongColor.withValues(alpha: 0.3),
+                        width: 1,
                       ),
                     ),
                     child: Text(
@@ -202,7 +212,7 @@ class TestInput extends ConsumerWidget {
                       style: TextStyle(
                         color: (isCorrect.length > i && isCorrect[i]) ? correctColor : wrongColor,
                         fontWeight: FontWeight.w500,
-                        fontSize: 15,
+                        fontSize: 14,
                       ),
                     ),
                   ),
@@ -211,12 +221,12 @@ class TestInput extends ConsumerWidget {
           );
         }),
 
-        // Lade-Anzeige während der Prüfung
+        // Lade-Anzeige - kompakter
         if (isChecking)
           Container(
             width: double.infinity,
-            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
-            margin: const EdgeInsets.only(bottom: 20),
+            padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 14),
+            margin: const EdgeInsets.only(bottom: 16),
             decoration: BoxDecoration(
               color: accent.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(12),
@@ -225,28 +235,28 @@ class TestInput extends ConsumerWidget {
             child: Row(
               children: [
                 SizedBox(
-                  width: 24,
-                  height: 24,
+                  width: 20,
+                  height: 20,
                   child: CircularProgressIndicator(strokeWidth: 2, valueColor: AlwaysStoppedAnimation<Color>(accent)),
                 ),
-                const SizedBox(width: 16),
+                const SizedBox(width: 14),
                 const Text(
                   "Antworten werden überprüft...",
-                  style: TextStyle(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 16),
+                  style: TextStyle(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 15),
                 ),
               ],
             ),
           ),
 
-        // Ergebnisanzeige nach dem Test
+        // Ergebnisanzeige - kompakter und eleganter
         if (showResult)
           Container(
             width: double.infinity,
-            padding: const EdgeInsets.all(20),
-            margin: const EdgeInsets.only(top: 12),
+            padding: const EdgeInsets.all(18),
+            margin: const EdgeInsets.only(top: 8),
             decoration: BoxDecoration(
               color: isCorrect.every((v) => v) ? correctColor.withValues(alpha: 0.1) : accent.withValues(alpha: 0.1),
-              borderRadius: BorderRadius.circular(16),
+              borderRadius: BorderRadius.circular(14),
               border: Border.all(
                 color: isCorrect.every((v) => v) ? correctColor.withValues(alpha: 0.3) : accent.withValues(alpha: 0.2),
               ),
@@ -257,7 +267,7 @@ class TestInput extends ConsumerWidget {
                 Row(
                   children: [
                     Container(
-                      padding: const EdgeInsets.all(12),
+                      padding: const EdgeInsets.all(10),
                       decoration: BoxDecoration(
                         color:
                             isCorrect.every((v) => v)
@@ -267,11 +277,11 @@ class TestInput extends ConsumerWidget {
                       ),
                       child: Icon(
                         isCorrect.every((v) => v) ? Icons.emoji_events_rounded : Icons.fitness_center_rounded,
-                        size: 28,
+                        size: 24,
                         color: isCorrect.every((v) => v) ? correctColor : accent,
                       ),
                     ),
-                    const SizedBox(width: 16),
+                    const SizedBox(width: 14),
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -281,15 +291,15 @@ class TestInput extends ConsumerWidget {
                             style: TextStyle(
                               color: isCorrect.every((v) => v) ? correctColor : accent,
                               fontWeight: FontWeight.bold,
-                              fontSize: 20,
+                              fontSize: 18,
                             ),
                           ),
-                          const SizedBox(height: 4),
+                          const SizedBox(height: 3),
                           Text(
                             isCorrect.every((v) => v)
                                 ? "Du hast alle Fragen richtig beantwortet!"
                                 : "Du hast ${isCorrect.where((v) => v).length} von ${isCorrect.length} Fragen richtig beantwortet.",
-                            style: TextStyle(color: Colors.white70, fontSize: 16),
+                            style: TextStyle(color: Colors.white70, fontSize: 15),
                           ),
                         ],
                       ),
@@ -298,18 +308,18 @@ class TestInput extends ConsumerWidget {
                 ),
                 if (canContinue)
                   Padding(
-                    padding: const EdgeInsets.only(top: 20),
+                    padding: const EdgeInsets.only(top: 16),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
                         OutlinedButton.icon(
-                          icon: const Icon(Icons.exit_to_app),
+                          icon: const Icon(Icons.exit_to_app, size: 18),
                           label: const Text("Beenden"),
                           style: OutlinedButton.styleFrom(
-                            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+                            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
                             side: BorderSide(color: accent.withValues(alpha: 0.6)),
                             foregroundColor: Colors.white,
-                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
                           ),
                           onPressed: () {
                             homeViewModel.finishTest(onTestFinished);
@@ -318,15 +328,15 @@ class TestInput extends ConsumerWidget {
                             }
                           },
                         ),
-                        const SizedBox(width: 16),
+                        const SizedBox(width: 14),
                         FilledButton.icon(
-                          icon: const Icon(Icons.arrow_forward_rounded),
+                          icon: const Icon(Icons.arrow_forward_rounded, size: 18),
                           label: const Text("Weiter"),
                           style: FilledButton.styleFrom(
                             backgroundColor: accent,
                             foregroundColor: Colors.white,
-                            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
                             elevation: 0,
                           ),
                           onPressed: () => homeViewModel.continueTest(),
@@ -338,19 +348,19 @@ class TestInput extends ConsumerWidget {
             ),
           ),
 
-        // "Ergebnisse anzeigen" Button
+        // "Ergebnisse anzeigen" Button - kompakter und stilvoll
         if (!showResult && !isChecking)
           Container(
             width: double.infinity,
-            padding: const EdgeInsets.only(top: 20),
+            padding: const EdgeInsets.only(top: 16),
             child: FilledButton.icon(
-              icon: const Icon(Icons.check_circle_outline_rounded),
+              icon: const Icon(Icons.check_circle_outline_rounded, size: 20),
               label: Text(allAnswered ? "Antworten überprüfen" : "Bitte alle Fragen beantworten"),
               style: FilledButton.styleFrom(
                 backgroundColor: allAnswered ? accent : Colors.grey.shade700,
                 foregroundColor: Colors.white,
-                padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 18),
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
                 elevation: 0,
               ),
               onPressed: allAnswered ? () => homeViewModel.checkTestAnswers() : null,

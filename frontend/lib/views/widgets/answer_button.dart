@@ -58,15 +58,20 @@ class AnswerButton extends StatelessWidget {
         splashColor: accent.withValues(alpha: 0.2),
         highlightColor: accent.withValues(alpha: 0.1),
         child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 16),
+          padding: const EdgeInsets.symmetric(vertical: 14), // Leicht reduziert von 16 auf 14
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(icon, color: iconColor, size: 22),
-              const SizedBox(width: 8),
+              Icon(icon, color: iconColor, size: 20), // Kleineres Icon (von 22 auf 20)
+              const SizedBox(width: 6), // Kleinerer Abstand (von 8 auf 6)
               Text(
                 label,
-                style: TextStyle(color: textColor, fontWeight: FontWeight.bold, fontSize: 16, letterSpacing: 0.5),
+                style: TextStyle(
+                  color: textColor,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 15, // Kleinere Schrift (von 16 auf 15)
+                  letterSpacing: 0.5,
+                ),
               ),
             ],
           ),

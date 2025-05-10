@@ -48,41 +48,50 @@ class TestTrueFalse extends ConsumerWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text(
-              'Richtig oder Falsch?',
-              style: TextStyle(fontWeight: FontWeight.bold, color: accent, fontSize: 24, letterSpacing: 0.5),
-            ),
-            if (!showResult)
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                decoration: BoxDecoration(
-                  color: accent.withValues(alpha: 0.1),
-                  borderRadius: BorderRadius.circular(16),
-                  border: Border.all(color: accent.withValues(alpha: 0.3)),
-                ),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    const Icon(Icons.info_outline, size: 18, color: Colors.white70),
-                    const SizedBox(width: 6),
-                    Text(
-                      '${answers.where((a) => a != null).length}/${tasks.length} beantwortet',
-                      style: const TextStyle(color: Colors.white70, fontWeight: FontWeight.w500),
-                    ),
-                  ],
-                ),
+        // Header mit Fortschritt
+        Container(
+          margin: const EdgeInsets.only(bottom: 16),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                'Richtig oder Falsch?',
+                style: TextStyle(fontWeight: FontWeight.bold, color: accent, fontSize: 22, letterSpacing: 0.5),
               ),
-          ],
+              if (!showResult)
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                  decoration: BoxDecoration(
+                    color: accent.withValues(alpha: 0.1),
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(color: accent.withValues(alpha: 0.3)),
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const Icon(Icons.playlist_add_check_rounded, size: 16, color: Colors.white70),
+                      const SizedBox(width: 6),
+                      Text(
+                        '${answers.where((a) => a != null).length}/${tasks.length}',
+                        style: const TextStyle(color: Colors.white70, fontWeight: FontWeight.w500),
+                      ),
+                    ],
+                  ),
+                ),
+            ],
+          ),
         ),
-        const SizedBox(height: 8),
-        Text(
-          'Entscheide, ob die folgenden Aussagen richtig oder falsch sind.',
-          style: TextStyle(color: Colors.white70, fontSize: 16),
+
+        // Subtitel mit reduziertem Margin
+        Container(
+          margin: const EdgeInsets.only(bottom: 16),
+          child: Text(
+            'Entscheide, ob die folgenden Aussagen richtig oder falsch sind.',
+            style: TextStyle(color: Colors.white70, fontSize: 15),
+          ),
         ),
-        const SizedBox(height: 24),
+
+        // Aufgaben-Liste mit kompakterem Layout
         ...List.generate(tasks.length, (i) {
           // Stelle sicher, dass wir gültige Indizes für answers haben
           final bool hasAnswer = answers.length > i && answers[i] != null;
@@ -112,55 +121,54 @@ class TestTrueFalse extends ConsumerWidget {
           }
 
           return Container(
-            margin: const EdgeInsets.only(bottom: 24),
-            padding: const EdgeInsets.all(0),
+            margin: const EdgeInsets.only(bottom: 16), // Reduziert von 24 auf 16
             decoration: BoxDecoration(
               color: bgColor,
-              borderRadius: BorderRadius.circular(16),
+              borderRadius: BorderRadius.circular(14),
               border: Border.all(color: borderColor, width: 1.5),
-              boxShadow: [BoxShadow(color: accent.withValues(alpha: 0.06), blurRadius: 8, offset: const Offset(0, 2))],
+              boxShadow: [BoxShadow(color: accent.withValues(alpha: 0.06), blurRadius: 6, offset: const Offset(0, 2))],
             ),
             child: Column(
               children: [
-                // Frage und Icon in der oberen Zeile
+                // Frage und Icon in der oberen Zeile - kompakter gestaltet
                 Padding(
-                  padding: const EdgeInsets.all(18),
+                  padding: const EdgeInsets.fromLTRB(16, 14, 16, 12), // Reduzierte Padding
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Icon(statusIcon, color: iconColor, size: 28),
-                      const SizedBox(width: 16),
+                      Icon(statusIcon, color: iconColor, size: 24), // Kleineres Icon
+                      const SizedBox(width: 14),
                       Expanded(
                         child: Text(
                           tasks[i],
                           style: TextStyle(
                             color: Colors.white,
-                            fontSize: 18,
+                            fontSize: 16, // Kleinere Schrift
                             fontWeight: FontWeight.w500,
-                            height: 1.4,
+                            height: 1.35,
                             letterSpacing: 0.2,
                           ),
                         ),
                       ),
-                      // Feedback-Icon nur bei Ergebnisanzeige
                       if (showResult && isCorrect.length > i)
                         Icon(
                           isCorrect[i] ? Icons.check_circle : Icons.cancel,
                           color: isCorrect[i] ? correctColor : wrongColor,
-                          size: 26,
+                          size: 22, // Kleineres Icon
                         ),
                     ],
                   ),
                 ),
-                // Buttons in unterer Leiste mit farblicher Hervorhebung
+
+                // Buttons in unterer Leiste mit reduzierter Höhe
                 ClipRRect(
                   borderRadius: const BorderRadius.only(
-                    bottomLeft: Radius.circular(15),
-                    bottomRight: Radius.circular(15),
+                    bottomLeft: Radius.circular(13),
+                    bottomRight: Radius.circular(13),
                   ),
                   child: Container(
                     width: double.infinity,
-                    height: 56,
+                    height: 48, // Reduzierte Höhe (vorher 56)
                     decoration: BoxDecoration(
                       color: cardColor.withValues(alpha: 0.7),
                       border: Border(top: BorderSide(color: accent.withValues(alpha: 0.15), width: 1)),
@@ -209,23 +217,25 @@ class TestTrueFalse extends ConsumerWidget {
                     ),
                   ),
                 ),
-                // Feedback-Text unter dem Container
+
+                // Feedback mit kompakterem Layout
                 if (showResult && feedback.length > i)
                   Container(
                     width: double.infinity,
-                    padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 18),
-                    margin: const EdgeInsets.only(top: 8),
+                    padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+                    margin: const EdgeInsets.only(top: 6, bottom: 6, left: 12, right: 12),
                     decoration: BoxDecoration(
                       color:
                           (isCorrect.length > i && isCorrect[i])
                               ? correctColor.withValues(alpha: 0.1)
                               : wrongColor.withValues(alpha: 0.1),
-                      borderRadius: BorderRadius.circular(10),
+                      borderRadius: BorderRadius.circular(8),
                       border: Border.all(
                         color:
                             (isCorrect.length > i && isCorrect[i])
                                 ? correctColor.withValues(alpha: 0.3)
                                 : wrongColor.withValues(alpha: 0.3),
+                        width: 1,
                       ),
                     ),
                     child: Text(
@@ -233,7 +243,7 @@ class TestTrueFalse extends ConsumerWidget {
                       style: TextStyle(
                         color: (isCorrect.length > i && isCorrect[i]) ? correctColor : wrongColor,
                         fontWeight: FontWeight.w500,
-                        fontSize: 15,
+                        fontSize: 14,
                       ),
                     ),
                   ),
@@ -242,11 +252,12 @@ class TestTrueFalse extends ConsumerWidget {
           );
         }),
 
+        // Lade-Anzeige kompakter gestalten
         if (isChecking)
           Container(
             width: double.infinity,
-            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
-            margin: const EdgeInsets.only(bottom: 20),
+            padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 14),
+            margin: const EdgeInsets.only(bottom: 16),
             decoration: BoxDecoration(
               color: accent.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(12),
@@ -255,28 +266,28 @@ class TestTrueFalse extends ConsumerWidget {
             child: Row(
               children: [
                 SizedBox(
-                  width: 24,
-                  height: 24,
+                  width: 20, // Kleinere Größe
+                  height: 20,
                   child: CircularProgressIndicator(strokeWidth: 2, valueColor: AlwaysStoppedAnimation<Color>(accent)),
                 ),
-                const SizedBox(width: 16),
+                const SizedBox(width: 14),
                 const Text(
                   "Antworten werden überprüft...",
-                  style: TextStyle(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 16),
+                  style: TextStyle(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 15),
                 ),
               ],
             ),
           ),
 
-        // Ergebnisanzeige am Ende des Tests
+        // Ergebnisanzeige mit optimiertem Layout
         if (showResult)
           Container(
             width: double.infinity,
-            padding: const EdgeInsets.all(20),
-            margin: const EdgeInsets.only(top: 12),
+            padding: const EdgeInsets.all(18),
+            margin: const EdgeInsets.only(top: 8),
             decoration: BoxDecoration(
               color: isCorrect.every((v) => v) ? correctColor.withValues(alpha: 0.1) : accent.withValues(alpha: 0.1),
-              borderRadius: BorderRadius.circular(16),
+              borderRadius: BorderRadius.circular(14),
               border: Border.all(
                 color: isCorrect.every((v) => v) ? correctColor.withValues(alpha: 0.3) : accent.withValues(alpha: 0.2),
               ),
@@ -287,7 +298,7 @@ class TestTrueFalse extends ConsumerWidget {
                 Row(
                   children: [
                     Container(
-                      padding: const EdgeInsets.all(12),
+                      padding: const EdgeInsets.all(10),
                       decoration: BoxDecoration(
                         color:
                             isCorrect.every((v) => v)
@@ -297,29 +308,29 @@ class TestTrueFalse extends ConsumerWidget {
                       ),
                       child: Icon(
                         isCorrect.every((v) => v) ? Icons.emoji_events_rounded : Icons.fitness_center_rounded,
-                        size: 28,
+                        size: 24, // Kleineres Icon
                         color: isCorrect.every((v) => v) ? correctColor : accent,
                       ),
                     ),
-                    const SizedBox(width: 16),
+                    const SizedBox(width: 14),
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            isCorrect.every((v) => v) ? "Toll gemacht!" : "Guter versuch!",
+                            isCorrect.every((v) => v) ? "Toll gemacht!" : "Guter Versuch!",
                             style: TextStyle(
                               color: isCorrect.every((v) => v) ? correctColor : accent,
                               fontWeight: FontWeight.bold,
-                              fontSize: 20,
+                              fontSize: 18,
                             ),
                           ),
-                          const SizedBox(height: 4),
+                          const SizedBox(height: 3),
                           Text(
                             isCorrect.every((v) => v)
                                 ? "Du hast alle Fragen richtig beantwortet!"
                                 : "Du hast ${isCorrect.where((v) => v).length} von ${isCorrect.length} Fragen richtig beantwortet.",
-                            style: TextStyle(color: Colors.white70, fontSize: 16),
+                            style: TextStyle(color: Colors.white70, fontSize: 15),
                           ),
                         ],
                       ),
@@ -328,18 +339,18 @@ class TestTrueFalse extends ConsumerWidget {
                 ),
                 if (canContinue)
                   Padding(
-                    padding: const EdgeInsets.only(top: 20),
+                    padding: const EdgeInsets.only(top: 16), // Reduzierter Abstand
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
                         OutlinedButton.icon(
-                          icon: const Icon(Icons.exit_to_app),
+                          icon: const Icon(Icons.exit_to_app, size: 18),
                           label: const Text("Beenden"),
                           style: OutlinedButton.styleFrom(
-                            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+                            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
                             side: BorderSide(color: accent.withValues(alpha: 0.6)),
                             foregroundColor: Colors.white,
-                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
                           ),
                           onPressed: () {
                             homeViewModel.finishTest(onTestFinished);
@@ -348,15 +359,15 @@ class TestTrueFalse extends ConsumerWidget {
                             }
                           },
                         ),
-                        const SizedBox(width: 16),
+                        const SizedBox(width: 14),
                         FilledButton.icon(
-                          icon: const Icon(Icons.arrow_forward_rounded),
+                          icon: const Icon(Icons.arrow_forward_rounded, size: 18),
                           label: const Text("Weiter"),
                           style: FilledButton.styleFrom(
                             backgroundColor: accent,
                             foregroundColor: Colors.white,
-                            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
                             elevation: 0,
                           ),
                           onPressed: () => homeViewModel.continueTest(),
@@ -368,19 +379,19 @@ class TestTrueFalse extends ConsumerWidget {
             ),
           ),
 
-        // "Ergebnisse anzeigen" Button - Nur anzeigen wenn Antworten da UND nicht in anderen Zuständen
+        // "Ergebnisse anzeigen" Button - kompakter
         if (!showResult && !isChecking)
           Container(
             width: double.infinity,
-            padding: const EdgeInsets.only(top: 20),
+            padding: const EdgeInsets.only(top: 16),
             child: FilledButton.icon(
-              icon: const Icon(Icons.check_circle_outline_rounded),
+              icon: const Icon(Icons.check_circle_outline_rounded, size: 20),
               label: Text(allAnswered ? "Antworten überprüfen" : "Bitte alle Fragen beantworten"),
               style: FilledButton.styleFrom(
                 backgroundColor: allAnswered ? accent : Colors.grey.shade700,
                 foregroundColor: Colors.white,
-                padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 18),
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
                 elevation: 0,
               ),
               onPressed: allAnswered ? () => homeViewModel.checkTestAnswers() : null,
