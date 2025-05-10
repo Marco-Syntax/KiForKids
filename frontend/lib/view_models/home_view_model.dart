@@ -87,15 +87,12 @@ class HomeViewModel extends StateNotifier<HomeState> {
   }
 
   KIService? _kiService;
-
   // Getter für Zugriff aus der View
   KIService? get kiService => _kiService;
 
   void setKIService(KIService service) {
     _kiService = service;
   }
-
-  // --- UI-Logik auslagern: TextEditingController-Handling, Aufgabenprüfung, etc. ---
 
   /// Gibt eine Liste von TextEditingControllern für die Aufgaben zurück.
   List<TextEditingController> createControllers(int count) {
