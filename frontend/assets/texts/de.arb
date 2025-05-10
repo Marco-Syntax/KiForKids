@@ -1,0 +1,15 @@
+{
+   "@@locale": "de",
+
+   "trueFalseTitle": "Richtig oder Falsch?",
+   "trueFalseDescription": "Entscheide, ob die folgenden Aussagen richtig oder falsch sind.",
+   "trueFalseAllCorrect": "Du hast alle Fragen richtig beantwortet!",
+   "trueFalseSomeCorrect": "Du hast {correct} von {total} Fragen richtig beantwortet.",
+   "testFinish": "Beenden",
+   "testContinue": "Weiter",
+   "answerTrue": "RICHTIG",
+   "answerFalse": "FALSCH",
+   "checkingAnswers": "Antworten werden überprüft...",
+   "checkAnswers": "Antworten überprüfen",
+   "pleaseAnswerAll": "Bitte alle Fragen beantworten"
+}

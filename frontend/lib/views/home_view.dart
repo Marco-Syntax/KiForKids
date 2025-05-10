@@ -71,7 +71,93 @@ class HomeView extends ConsumerWidget {
                   children: [
                     Stack(
                       children: [
-                        // Logo links-mittig (anpassbare Position)
+                        // Logo/Maskottchen links-oben im Header
+                        Positioned(
+                          left: 0,
+                          top: 0,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              // Avatar/Maskottchen mit Punktestand
+                              Container(
+                                padding: const EdgeInsets.all(12),
+                                decoration: BoxDecoration(
+                                  color: cardColor,
+                                  borderRadius: BorderRadius.circular(16),
+                                  border: Border.all(color: accent.withValues(alpha: 0.2)),
+                                ),
+                                child: Row(
+                                  children: [
+                                    // Maskottchen/Avatar Image
+                                    Container(
+                                      height: 60,
+                                      width: 60,
+                                      decoration: BoxDecoration(
+                                        color: accent.withValues(alpha: 0.15),
+                                        shape: BoxShape.circle,
+                                        border: Border.all(color: accent, width: 2),
+                                      ),
+                                      child: const Icon(Icons.emoji_emotions_rounded, color: accent, size: 35),
+                                    ),
+                                    const SizedBox(width: 12),
+                                    // Name und Punkte
+                                    Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        const Text(
+                                          'Hallo Entdecker!',
+                                          style: TextStyle(
+                                            color: Colors.white,
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 16,
+                                          ),
+                                        ),
+                                        const SizedBox(height: 4),
+                                        // Punktestand mit Animation
+                                        Row(
+                                          children: [
+                                            const Icon(Icons.star_rounded, color: Colors.amber, size: 18),
+                                            const SizedBox(width: 4),
+                                            Text(
+                                              '${results.length * 10} Punkte',
+                                              style: const TextStyle(color: Colors.amber, fontWeight: FontWeight.bold),
+                                            ),
+                                          ],
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                              ),
+
+                              // Tipp des Tages
+                              Container(
+                                width: 200,
+                                margin: const EdgeInsets.only(top: 12),
+                                padding: const EdgeInsets.all(12),
+                                decoration: BoxDecoration(
+                                  color: Colors.green.withValues(alpha: 0.15),
+                                  borderRadius: BorderRadius.circular(12),
+                                  border: Border.all(color: Colors.green.withValues(alpha: 0.4)),
+                                ),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: const [
+                                    Text(
+                                      '✨ Tipp des Tages:',
+                                      style: TextStyle(color: Colors.green, fontWeight: FontWeight.bold, fontSize: 14),
+                                    ),
+                                    SizedBox(height: 4),
+                                    Text(
+                                      'Mache regelmäßig Pausen beim Lernen, um besser zu verstehen!',
+                                      style: TextStyle(color: Colors.white70, fontSize: 12),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
 
                         // Zentrierter Header-Inhalt
                         Align(
@@ -312,19 +398,57 @@ class HomeView extends ConsumerWidget {
                               children: [
                                 // Header-Zeile mit Text links und Button ganz am rechten Rand
                                 Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween, // Maximaler Abstand zwischen Elementen
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                   children: [
-                                    // Text mit Flexible für natürliche Größe
-                                    Flexible(
-                                      child: Text(
-                                        state.greeting,
-                                        style: TextStyle(
-                                          fontSize: 26,
-                                          fontWeight: FontWeight.bold,
-                                          color: greetingColor,
-                                        ),
-                                        overflow: TextOverflow.ellipsis,
+                                    // Text mit Flexible für natürliche Größe und Animation
+                                    Expanded(
+                                      child: Row(
+                                        children: [
+                                          Container(
+                                            padding: const EdgeInsets.all(8),
+                                            decoration: BoxDecoration(
+                                              color: accent.withValues(alpha: 0.1),
+                                              borderRadius: BorderRadius.circular(10),
+                                            ),
+                                            child: Icon(Icons.lightbulb_outline, color: greetingColor, size: 24),
+                                          ),
+                                          const SizedBox(width: 12),
+                                          Flexible(
+                                            child: Column(
+                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                              children: [
+                                                Text(
+                                                  'Motivationsspruch:',
+                                                  style: TextStyle(
+                                                    fontSize: 14,
+                                                    fontWeight: FontWeight.w500,
+                                                    color: greetingColor.withValues(alpha: 0.7),
+                                                  ),
+                                                ),
+                                                const SizedBox(height: 4),
+                                                Text(
+                                                  state.greeting,
+                                                  style: TextStyle(
+                                                    fontSize: 22,
+                                                    fontWeight: FontWeight.bold,
+                                                    color: greetingColor,
+                                                  ),
+                                                  overflow: TextOverflow.ellipsis,
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                          IconButton(
+                                            icon: Icon(
+                                              Icons.refresh_rounded,
+                                              color: greetingColor.withValues(alpha: 0.7),
+                                              size: 20,
+                                            ),
+                                            onPressed: () => vm.refreshGreeting(),
+                                            tooltip: 'Neuen Spruch anzeigen',
+                                            splashRadius: 20,
+                                          ),
+                                        ],
                                       ),
                                     ),
 

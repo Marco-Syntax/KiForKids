@@ -1,0 +1,5 @@
+arb-dir: assets/texts
+template-arb-file: en.arb
+output-localization-file: l10n.dart
+output-class: L10n
+untranslated-messages-file: untranslated.json

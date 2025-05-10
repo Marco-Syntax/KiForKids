@@ -175,15 +175,7 @@ as DateTime,
 /// @nodoc
 mixin _$HomeState {
 
- UserModel get user; String? get selectedTopic; bool get showTasks; List<Map<String, String>>? get generatedTasks; bool get isLoadingTasks; String? get taskError; List<String>? get lastFeedback;// Feedback der KI-Korrektur
- bool get isCheckingAnswers;// Status für Antwortprüfung
- String? get activeSubject;// aktuell aktives Fach
- Map<String, List<ResultsEntry>> get resultsHistory;// Ergebnisse pro Fach
- String get greeting;// Begrüßungstext
- String get testMode;// Testmodus
- bool get testLocked;// Sperrstatus für Testmodus-Buttons
-// Wieder hinzugefügte Test-Felder
-// Für alle Test-Typen gemeinsam
+ UserModel get user; String? get selectedTopic; bool get showTasks; List<Map<String, String>>? get generatedTasks; bool get isLoadingTasks; String? get taskError; List<String>? get lastFeedback; bool get isCheckingAnswers; String? get activeSubject; Map<String, List<ResultsEntry>> get resultsHistory; String get greeting; String get testMode; bool get testLocked;// Für alle Test-Typen gemeinsam
  List<String> get currentTestTasks; bool get showTestResult; List<bool> get testIsCorrect; List<String> get testFeedback; bool get isCheckingTest; bool get canContinueTest;// Spezifisch für Text-Eingabe Tests
  List<String> get textInputAnswers;// Spezifisch für True/False Tests
  List<String?> get trueFalseAnswers;// Spezifisch für MC Tests
@@ -296,31 +288,20 @@ class _HomeState implements HomeState {
   return EqualUnmodifiableListView(value);
 }
 
-// Feedback der KI-Korrektur
 @override@JsonKey() final  bool isCheckingAnswers;
-// Status für Antwortprüfung
 @override final  String? activeSubject;
-// aktuell aktives Fach
  final  Map<String, List<ResultsEntry>> _resultsHistory;
-// aktuell aktives Fach
 @override@JsonKey() Map<String, List<ResultsEntry>> get resultsHistory {
   if (_resultsHistory is EqualUnmodifiableMapView) return _resultsHistory;
   // ignore: implicit_dynamic_type
   return EqualUnmodifiableMapView(_resultsHistory);
 }
 
-// Ergebnisse pro Fach
 @override@JsonKey() final  String greeting;
-// Begrüßungstext
 @override@JsonKey() final  String testMode;
-// Testmodus
 @override@JsonKey() final  bool testLocked;
-// Sperrstatus für Testmodus-Buttons
-// Wieder hinzugefügte Test-Felder
 // Für alle Test-Typen gemeinsam
  final  List<String> _currentTestTasks;
-// Sperrstatus für Testmodus-Buttons
-// Wieder hinzugefügte Test-Felder
 // Für alle Test-Typen gemeinsam
 @override@JsonKey() List<String> get currentTestTasks {
   if (_currentTestTasks is EqualUnmodifiableListView) return _currentTestTasks;

@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:math';
+import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -340,11 +341,9 @@ class HomeViewModel extends StateNotifier<HomeState> {
     return null;
   }
 
-  // Diese Methode ist bereits weiter oben definiert, daher wird diese entfernt
-
   /// Gibt einen zufälligen motivierenden Begrüßungstext zurück.
   Future<String> getGreetingText() async {
-    // Du kannst diese Liste beliebig erweitern oder später KI-basiert machen
+    // Erweiterte Liste mit inspirierenden und motivierenden Sprüchen für Kinder
     const greetings = [
       "Schön, dass du da bist! Viel Spaß beim Lernen!",
       "Bereit für neue Herausforderungen? Los geht's!",
@@ -356,6 +355,21 @@ class HomeViewModel extends StateNotifier<HomeState> {
       "Auf geht's zu neuen Aufgaben!",
       "Jeder Tag ist ein Lerntag – viel Erfolg!",
       "Du bist spitze – viel Spaß mit den Aufgaben!",
+      "Wissen ist wie ein Schatz - lass uns danach suchen!",
+      "Dein Gehirn wird stärker mit jeder Aufgabe!",
+      "Neugier ist der Schlüssel zum Lernen!",
+      "Auch Einstein hat klein angefangen!",
+      "Mit jedem Fehler wirst du besser!",
+      "Übung macht den Meister - auf geht's!",
+      "Glaube an dich selbst und deine Fähigkeiten!",
+      "Kleine Schritte führen zu großen Erfolgen!",
+      "Heute ist ein guter Tag zum Schlaumachen!",
+      "Lerne mit Freude und vergiss die Zeit!",
+      "Deine Zukunft beginnt mit dem, was du heute lernst!",
+      "Entdecke die spannende Welt des Wissens!",
+      "Jede richtige Antwort ist ein Erfolg!",
+      "Dein Wissen ist deine Superkraft!",
+      "Probiere es aus - du wirst überrascht sein!",
     ];
     final rnd = Random();
     return greetings[rnd.nextInt(greetings.length)];
@@ -365,6 +379,11 @@ class HomeViewModel extends StateNotifier<HomeState> {
   Future<void> loadGreeting() async {
     final newGreeting = await getGreetingText();
     state = state.copyWith(greeting: newGreeting);
+  }
+
+  // Diese Methode hinzufügen, um manuell einen neuen Spruch zu laden
+  void refreshGreeting() {
+    loadGreeting();
   }
 
   // Testmodus ändern

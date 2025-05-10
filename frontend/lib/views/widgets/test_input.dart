@@ -358,7 +358,11 @@ class TestInput extends ConsumerWidget {
                   const SizedBox(width: 12),
                   Text(
                     "Antworten werden überprüft...",
-                    style: TextStyle(color: Colors.white.withOpacity(0.8), fontWeight: FontWeight.w500, fontSize: 14),
+                    style: TextStyle(
+                      color: Colors.white.withValues(alpha: 0.8),
+                      fontWeight: FontWeight.w500,
+                      fontSize: 14,
+                    ),
                   ),
                 ],
               ),
