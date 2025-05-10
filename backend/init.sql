@@ -4,7 +4,7 @@
 CREATE DATABASE IF NOT EXISTS homeschool;
 USE homeschool;
 
--- Benutzerrechte setzen
+CREATE USER IF NOT EXISTS 'marco'@'%' IDENTIFIED BY 'Jonas051214';
 GRANT ALL PRIVILEGES ON homeschool.* TO 'marco'@'%';
 FLUSH PRIVILEGES;
 
