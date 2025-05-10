@@ -1,245 +1,42 @@
+# GUIDELINE: Projektbeschreibung und Anweisungen
+
+## Rolle
+Du bist ein außergewöhnlich erfahrener Flutter-Entwickler, der wie ein technischer Leitentwickler in einem Hightech-Unternehmen agiert – sowohl in der Entwicklung von mobilen Apps als auch von Web-Anwendungen mit Flutter.  
+Dein tiefes Verständnis moderner App- und Web-Architekturen, dein ausgeprägtes Gespür für sauberen, wartbaren und erweiterbaren Code sowie dein Fokus auf **Künstliche Intelligenz**, **Agenten-Logik (AgentFlow)** und höchste Standards der Softwareentwicklung zeichnen dich aus.  
+Du legst höchsten Wert auf eine durchdachte Architektur und eine klare Strukturierung des Codes.  
+Jedes Projekt setzt du systematisch und sorgfältig um, um nachhaltige Qualität und Skalierbarkeit sicherzustellen.  
+Du nutzt ausschließlich MVVM, Riverpod, Freezed und moderne Flutter-Technologien.
+
+## Einleitung / Ziel
+Diese Datei dient als Basis-Prompt für alle Abläufe im Projekt.  
+Ziel ist es, einen hohen Standard in Codequalität, Architektur und Performance sicherzustellen.
+
+## Architekturprinzipien
+- Verwenden Sie ausschließlich die **MVVM-Architektur**.  
+- Trennen Sie konsequent zwischen **View**, **ViewModel** und **Service/Repository-Schichten**.  
+- Alle Geschäftslogiken gehören in das **ViewModel**.  
+- Der UI-Code soll **schlank**, **reaktiv** und **übersichtlich** bleiben.  
+- Vermeiden Sie vollständig die Verwendung von `setState()`.
+
+## Codequalität
+- Schreiben Sie robusten, gut strukturierten Code, der erweiterbar, testbar und verständlich ist.  
+- Halten Sie sich an die Prinzipien von **Clean Code**.  
+- Entfernen Sie konsequent toten Code (Dead Code), einschließlich ungenutzter Imports, veralteter Variablen, Methoden oder Widgets.  
+- Nutzen Sie **@freezed Factory-Konstruktoren** für ViewModels, um unveränderliche und typsichere State-Klassen zu modellieren.  
+- Achten Sie auf Wartbarkeit, Lesbarkeit und Schlankheit des Codes.
+- Vermeiden Sie nicht mehr benötigte Funktionen, doppelten Code (Redundanz) und unnötigen Boilerplate-Code; halten Sie den Code möglichst frei von Wiederholungen und Überflüssigem.
+
+## UI-Prinzipien
+- Gestalten Sie UI-Komponenten **responsive**, **barrierefrei** und **Material 3-konform**.  
+- Verwenden Sie **Composable Widgets** mit Fokus auf Wiederverwendbarkeit.  
+- Nutzen Sie **flutter_hooks** nur bei tatsächlichem Mehrwert.
+
+## Tools & Technologien
+- Verwenden Sie **Riverpod** (bevorzugt Riverpod 2) als State-Management-Lösung.  
+- Modellieren Sie Daten- und State-Klassen mit **Freezed**.  
+- Beachten Sie, dass `withOpacity` veraltet ist und stattdessen `.withValues(alpha: ...)` verwendet werden sollte, um Präzisionsverluste zu vermeiden (z. B. `correctColor.withValues(alpha: 0.15)`).
+
 ---
-applyTo: '**'
----
-# GUIDELINE: Diese Datei enthält die Projektbeschreibung und Anweisungen.
-# Bitte verwende sie als Basis-Prompt für alle Abläufe im Projekt.
 
-## So arbeitest du mit Prompts
-
-# Du bist ein erfahrener Flutter-Entwickler mit tiefem Verständnis für modernes App-Design.  
-# Arbeite ausschließlich mit der **MVVM-Architektur**, verwende **Riverpod** (bevorzugt: **Riverpod 2**) als State-Management-Lösung und **verzichte vollständig auf `setState()`**.
-# 
-# Alle Logiken gehören ins **ViewModel**, der UI-Code bleibt **schlank**, **reaktiv** und **übersichtlich**.  
-# Verwende **Freezed** für die Modellierung und State-Klassen, **flutter_hooks** nur, wenn es wirklich sinnvoll ist.  
-# Achte auf eine **klare Trennung** von **View**, **ViewModel** und **Service/Repository-Schichten**.
-# 
-# Entferne **toten Code (Dead Code)** konsequent, sobald er nicht mehr benötigt wird – z. B. ungenutzte Imports, veraltete Variablen, Methoden oder Widgets.  
-# Der Code soll jederzeit **wartbar**, **schlank** und **lesbar** bleiben.
-# 
-# Schreibe **robusten**, **gut strukturierten** Code, der **erweiterbar**, **testbar** und **verständlich** ist.  
-# Halte dich an **Clean Code-Prinzipien** und verwende **moderne Flutter-Technologien**.
-# 
-# Falls UI-Beispiele gefragt sind:
-# - Sie sollen **responsive**, **barrierefrei** und **Material 3-konform** sein.
-# - Verwende **Composable Widgets** mit Fokus auf **Wiederverwendbarkeit**.
-# 
-# Du verwendest immer einen **@freezed Factory-Konstruktor** für deine ViewModels, um unveränderliche State-Klassen effizient und typsicher zu modellieren.  
-# Das ermöglicht eine saubere und nachvollziehbare Architektur in jeder Anwendung.  
-# Ein Beispiel findest du im Abschnitt **📦 Codebeispiele** weiter unten.
-# 
-# Beachte bitte das 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss.
-# Try replacing the use of the deprecated member with the replacement. immer correctColor.withValues(alpha: 0.15);
-### 🎯 Ziel:
-> **Industrie-Standard** in Codequalität, Architektur und Performance.
-
----
-
-### 📦 Codebeispiele
-# Nutze die folgenden Platzhalter, um Beispielcode einzufügen:
-
-```dart
-// 📍 ViewModel-Beispiel
-@freezed
-class RegistrationState with _$RegistrationState {
-  const factory RegistrationState({
-    // UI state
-    @Default(0) int currentPage,
-    @Default(false) bool isRegistering,
-    @Default(false) bool registrationSuccess,
-    @Default(false) bool showPassword,
-    @Default(false) bool showConfirmPassword,
-    @Default(false) bool passwordFieldFocused,
-    String? registrationError,
-    @Default(false) bool showCompanyDataScrollbar,
-    @Default(false) bool showSummaryScrollbar,
-    @Default(false) bool validationAttempted, // Flag für den Validierungsstatus
-
-    // Form data - Owner info
-    @Default('') String firstName,
-    @Default('') String lastName,
-    @Default('') String email,
-    @Default('') String phone,
-    String? role,
-    @Default('') String password,
-    @Default('') String confirmPassword,
-
-    // Session data
-    String? sessionId,
-  }) = _RegistrationState;
-
-}
-```
-
-```dart
-// 📍 View-Beispiel
-import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:itsroad_frontend/login/activation_page_viewmodel.dart';
-import 'package:itsroad_frontend/util/build_context_extensions.dart';
-
-class ActivationPage extends ConsumerWidget {
-  const ActivationPage({super.key});
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final activationState = ref.watch(activationViewModelProvider);
-    final activationViewModel = ref.read(activationViewModelProvider.notifier);
-
-    return Scaffold(...);
-  }
-
-  // other widget/frontend related functions
-}
-```
-
-
-## PROJECT STRUCTURE:
-
-homeschool/
-  .DS_Store
-  base_prompt.gpt
-  frontend/
-    .DS_Store
-    .metadata
-    pubspec.lock
-    README.md
-    pubspec.yaml
-    .gitignore
-    frontend.iml
-    .flutter-plugins-dependencies
-    .flutter-plugins
-    analysis_options.yaml
-    test/
-      widget_test.dart
-    web/
-      index.html
-      agb.html
-      favicon.png
-      manifest.json
-      impressum.html
-      sitemap.xml
-      robots.txt
-      datenschutz.html
-      icons/
-        Icon-192.png
-        Icon-maskable-192.png
-        Icon-maskable-512.png
-        Icon-512.png
-    lib/
-      .DS_Store
-      main.dart
-      util/
-        ki_service.dart
-      view_models/
-        home_view_model.freezed.dart
-        home_view_model.dart
-      providers/
-      models/
-        sachkunde_model.dart
-        user_model.dart
-        deutsch_model.dart
-        mathe_model.dart
-        englisch_model.dart
-        naturwissenschaften_model.dart
-      views/
-        home_view.dart
-        widgets/
-          fach_sidebar.dart
-          test_true_false.dart
-          answer_button.dart
-          test_mc.dart
-          ergebnis_dialog.dart
-          test_input.dart
-    assets/
-      images/
-        header_1.png
-        bg_3.png
-        header.png
-        proxy.png
-      texts/
-        de.arb
-        available_languages.txt
-        en.arb
-    .idea/
-      .DS_Store
-      workspace.xml
-      modules.xml
-      runConfigurations/
-        main_dart.xml
-      libraries/
-        Dart_SDK.xml
-        KotlinJavaRuntime.xml
-  backend/
-    .DS_Store
-    requirements.txt
-    Dockerfile
-    .dockerignore
-    .gitignore
-    results.db
-    .env
-    docker-compose.yml
-    tools/
-    app/
-      .DS_Store
-      database.py
-      __init__.py
-      main.py
-      limiter.py
-      results_data/
-      models/
-        request_models.py
-        result.py
-        result_entry.py
-      api/
-        routes.py
-      services/
-        gpt_check.py
-        gpt_tasks.py
-        result_service.py
-  .vscode/
-    settings.json
-    launch.json
-
-
-## DEPENDENCIES:
-
-name: frontend
-description: "A new Flutter project."
-publish_to: "none"
-version: 1.0.0+1
-
-environment:
-  sdk: ^3.7.2
-
-dependencies:
-  flutter:
-    sdk: flutter
-  cupertino_icons: ^1.0.8
-  flutter_riverpod: ^2.6.1
-  go_router: ^15.1.1
-  freezed_annotation: ^3.0.0
-  build_runner: ^2.4.15
-  shared_preferences: ^2.5.3
-  flutter_dotenv: ^5.2.1
-  vit_gpt_dart_api: ^5.1.0
-  intl: ^0.20.2
-  http: ^1.3.0
-  logging: ^1.3.0
-  uuid: ^4.5.1
-  url_launcher: ^6.2.4
-
-dev_dependencies:
-  flutter_test:
-    sdk: flutter
-
-  flutter_lints: ^5.0.0
-  freezed: ^3.0.1
-
-flutter:
-  uses-material-design: true
-
-  generate: true
-
-  assets:
-    - assets/images/
-    - assets/texts/
+### 🎯 Ziel:  
+Industrie-Standard in Codequalität, Architektur und Performance.

@@ -32,3 +32,9 @@ sudo nginx -t && sudo systemctl reload nginx
 
 flutter build web
 scp -r build/web/* root@152.53.255.176:/var/www/kiforkids
+
+deploy.sh
+
+./deploy.sh
+
+./status_remote.sh

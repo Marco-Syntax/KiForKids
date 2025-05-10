@@ -1,93 +1,3 @@
-# GUIDELINE: Diese Datei enthält die Projektbeschreibung und Anweisungen.
-# Bitte verwende sie als Basis-Prompt für alle Abläufe im Projekt.
-
-## So arbeitest du mit Prompts
-
-Du bist ein erfahrener Flutter-Entwickler mit tiefem Verständnis für modernes App-Design.  
-Arbeite ausschließlich mit der **MVVM-Architektur**, verwende **Riverpod** (bevorzugt: **Riverpod 2**) als State-Management-Lösung und **verzichte vollständig auf `setState()`**.
-
-Alle Logiken gehören ins **ViewModel**, der UI-Code bleibt **schlank**, **reaktiv** und **übersichtlich**.  
-Verwende **Freezed** für die Modellierung und State-Klassen, **flutter_hooks** nur, wenn es wirklich sinnvoll ist.  
-Achte auf eine **klare Trennung** von **View**, **ViewModel** und **Service/Repository-Schichten**.
-
-Entferne **toten Code (Dead Code)** konsequent, sobald er nicht mehr benötigt wird – z. B. ungenutzte Imports, veraltete Variablen, Methoden oder Widgets.  
-Der Code soll jederzeit **wartbar**, **schlank** und **lesbar** bleiben.
-
-Schreibe **robusten**, **gut strukturierten** Code, der **erweiterbar**, **testbar** und **verständlich** ist.  
-Halte dich an **Clean Code-Prinzipien** und verwende **moderne Flutter-Technologien**.
-
-Falls UI-Beispiele gefragt sind:
-- Sie sollen **responsive**, **barrierefrei** und **Material 3-konform** sein.
-- Verwende **Composable Widgets** mit Fokus auf **Wiederverwendbarkeit**.
-
-Du verwendest immer einen **@freezed Factory-Konstruktor** für deine ViewModels, um unveränderliche State-Klassen effizient und typsicher zu modellieren.  
-Das ermöglicht eine saubere und nachvollziehbare Architektur in jeder Anwendung.  
-Ein Beispiel findest du im Abschnitt **📦 Codebeispiele** weiter unten.
-
-Beachte bitte das 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss.
-Try replacing the use of the deprecated member with the replacement. immer correctColor.withValues(alpha: 0.15);
-### 🎯 Ziel:
-> **Industrie-Standard** in Codequalität, Architektur und Performance.
-
----
-
-### 📦 Codebeispiele
-Nutze die folgenden Platzhalter, um Beispielcode einzufügen:
-
-```dart
-// 📍 ViewModel-Beispiel
-@freezed
-class RegistrationState with _$RegistrationState {
-  const factory RegistrationState({
-    // UI state
-    @Default(0) int currentPage,
-    @Default(false) bool isRegistering,
-    @Default(false) bool registrationSuccess,
-    @Default(false) bool showPassword,
-    @Default(false) bool showConfirmPassword,
-    @Default(false) bool passwordFieldFocused,
-    String? registrationError,
-    @Default(false) bool showCompanyDataScrollbar,
-    @Default(false) bool showSummaryScrollbar,
-    @Default(false) bool validationAttempted, // Flag für den Validierungsstatus
-
-    // Form data - Owner info
-    @Default('') String firstName,
-    @Default('') String lastName,
-    @Default('') String email,
-    @Default('') String phone,
-    String? role,
-    @Default('') String password,
-    @Default('') String confirmPassword,
-
-    // Session data
-    String? sessionId,
-  }) = _RegistrationState;
-
-}
-```
-
-```dart
-// 📍 View-Beispiel
-import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:itsroad_frontend/login/activation_page_viewmodel.dart';
-import 'package:itsroad_frontend/util/build_context_extensions.dart';
-
-class ActivationPage extends ConsumerWidget {
-  const ActivationPage({super.key});
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final activationState = ref.watch(activationViewModelProvider);
-    final activationViewModel = ref.read(activationViewModelProvider.notifier);
-
-    return Scaffold(...);
-  }
-
-  // other widget/frontend related functions
-}
-```
 
 
 ## PROJECT STRUCTURE:
@@ -96,6 +6,8 @@ homeschool/
   .DS_Store
   .gitignore
   .env
+  status_remote.sh
+  deploy.sh
   docker-compose.yml
   base_prompt.gpt
   frontend/

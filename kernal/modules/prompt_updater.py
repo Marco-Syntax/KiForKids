@@ -23,12 +23,10 @@ def update_prompt_file():
     kernal_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     repo_dir = os.path.dirname(kernal_dir)
     
-    basic_prompt_path = os.path.join(kernal_dir, "store", "prompts", "basic_prompt.txt")
     base_prompt_path = os.path.join(kernal_dir, "../base_prompt.gpt")
     pubspec_path = os.path.join(repo_dir, "frontend", "pubspec.yaml")
     
     # Read basic prompt content
-    basic_prompt_content = read_file_content(basic_prompt_path)
     
     # Get project structure
     project_structure = ProjectStructure()
@@ -39,7 +37,6 @@ def update_prompt_file():
     
     # Combine all content
     final_content = (
-        basic_prompt_content + 
         "\n\n## PROJECT STRUCTURE:\n\n" + structure_content + "\n\n" +
         "## DEPENDENCIES:\n\n" + pubspec_content
     )

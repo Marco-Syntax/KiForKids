@@ -14,3 +14,10 @@ __pycache__/
 # Logs, Caches
 *.log
 .mypy_cache/
+
+kernal/store/file_sums/sum_db.pkl
+kernal/config/tree_builder.json
+kernal/pipes
+kernal/store/meta
+base_prompt.gpt
+deploy.sh
