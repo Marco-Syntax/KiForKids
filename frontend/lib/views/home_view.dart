@@ -69,28 +69,17 @@ class HomeView extends ConsumerWidget {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    // Header-Bereich (zentriert, Ergebnis-Button oben rechts)
                     Stack(
                       children: [
                         // Logo links-mittig (anpassbare Position)
-                        Positioned(
-                          left:
-                              50, // Anpassbar: Erhöhe diesen Wert, um das Bild nach rechts zu verschieben (0 = ganz links)
-                          top: 0, // Anpassbar: Erhöhe diesen Wert, um das Bild nach unten zu verschieben
-                          child: Image.asset(
-                            'assets/images/bg_3.png',
-                            width: 250, // Anpassbar: Bildbreite
-                            height: 250, // Anpassbar: Bildhöhe
-                            fit: BoxFit.contain,
-                          ),
-                        ),
+
                         // Zentrierter Header-Inhalt
                         Align(
                           alignment: Alignment.center,
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
-                              Image.asset('assets/images/header_1.png', height: 200, fit: BoxFit.contain),
+                              Image.asset('assets/images/bg_3.png', height: 200, fit: BoxFit.contain),
                               const SizedBox(height: 8),
                               Text(
                                 "Finde spannende Aufgaben für jede Klassenstufe",

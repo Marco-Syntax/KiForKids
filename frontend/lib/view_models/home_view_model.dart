@@ -38,14 +38,13 @@ abstract class HomeState with _$HomeState {
     List<Map<String, String>>? generatedTasks,
     @Default(false) bool isLoadingTasks,
     String? taskError,
-    List<String>? lastFeedback, // Feedback der KI-Korrektur
-    @Default(false) bool isCheckingAnswers, // Status für Antwortprüfung
-    String? activeSubject, // aktuell aktives Fach
-    @Default({}) Map<String, List<ResultsEntry>> resultsHistory, // Ergebnisse pro Fach
-    @Default("Hallo Lehrling!") String greeting, // Begrüßungstext
-    @Default("bool") String testMode, // Testmodus
-    @Default(false) bool testLocked, // Sperrstatus für Testmodus-Buttons
-    // Wieder hinzugefügte Test-Felder
+    List<String>? lastFeedback,
+    @Default(false) bool isCheckingAnswers,
+    String? activeSubject,
+    @Default({}) Map<String, List<ResultsEntry>> resultsHistory,
+    @Default("Bereit zum Lernen?") String greeting,
+    @Default("bool") String testMode,
+    @Default(false) bool testLocked,
     // Für alle Test-Typen gemeinsam
     @Default([]) List<String> currentTestTasks,
     @Default(false) bool showTestResult,
@@ -146,27 +145,20 @@ class HomeViewModel extends StateNotifier<HomeState> {
     try {
       final randomSeed = "${DateTime.now().microsecondsSinceEpoch}_${DateTime.now().millisecondsSinceEpoch % 1000}";
       final bool testModeBool = testMode == "bool";
-      debugPrint(
-        "TaskGeneration: Starte Anfrage. Fach: $subject, Thema: $topic, Level: $level, Anzahl: $count, Testmodus: $testMode",
-      );
 
       final tasks = await _kiService!.generateTasks(
         subject: subject,
         topic: topic,
         level: level,
-        count: count, // Explizit 5 Aufgaben anfordern
+        count: count,
         extraPrompt: "Seed: $randomSeed",
         testMode: testModeBool,
         usedQuestions: [],
         classTopics: [],
       );
 
-      debugPrint("TaskGeneration: Aufgaben erhalten. Anzahl: ${tasks.length}");
-      debugPrint("TaskGeneration: Aufgaben-Details: $tasks");
-
       state = state.copyWith(generatedTasks: tasks, isLoadingTasks: false, showTasks: true, lastFeedback: null);
     } catch (e) {
-      debugPrint("TaskGeneration: Fehler: $e");
       state = state.copyWith(
         taskError: e.toString(),
         isLoadingTasks: false,
@@ -247,9 +239,6 @@ class HomeViewModel extends StateNotifier<HomeState> {
   Future<void> checkAnswersWithKI({required List<String> questions, required List<String> answers}) async {
     if (_kiService == null) return;
 
-    debugPrint("Antwortprüfung: Starte mit ${questions.length} Fragen und ${answers.length} Antworten");
-
-    // Wir setzen isCheckingAnswers nicht, da dies im TestViewModel bereits geschieht
     try {
       final subject = getActiveSubject() ?? '';
       final topic = state.selectedTopic ?? '';
@@ -290,8 +279,6 @@ class HomeViewModel extends StateNotifier<HomeState> {
 
       final saveUrl = Uri.parse("$baseUrl/save_results/${state.user.id}");
 
-      debugPrint("Sende Ergebnis an: $saveUrl");
-
       final response = await http.post(
         saveUrl,
         headers: {'Content-Type': 'application/json'},
@@ -306,15 +293,10 @@ class HomeViewModel extends StateNotifier<HomeState> {
       );
 
       if (response.statusCode != 200) {
-        debugPrint("Fehler beim Speichern: Status ${response.statusCode}, Antwort: ${response.body}");
-      } else {
-        final responseData = jsonDecode(response.body);
-        final resultId = responseData["id"];
-        debugPrint("Ergebnis erfolgreich gespeichert! ID: $resultId");
+        // Stille Fehlerbehandlung - keine Debug-Ausgaben
       }
     } catch (e) {
-      // Fehler beim Speichern protokollieren, aber nicht den UI-Status ändern
-      debugPrint("Fehler beim Speichern der Ergebnisse: $e");
+      // Stille Fehlerbehandlung - keine Debug-Ausgaben
     }
   }
 
@@ -327,22 +309,17 @@ class HomeViewModel extends StateNotifier<HomeState> {
 
       final url = Uri.parse("$baseUrl/get_results/${state.user.id}/$fach");
 
-      debugPrint("Lade Ergebnisse von: $url");
-
       final response = await http.get(url);
 
       if (response.statusCode == 200) {
         final body = response.body.trim();
         if (body.isEmpty) return [];
         final List<dynamic> data = jsonDecode(body);
-        debugPrint("Ergebnisse geladen: ${data.length}");
         return data.cast<Map<String, dynamic>>();
       } else {
-        debugPrint("Fehler beim Laden: Status ${response.statusCode}, Antwort: ${response.body}");
         throw Exception("Fehler beim Laden der Ergebnisse: ${response.statusCode}");
       }
     } catch (e) {
-      debugPrint("Exception beim Laden der Ergebnisse: $e");
       throw Exception("Fehler beim Laden der Ergebnisse: $e");
     }
   }
