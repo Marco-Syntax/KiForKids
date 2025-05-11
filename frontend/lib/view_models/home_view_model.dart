@@ -62,6 +62,7 @@ abstract class HomeState with _$HomeState {
 
     // Spezifisch für MC Tests
     @Default([]) List<String?> mcAnswers,
+    @Default(0) int points, // <-- Punktefeld hinzugefügt
   }) = _HomeState;
 }
 
@@ -215,6 +216,7 @@ class HomeViewModel extends StateNotifier<HomeState> {
     state = HomeState(
       user: UserModel(selectedClass: 'Klasse 5', selectedLevel: 'Einsteiger'),
       testLocked: false, // Testmodus-Buttons entsperren
+      points: 0, // Punkte zurücksetzen
       // Andere Werte behalten ihre Default-Werte aus der @freezed-Definition
     );
   }
@@ -510,12 +512,16 @@ class HomeViewModel extends StateNotifier<HomeState> {
       final feedback = _kiService!.checkAnswers(generatedTasks: generatedTasks, userAnswers: answers);
       final isCorrect = feedback.map((f) => f.toLowerCase().startsWith('richtig')).toList();
 
+      // Punkte berechnen: +1 pro richtiger Antwort
+      final int newPoints = state.points + isCorrect.where((c) => c).length;
+
       state = state.copyWith(
         testFeedback: feedback,
         testIsCorrect: isCorrect,
         showTestResult: true,
         isCheckingTest: false,
         canContinueTest: true,
+        points: newPoints, // Punkte aktualisieren
       );
 
       // Auch für die Ergebnishistorie speichern

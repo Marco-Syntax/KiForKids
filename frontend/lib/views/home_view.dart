@@ -69,6 +69,7 @@ class HomeView extends ConsumerWidget {
                           refreshGreeting: () => vm.refreshGreeting(),
                           resetAll: () => vm.resetAll(),
                           activeSubject: activeSubject ?? '',
+                          points: state.points, // <-- Punkte übergeben
                         ),
 
                         const SizedBox(height: 20),
@@ -112,7 +113,6 @@ class HomeView extends ConsumerWidget {
                         ),
 
                         // Footer-Bereich
-                        const SizedBox(height: 30),
                         const FooterSection(),
                       ],
                     ),

@@ -11,6 +11,7 @@ class HeaderSection extends ConsumerWidget {
   final Function refreshGreeting;
   final Function resetAll;
   final String activeSubject;
+  final int points; // <-- Punktefeld hinzufügen
 
   const HeaderSection({
     super.key,
@@ -21,6 +22,7 @@ class HeaderSection extends ConsumerWidget {
     required this.refreshGreeting,
     required this.resetAll,
     required this.activeSubject,
+    required this.points, // <-- Punktefeld hinzufügen
   });
 
   @override
@@ -134,12 +136,12 @@ class HeaderSection extends ConsumerWidget {
                   const SizedBox(height: 4),
                   // Punktestand mit Animation
                   Row(
-                    children: const [
-                      Icon(Icons.star_rounded, color: Colors.amber, size: 18),
-                      SizedBox(width: 4),
+                    children: [
+                      const Icon(Icons.star_rounded, color: Colors.amber, size: 18),
+                      const SizedBox(width: 4),
                       Text(
-                        '0 Punkte', // Wird dynamisch aktualisiert
-                        style: TextStyle(color: Colors.amber, fontWeight: FontWeight.bold),
+                        '$points Punkte', // <-- Dynamischer Punktestand
+                        style: const TextStyle(color: Colors.amber, fontWeight: FontWeight.bold),
                       ),
                     ],
                   ),

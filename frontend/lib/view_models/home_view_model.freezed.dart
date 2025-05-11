@@ -179,7 +179,7 @@ mixin _$HomeState {
  List<String> get currentTestTasks; bool get showTestResult; List<bool> get testIsCorrect; List<String> get testFeedback; bool get isCheckingTest; bool get canContinueTest;// Spezifisch für Text-Eingabe Tests
  List<String> get textInputAnswers;// Spezifisch für True/False Tests
  List<String?> get trueFalseAnswers;// Spezifisch für MC Tests
- List<String?> get mcAnswers;
+ List<String?> get mcAnswers; int get points;
 /// Create a copy of HomeState
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -190,16 +190,16 @@ $HomeStateCopyWith<HomeState> get copyWith => _$HomeStateCopyWithImpl<HomeState>
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is HomeState&&(identical(other.user, user) || other.user == user)&&(identical(other.selectedTopic, selectedTopic) || other.selectedTopic == selectedTopic)&&(identical(other.showTasks, showTasks) || other.showTasks == showTasks)&&const DeepCollectionEquality().equals(other.generatedTasks, generatedTasks)&&(identical(other.isLoadingTasks, isLoadingTasks) || other.isLoadingTasks == isLoadingTasks)&&(identical(other.taskError, taskError) || other.taskError == taskError)&&const DeepCollectionEquality().equals(other.lastFeedback, lastFeedback)&&(identical(other.isCheckingAnswers, isCheckingAnswers) || other.isCheckingAnswers == isCheckingAnswers)&&(identical(other.activeSubject, activeSubject) || other.activeSubject == activeSubject)&&const DeepCollectionEquality().equals(other.resultsHistory, resultsHistory)&&(identical(other.greeting, greeting) || other.greeting == greeting)&&(identical(other.testMode, testMode) || other.testMode == testMode)&&(identical(other.testLocked, testLocked) || other.testLocked == testLocked)&&const DeepCollectionEquality().equals(other.currentTestTasks, currentTestTasks)&&(identical(other.showTestResult, showTestResult) || other.showTestResult == showTestResult)&&const DeepCollectionEquality().equals(other.testIsCorrect, testIsCorrect)&&const DeepCollectionEquality().equals(other.testFeedback, testFeedback)&&(identical(other.isCheckingTest, isCheckingTest) || other.isCheckingTest == isCheckingTest)&&(identical(other.canContinueTest, canContinueTest) || other.canContinueTest == canContinueTest)&&const DeepCollectionEquality().equals(other.textInputAnswers, textInputAnswers)&&const DeepCollectionEquality().equals(other.trueFalseAnswers, trueFalseAnswers)&&const DeepCollectionEquality().equals(other.mcAnswers, mcAnswers));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is HomeState&&(identical(other.user, user) || other.user == user)&&(identical(other.selectedTopic, selectedTopic) || other.selectedTopic == selectedTopic)&&(identical(other.showTasks, showTasks) || other.showTasks == showTasks)&&const DeepCollectionEquality().equals(other.generatedTasks, generatedTasks)&&(identical(other.isLoadingTasks, isLoadingTasks) || other.isLoadingTasks == isLoadingTasks)&&(identical(other.taskError, taskError) || other.taskError == taskError)&&const DeepCollectionEquality().equals(other.lastFeedback, lastFeedback)&&(identical(other.isCheckingAnswers, isCheckingAnswers) || other.isCheckingAnswers == isCheckingAnswers)&&(identical(other.activeSubject, activeSubject) || other.activeSubject == activeSubject)&&const DeepCollectionEquality().equals(other.resultsHistory, resultsHistory)&&(identical(other.greeting, greeting) || other.greeting == greeting)&&(identical(other.testMode, testMode) || other.testMode == testMode)&&(identical(other.testLocked, testLocked) || other.testLocked == testLocked)&&const DeepCollectionEquality().equals(other.currentTestTasks, currentTestTasks)&&(identical(other.showTestResult, showTestResult) || other.showTestResult == showTestResult)&&const DeepCollectionEquality().equals(other.testIsCorrect, testIsCorrect)&&const DeepCollectionEquality().equals(other.testFeedback, testFeedback)&&(identical(other.isCheckingTest, isCheckingTest) || other.isCheckingTest == isCheckingTest)&&(identical(other.canContinueTest, canContinueTest) || other.canContinueTest == canContinueTest)&&const DeepCollectionEquality().equals(other.textInputAnswers, textInputAnswers)&&const DeepCollectionEquality().equals(other.trueFalseAnswers, trueFalseAnswers)&&const DeepCollectionEquality().equals(other.mcAnswers, mcAnswers)&&(identical(other.points, points) || other.points == points));
 }
 
 
 @override
-int get hashCode => Object.hashAll([runtimeType,user,selectedTopic,showTasks,const DeepCollectionEquality().hash(generatedTasks),isLoadingTasks,taskError,const DeepCollectionEquality().hash(lastFeedback),isCheckingAnswers,activeSubject,const DeepCollectionEquality().hash(resultsHistory),greeting,testMode,testLocked,const DeepCollectionEquality().hash(currentTestTasks),showTestResult,const DeepCollectionEquality().hash(testIsCorrect),const DeepCollectionEquality().hash(testFeedback),isCheckingTest,canContinueTest,const DeepCollectionEquality().hash(textInputAnswers),const DeepCollectionEquality().hash(trueFalseAnswers),const DeepCollectionEquality().hash(mcAnswers)]);
+int get hashCode => Object.hashAll([runtimeType,user,selectedTopic,showTasks,const DeepCollectionEquality().hash(generatedTasks),isLoadingTasks,taskError,const DeepCollectionEquality().hash(lastFeedback),isCheckingAnswers,activeSubject,const DeepCollectionEquality().hash(resultsHistory),greeting,testMode,testLocked,const DeepCollectionEquality().hash(currentTestTasks),showTestResult,const DeepCollectionEquality().hash(testIsCorrect),const DeepCollectionEquality().hash(testFeedback),isCheckingTest,canContinueTest,const DeepCollectionEquality().hash(textInputAnswers),const DeepCollectionEquality().hash(trueFalseAnswers),const DeepCollectionEquality().hash(mcAnswers),points]);
 
 @override
 String toString() {
-  return 'HomeState(user: $user, selectedTopic: $selectedTopic, showTasks: $showTasks, generatedTasks: $generatedTasks, isLoadingTasks: $isLoadingTasks, taskError: $taskError, lastFeedback: $lastFeedback, isCheckingAnswers: $isCheckingAnswers, activeSubject: $activeSubject, resultsHistory: $resultsHistory, greeting: $greeting, testMode: $testMode, testLocked: $testLocked, currentTestTasks: $currentTestTasks, showTestResult: $showTestResult, testIsCorrect: $testIsCorrect, testFeedback: $testFeedback, isCheckingTest: $isCheckingTest, canContinueTest: $canContinueTest, textInputAnswers: $textInputAnswers, trueFalseAnswers: $trueFalseAnswers, mcAnswers: $mcAnswers)';
+  return 'HomeState(user: $user, selectedTopic: $selectedTopic, showTasks: $showTasks, generatedTasks: $generatedTasks, isLoadingTasks: $isLoadingTasks, taskError: $taskError, lastFeedback: $lastFeedback, isCheckingAnswers: $isCheckingAnswers, activeSubject: $activeSubject, resultsHistory: $resultsHistory, greeting: $greeting, testMode: $testMode, testLocked: $testLocked, currentTestTasks: $currentTestTasks, showTestResult: $showTestResult, testIsCorrect: $testIsCorrect, testFeedback: $testFeedback, isCheckingTest: $isCheckingTest, canContinueTest: $canContinueTest, textInputAnswers: $textInputAnswers, trueFalseAnswers: $trueFalseAnswers, mcAnswers: $mcAnswers, points: $points)';
 }
 
 
@@ -210,7 +210,7 @@ abstract mixin class $HomeStateCopyWith<$Res>  {
   factory $HomeStateCopyWith(HomeState value, $Res Function(HomeState) _then) = _$HomeStateCopyWithImpl;
 @useResult
 $Res call({
- UserModel user, String? selectedTopic, bool showTasks, List<Map<String, String>>? generatedTasks, bool isLoadingTasks, String? taskError, List<String>? lastFeedback, bool isCheckingAnswers, String? activeSubject, Map<String, List<ResultsEntry>> resultsHistory, String greeting, String testMode, bool testLocked, List<String> currentTestTasks, bool showTestResult, List<bool> testIsCorrect, List<String> testFeedback, bool isCheckingTest, bool canContinueTest, List<String> textInputAnswers, List<String?> trueFalseAnswers, List<String?> mcAnswers
+ UserModel user, String? selectedTopic, bool showTasks, List<Map<String, String>>? generatedTasks, bool isLoadingTasks, String? taskError, List<String>? lastFeedback, bool isCheckingAnswers, String? activeSubject, Map<String, List<ResultsEntry>> resultsHistory, String greeting, String testMode, bool testLocked, List<String> currentTestTasks, bool showTestResult, List<bool> testIsCorrect, List<String> testFeedback, bool isCheckingTest, bool canContinueTest, List<String> textInputAnswers, List<String?> trueFalseAnswers, List<String?> mcAnswers, int points
 });
 
 
@@ -227,7 +227,7 @@ class _$HomeStateCopyWithImpl<$Res>
 
 /// Create a copy of HomeState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? user = null,Object? selectedTopic = freezed,Object? showTasks = null,Object? generatedTasks = freezed,Object? isLoadingTasks = null,Object? taskError = freezed,Object? lastFeedback = freezed,Object? isCheckingAnswers = null,Object? activeSubject = freezed,Object? resultsHistory = null,Object? greeting = null,Object? testMode = null,Object? testLocked = null,Object? currentTestTasks = null,Object? showTestResult = null,Object? testIsCorrect = null,Object? testFeedback = null,Object? isCheckingTest = null,Object? canContinueTest = null,Object? textInputAnswers = null,Object? trueFalseAnswers = null,Object? mcAnswers = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? user = null,Object? selectedTopic = freezed,Object? showTasks = null,Object? generatedTasks = freezed,Object? isLoadingTasks = null,Object? taskError = freezed,Object? lastFeedback = freezed,Object? isCheckingAnswers = null,Object? activeSubject = freezed,Object? resultsHistory = null,Object? greeting = null,Object? testMode = null,Object? testLocked = null,Object? currentTestTasks = null,Object? showTestResult = null,Object? testIsCorrect = null,Object? testFeedback = null,Object? isCheckingTest = null,Object? canContinueTest = null,Object? textInputAnswers = null,Object? trueFalseAnswers = null,Object? mcAnswers = null,Object? points = null,}) {
   return _then(_self.copyWith(
 user: null == user ? _self.user : user // ignore: cast_nullable_to_non_nullable
 as UserModel,selectedTopic: freezed == selectedTopic ? _self.selectedTopic : selectedTopic // ignore: cast_nullable_to_non_nullable
@@ -251,7 +251,8 @@ as bool,canContinueTest: null == canContinueTest ? _self.canContinueTest : canCo
 as bool,textInputAnswers: null == textInputAnswers ? _self.textInputAnswers : textInputAnswers // ignore: cast_nullable_to_non_nullable
 as List<String>,trueFalseAnswers: null == trueFalseAnswers ? _self.trueFalseAnswers : trueFalseAnswers // ignore: cast_nullable_to_non_nullable
 as List<String?>,mcAnswers: null == mcAnswers ? _self.mcAnswers : mcAnswers // ignore: cast_nullable_to_non_nullable
-as List<String?>,
+as List<String?>,points: null == points ? _self.points : points // ignore: cast_nullable_to_non_nullable
+as int,
   ));
 }
 
@@ -262,7 +263,7 @@ as List<String?>,
 
 
 class _HomeState implements HomeState {
-  const _HomeState({required this.user, this.selectedTopic, this.showTasks = false, final  List<Map<String, String>>? generatedTasks, this.isLoadingTasks = false, this.taskError, final  List<String>? lastFeedback, this.isCheckingAnswers = false, this.activeSubject, final  Map<String, List<ResultsEntry>> resultsHistory = const {}, this.greeting = "Bereit zum Lernen?", this.testMode = "bool", this.testLocked = false, final  List<String> currentTestTasks = const [], this.showTestResult = false, final  List<bool> testIsCorrect = const [], final  List<String> testFeedback = const [], this.isCheckingTest = false, this.canContinueTest = false, final  List<String> textInputAnswers = const [], final  List<String?> trueFalseAnswers = const [], final  List<String?> mcAnswers = const []}): _generatedTasks = generatedTasks,_lastFeedback = lastFeedback,_resultsHistory = resultsHistory,_currentTestTasks = currentTestTasks,_testIsCorrect = testIsCorrect,_testFeedback = testFeedback,_textInputAnswers = textInputAnswers,_trueFalseAnswers = trueFalseAnswers,_mcAnswers = mcAnswers;
+  const _HomeState({required this.user, this.selectedTopic, this.showTasks = false, final  List<Map<String, String>>? generatedTasks, this.isLoadingTasks = false, this.taskError, final  List<String>? lastFeedback, this.isCheckingAnswers = false, this.activeSubject, final  Map<String, List<ResultsEntry>> resultsHistory = const {}, this.greeting = "Bereit zum Lernen?", this.testMode = "bool", this.testLocked = false, final  List<String> currentTestTasks = const [], this.showTestResult = false, final  List<bool> testIsCorrect = const [], final  List<String> testFeedback = const [], this.isCheckingTest = false, this.canContinueTest = false, final  List<String> textInputAnswers = const [], final  List<String?> trueFalseAnswers = const [], final  List<String?> mcAnswers = const [], this.points = 0}): _generatedTasks = generatedTasks,_lastFeedback = lastFeedback,_resultsHistory = resultsHistory,_currentTestTasks = currentTestTasks,_testIsCorrect = testIsCorrect,_testFeedback = testFeedback,_textInputAnswers = textInputAnswers,_trueFalseAnswers = trueFalseAnswers,_mcAnswers = mcAnswers;
   
 
 @override final  UserModel user;
@@ -353,6 +354,7 @@ class _HomeState implements HomeState {
   return EqualUnmodifiableListView(_mcAnswers);
 }
 
+@override@JsonKey() final  int points;
 
 /// Create a copy of HomeState
 /// with the given fields replaced by the non-null parameter values.
@@ -364,16 +366,16 @@ _$HomeStateCopyWith<_HomeState> get copyWith => __$HomeStateCopyWithImpl<_HomeSt
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _HomeState&&(identical(other.user, user) || other.user == user)&&(identical(other.selectedTopic, selectedTopic) || other.selectedTopic == selectedTopic)&&(identical(other.showTasks, showTasks) || other.showTasks == showTasks)&&const DeepCollectionEquality().equals(other._generatedTasks, _generatedTasks)&&(identical(other.isLoadingTasks, isLoadingTasks) || other.isLoadingTasks == isLoadingTasks)&&(identical(other.taskError, taskError) || other.taskError == taskError)&&const DeepCollectionEquality().equals(other._lastFeedback, _lastFeedback)&&(identical(other.isCheckingAnswers, isCheckingAnswers) || other.isCheckingAnswers == isCheckingAnswers)&&(identical(other.activeSubject, activeSubject) || other.activeSubject == activeSubject)&&const DeepCollectionEquality().equals(other._resultsHistory, _resultsHistory)&&(identical(other.greeting, greeting) || other.greeting == greeting)&&(identical(other.testMode, testMode) || other.testMode == testMode)&&(identical(other.testLocked, testLocked) || other.testLocked == testLocked)&&const DeepCollectionEquality().equals(other._currentTestTasks, _currentTestTasks)&&(identical(other.showTestResult, showTestResult) || other.showTestResult == showTestResult)&&const DeepCollectionEquality().equals(other._testIsCorrect, _testIsCorrect)&&const DeepCollectionEquality().equals(other._testFeedback, _testFeedback)&&(identical(other.isCheckingTest, isCheckingTest) || other.isCheckingTest == isCheckingTest)&&(identical(other.canContinueTest, canContinueTest) || other.canContinueTest == canContinueTest)&&const DeepCollectionEquality().equals(other._textInputAnswers, _textInputAnswers)&&const DeepCollectionEquality().equals(other._trueFalseAnswers, _trueFalseAnswers)&&const DeepCollectionEquality().equals(other._mcAnswers, _mcAnswers));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _HomeState&&(identical(other.user, user) || other.user == user)&&(identical(other.selectedTopic, selectedTopic) || other.selectedTopic == selectedTopic)&&(identical(other.showTasks, showTasks) || other.showTasks == showTasks)&&const DeepCollectionEquality().equals(other._generatedTasks, _generatedTasks)&&(identical(other.isLoadingTasks, isLoadingTasks) || other.isLoadingTasks == isLoadingTasks)&&(identical(other.taskError, taskError) || other.taskError == taskError)&&const DeepCollectionEquality().equals(other._lastFeedback, _lastFeedback)&&(identical(other.isCheckingAnswers, isCheckingAnswers) || other.isCheckingAnswers == isCheckingAnswers)&&(identical(other.activeSubject, activeSubject) || other.activeSubject == activeSubject)&&const DeepCollectionEquality().equals(other._resultsHistory, _resultsHistory)&&(identical(other.greeting, greeting) || other.greeting == greeting)&&(identical(other.testMode, testMode) || other.testMode == testMode)&&(identical(other.testLocked, testLocked) || other.testLocked == testLocked)&&const DeepCollectionEquality().equals(other._currentTestTasks, _currentTestTasks)&&(identical(other.showTestResult, showTestResult) || other.showTestResult == showTestResult)&&const DeepCollectionEquality().equals(other._testIsCorrect, _testIsCorrect)&&const DeepCollectionEquality().equals(other._testFeedback, _testFeedback)&&(identical(other.isCheckingTest, isCheckingTest) || other.isCheckingTest == isCheckingTest)&&(identical(other.canContinueTest, canContinueTest) || other.canContinueTest == canContinueTest)&&const DeepCollectionEquality().equals(other._textInputAnswers, _textInputAnswers)&&const DeepCollectionEquality().equals(other._trueFalseAnswers, _trueFalseAnswers)&&const DeepCollectionEquality().equals(other._mcAnswers, _mcAnswers)&&(identical(other.points, points) || other.points == points));
 }
 
 
 @override
-int get hashCode => Object.hashAll([runtimeType,user,selectedTopic,showTasks,const DeepCollectionEquality().hash(_generatedTasks),isLoadingTasks,taskError,const DeepCollectionEquality().hash(_lastFeedback),isCheckingAnswers,activeSubject,const DeepCollectionEquality().hash(_resultsHistory),greeting,testMode,testLocked,const DeepCollectionEquality().hash(_currentTestTasks),showTestResult,const DeepCollectionEquality().hash(_testIsCorrect),const DeepCollectionEquality().hash(_testFeedback),isCheckingTest,canContinueTest,const DeepCollectionEquality().hash(_textInputAnswers),const DeepCollectionEquality().hash(_trueFalseAnswers),const DeepCollectionEquality().hash(_mcAnswers)]);
+int get hashCode => Object.hashAll([runtimeType,user,selectedTopic,showTasks,const DeepCollectionEquality().hash(_generatedTasks),isLoadingTasks,taskError,const DeepCollectionEquality().hash(_lastFeedback),isCheckingAnswers,activeSubject,const DeepCollectionEquality().hash(_resultsHistory),greeting,testMode,testLocked,const DeepCollectionEquality().hash(_currentTestTasks),showTestResult,const DeepCollectionEquality().hash(_testIsCorrect),const DeepCollectionEquality().hash(_testFeedback),isCheckingTest,canContinueTest,const DeepCollectionEquality().hash(_textInputAnswers),const DeepCollectionEquality().hash(_trueFalseAnswers),const DeepCollectionEquality().hash(_mcAnswers),points]);
 
 @override
 String toString() {
-  return 'HomeState(user: $user, selectedTopic: $selectedTopic, showTasks: $showTasks, generatedTasks: $generatedTasks, isLoadingTasks: $isLoadingTasks, taskError: $taskError, lastFeedback: $lastFeedback, isCheckingAnswers: $isCheckingAnswers, activeSubject: $activeSubject, resultsHistory: $resultsHistory, greeting: $greeting, testMode: $testMode, testLocked: $testLocked, currentTestTasks: $currentTestTasks, showTestResult: $showTestResult, testIsCorrect: $testIsCorrect, testFeedback: $testFeedback, isCheckingTest: $isCheckingTest, canContinueTest: $canContinueTest, textInputAnswers: $textInputAnswers, trueFalseAnswers: $trueFalseAnswers, mcAnswers: $mcAnswers)';
+  return 'HomeState(user: $user, selectedTopic: $selectedTopic, showTasks: $showTasks, generatedTasks: $generatedTasks, isLoadingTasks: $isLoadingTasks, taskError: $taskError, lastFeedback: $lastFeedback, isCheckingAnswers: $isCheckingAnswers, activeSubject: $activeSubject, resultsHistory: $resultsHistory, greeting: $greeting, testMode: $testMode, testLocked: $testLocked, currentTestTasks: $currentTestTasks, showTestResult: $showTestResult, testIsCorrect: $testIsCorrect, testFeedback: $testFeedback, isCheckingTest: $isCheckingTest, canContinueTest: $canContinueTest, textInputAnswers: $textInputAnswers, trueFalseAnswers: $trueFalseAnswers, mcAnswers: $mcAnswers, points: $points)';
 }
 
 
@@ -384,7 +386,7 @@ abstract mixin class _$HomeStateCopyWith<$Res> implements $HomeStateCopyWith<$Re
   factory _$HomeStateCopyWith(_HomeState value, $Res Function(_HomeState) _then) = __$HomeStateCopyWithImpl;
 @override @useResult
 $Res call({
- UserModel user, String? selectedTopic, bool showTasks, List<Map<String, String>>? generatedTasks, bool isLoadingTasks, String? taskError, List<String>? lastFeedback, bool isCheckingAnswers, String? activeSubject, Map<String, List<ResultsEntry>> resultsHistory, String greeting, String testMode, bool testLocked, List<String> currentTestTasks, bool showTestResult, List<bool> testIsCorrect, List<String> testFeedback, bool isCheckingTest, bool canContinueTest, List<String> textInputAnswers, List<String?> trueFalseAnswers, List<String?> mcAnswers
+ UserModel user, String? selectedTopic, bool showTasks, List<Map<String, String>>? generatedTasks, bool isLoadingTasks, String? taskError, List<String>? lastFeedback, bool isCheckingAnswers, String? activeSubject, Map<String, List<ResultsEntry>> resultsHistory, String greeting, String testMode, bool testLocked, List<String> currentTestTasks, bool showTestResult, List<bool> testIsCorrect, List<String> testFeedback, bool isCheckingTest, bool canContinueTest, List<String> textInputAnswers, List<String?> trueFalseAnswers, List<String?> mcAnswers, int points
 });
 
 
@@ -401,7 +403,7 @@ class __$HomeStateCopyWithImpl<$Res>
 
 /// Create a copy of HomeState
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? user = null,Object? selectedTopic = freezed,Object? showTasks = null,Object? generatedTasks = freezed,Object? isLoadingTasks = null,Object? taskError = freezed,Object? lastFeedback = freezed,Object? isCheckingAnswers = null,Object? activeSubject = freezed,Object? resultsHistory = null,Object? greeting = null,Object? testMode = null,Object? testLocked = null,Object? currentTestTasks = null,Object? showTestResult = null,Object? testIsCorrect = null,Object? testFeedback = null,Object? isCheckingTest = null,Object? canContinueTest = null,Object? textInputAnswers = null,Object? trueFalseAnswers = null,Object? mcAnswers = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? user = null,Object? selectedTopic = freezed,Object? showTasks = null,Object? generatedTasks = freezed,Object? isLoadingTasks = null,Object? taskError = freezed,Object? lastFeedback = freezed,Object? isCheckingAnswers = null,Object? activeSubject = freezed,Object? resultsHistory = null,Object? greeting = null,Object? testMode = null,Object? testLocked = null,Object? currentTestTasks = null,Object? showTestResult = null,Object? testIsCorrect = null,Object? testFeedback = null,Object? isCheckingTest = null,Object? canContinueTest = null,Object? textInputAnswers = null,Object? trueFalseAnswers = null,Object? mcAnswers = null,Object? points = null,}) {
   return _then(_HomeState(
 user: null == user ? _self.user : user // ignore: cast_nullable_to_non_nullable
 as UserModel,selectedTopic: freezed == selectedTopic ? _self.selectedTopic : selectedTopic // ignore: cast_nullable_to_non_nullable
@@ -425,7 +427,8 @@ as bool,canContinueTest: null == canContinueTest ? _self.canContinueTest : canCo
 as bool,textInputAnswers: null == textInputAnswers ? _self._textInputAnswers : textInputAnswers // ignore: cast_nullable_to_non_nullable
 as List<String>,trueFalseAnswers: null == trueFalseAnswers ? _self._trueFalseAnswers : trueFalseAnswers // ignore: cast_nullable_to_non_nullable
 as List<String?>,mcAnswers: null == mcAnswers ? _self._mcAnswers : mcAnswers // ignore: cast_nullable_to_non_nullable
-as List<String?>,
+as List<String?>,points: null == points ? _self.points : points // ignore: cast_nullable_to_non_nullable
+as int,
   ));
 }
 
