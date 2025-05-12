@@ -1,13 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
+import 'dart:async';
+// Für Web: html importieren
+// ignore: avoid_web_libraries_in_flutter
+import 'dart:html' as html;
 
 class FooterSection extends StatelessWidget {
   const FooterSection({super.key});
 
-  // Hilfsfunktion zum Öffnen von URLs
+  // Hilfsfunktion zum Öffnen von URLs (Web/Native)
   Future<void> _launchUrl(String urlString, {bool external = false}) async {
-    final Uri url =
-        external ? Uri.parse(urlString) : Uri.base.resolve(urlString); // für Web: relative Pfade korrekt auflösen
+    final isWeb = kIsWeb;
+    if (isWeb && !external) {
+      // Interne Links im selben Tab öffnen
+      html.window.location.assign(urlString);
+      return;
+    }
+    final Uri url = Uri.parse(urlString);
     final mode = external ? LaunchMode.externalApplication : LaunchMode.platformDefault;
     if (!await launchUrl(url, mode: mode)) {
       throw Exception('Konnte URL nicht öffnen: $urlString');
@@ -45,7 +55,7 @@ class FooterSection extends StatelessWidget {
                 ).copyWith(
                   overlayColor: WidgetStateProperty.resolveWith<Color?>((states) {
                     if (states.contains(WidgetState.hovered)) {
-                      return Colors.blueAccent.withValues(alpha: 0.30);
+                      return Colors.blueAccent.withValues(alpha: 0.16);
                     }
                     return null;
                   }),
