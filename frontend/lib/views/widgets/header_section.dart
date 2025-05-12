@@ -89,7 +89,7 @@ class HeaderSection extends ConsumerWidget {
                 offset: const Offset(-100, 0),
                 child: Padding(
                   padding: const EdgeInsets.only(top: 24),
-                  child: Image.asset('assets/images/proxy.png', width: 280, height: 280, fit: BoxFit.contain),
+                  child: Image.asset('assets/images/proxy.png', width: 300, height: 300, fit: BoxFit.contain),
                 ),
               ),
             ],

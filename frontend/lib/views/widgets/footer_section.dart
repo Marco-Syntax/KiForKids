@@ -24,17 +24,13 @@ class FooterSection extends StatelessWidget {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              const Text(
-                "© 2025 KiForKids - Interaktive Lernplattform für Kinder",
-                style: TextStyle(color: Colors.grey, fontSize: 12),
-              ),
-              const SizedBox(height: 4),
-              GestureDetector(
-                onTap: () {
+              TextButton(
+                onPressed: () {
                   _launchUrl("https://marcogrimme.de");
                 },
                 child: const Text(
-                  "Entwickelt von Marco Grimme – Inspiriert von Jonas Grimme – KI-generierte Aufgaben",
+                  "© 2025 KiForKids - Interaktive Lernplattform für Kinder\nEntwickelt von Marco Grimme – Inspiriert von Jonas Grimme – KI-generierte Aufgaben",
+                  textAlign: TextAlign.center,
                   style: TextStyle(color: Colors.blueAccent, fontSize: 12, decoration: TextDecoration.underline),
                 ),
               ),
