@@ -2,9 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'dart:async';
-// Für Web: html importieren
-// ignore: avoid_web_libraries_in_flutter
-import 'dart:html' as html;
 
 class FooterSection extends StatelessWidget {
   const FooterSection({super.key});
@@ -12,12 +9,7 @@ class FooterSection extends StatelessWidget {
   // Hilfsfunktion zum Öffnen von URLs (Web/Native)
   Future<void> _launchUrl(String urlString, {bool external = false}) async {
     final isWeb = kIsWeb;
-    if (isWeb && !external) {
-      // Interne Links im selben Tab öffnen
-      html.window.location.assign(urlString);
-      return;
-    }
-    final Uri url = Uri.parse(urlString);
+    final Uri url = isWeb && !external ? Uri.parse(Uri.base.origin + urlString) : Uri.parse(urlString);
     final mode = external ? LaunchMode.externalApplication : LaunchMode.platformDefault;
     if (!await launchUrl(url, mode: mode)) {
       throw Exception('Konnte URL nicht öffnen: $urlString');
