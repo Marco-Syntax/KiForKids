@@ -5,9 +5,11 @@ class FooterSection extends StatelessWidget {
   const FooterSection({super.key});
 
   // Hilfsfunktion zum Öffnen von URLs
-  Future<void> _launchUrl(String urlString) async {
-    final Uri url = Uri.parse(urlString);
-    if (!await launchUrl(url, mode: LaunchMode.externalApplication)) {
+  Future<void> _launchUrl(String urlString, {bool external = false}) async {
+    final Uri url =
+        external ? Uri.parse(urlString) : Uri.base.resolve(urlString); // für Web: relative Pfade korrekt auflösen
+    final mode = external ? LaunchMode.externalApplication : LaunchMode.platformDefault;
+    if (!await launchUrl(url, mode: mode)) {
       throw Exception('Konnte URL nicht öffnen: $urlString');
     }
   }
@@ -31,7 +33,7 @@ class FooterSection extends StatelessWidget {
               const SizedBox(height: 4),
               TextButton(
                 onPressed: () {
-                  _launchUrl("https://marcogrimme.de");
+                  _launchUrl("https://marcogrimme.de", external: true);
                 },
                 style: TextButton.styleFrom(
                   foregroundColor: Colors.blueAccent,
