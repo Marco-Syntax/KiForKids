@@ -24,14 +24,33 @@ class FooterSection extends StatelessWidget {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
+              const Text(
+                "© 2025 KiForKids - Interaktive Lernplattform für Kinder",
+                style: TextStyle(color: Colors.grey, fontSize: 12),
+              ),
+              const SizedBox(height: 4),
               TextButton(
                 onPressed: () {
                   _launchUrl("https://marcogrimme.de");
                 },
+                style: TextButton.styleFrom(
+                  foregroundColor: Colors.blueAccent,
+                  textStyle: const TextStyle(fontSize: 12, decoration: TextDecoration.underline),
+                  padding: EdgeInsets.zero,
+                  minimumSize: Size(0, 0),
+                  tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                  alignment: Alignment.center,
+                ).copyWith(
+                  overlayColor: WidgetStateProperty.resolveWith<Color?>((states) {
+                    if (states.contains(WidgetState.hovered)) {
+                      return Colors.blueAccent.withValues(alpha: 0.30);
+                    }
+                    return null;
+                  }),
+                ),
                 child: const Text(
-                  "© 2025 KiForKids - Interaktive Lernplattform für Kinder\nEntwickelt von Marco Grimme – Inspiriert von Jonas Grimme – KI-generierte Aufgaben",
+                  "Entwickelt von Marco Grimme – Inspiriert von Jonas Grimme – KI-generierte Aufgaben",
                   textAlign: TextAlign.center,
-                  style: TextStyle(color: Colors.blueAccent, fontSize: 12, decoration: TextDecoration.underline),
                 ),
               ),
               const SizedBox(height: 6),
@@ -43,6 +62,25 @@ class FooterSection extends StatelessWidget {
                     onPressed: () {
                       _launchUrl('/datenschutz.html');
                     },
+                    style: TextButton.styleFrom(
+                      foregroundColor: Colors.blueAccent,
+                      textStyle: const TextStyle(
+                        color: Colors.blueAccent,
+                        decoration: TextDecoration.underline,
+                        fontSize: 12,
+                      ),
+                      padding: EdgeInsets.zero,
+                      minimumSize: Size(0, 0),
+                      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                      alignment: Alignment.center,
+                    ).copyWith(
+                      overlayColor: WidgetStateProperty.resolveWith<Color?>((states) {
+                        if (states.contains(WidgetState.hovered)) {
+                          return Colors.blueAccent.withValues(alpha: 0.16);
+                        }
+                        return null;
+                      }),
+                    ),
                     child: const Text(
                       "Datenschutz",
                       style: TextStyle(color: Colors.blueAccent, decoration: TextDecoration.underline, fontSize: 12),
@@ -52,6 +90,25 @@ class FooterSection extends StatelessWidget {
                     onPressed: () {
                       _launchUrl('/agb.html');
                     },
+                    style: TextButton.styleFrom(
+                      foregroundColor: Colors.blueAccent,
+                      textStyle: const TextStyle(
+                        color: Colors.blueAccent,
+                        decoration: TextDecoration.underline,
+                        fontSize: 12,
+                      ),
+                      padding: EdgeInsets.zero,
+                      minimumSize: Size(0, 0),
+                      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                      alignment: Alignment.center,
+                    ).copyWith(
+                      overlayColor: WidgetStateProperty.resolveWith<Color?>((states) {
+                        if (states.contains(WidgetState.hovered)) {
+                          return Colors.blueAccent.withValues(alpha: 0.16);
+                        }
+                        return null;
+                      }),
+                    ),
                     child: const Text(
                       "AGB",
                       style: TextStyle(color: Colors.blueAccent, decoration: TextDecoration.underline, fontSize: 12),
@@ -61,6 +118,25 @@ class FooterSection extends StatelessWidget {
                     onPressed: () {
                       _launchUrl('/impressum.html');
                     },
+                    style: TextButton.styleFrom(
+                      foregroundColor: Colors.blueAccent,
+                      textStyle: const TextStyle(
+                        color: Colors.blueAccent,
+                        decoration: TextDecoration.underline,
+                        fontSize: 12,
+                      ),
+                      padding: EdgeInsets.zero,
+                      minimumSize: Size(0, 0),
+                      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                      alignment: Alignment.center,
+                    ).copyWith(
+                      overlayColor: WidgetStateProperty.resolveWith<Color?>((states) {
+                        if (states.contains(WidgetState.hovered)) {
+                          return Colors.blueAccent.withValues(alpha: 0.16);
+                        }
+                        return null;
+                      }),
+                    ),
                     child: const Text(
                       "Impressum",
                       style: TextStyle(color: Colors.blueAccent, decoration: TextDecoration.underline, fontSize: 12),
