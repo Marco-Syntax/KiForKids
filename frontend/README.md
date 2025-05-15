@@ -38,3 +38,5 @@ deploy.sh
 ./deploy.sh
 
 ./status_remote.sh
+
+./deploy_frontend_only.sh "Deine Commit"
