@@ -21,3 +21,5 @@ kernal/pipes
 kernal/store/meta
 base_prompt.gpt
 deploy.sh
+status_remote.sh
+deploy_frontend_only.sh
