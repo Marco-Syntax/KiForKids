@@ -64,7 +64,7 @@ class FooterSection extends StatelessWidget {
                 children: [
                   TextButton(
                     onPressed: () {
-                      _launchUrl('/datenschutz.html');
+                      _launchUrl('https://kiforkids.de/datenschutz.html', external: true);
                     },
                     style: TextButton.styleFrom(
                       foregroundColor: Colors.blueAccent,
@@ -92,7 +92,7 @@ class FooterSection extends StatelessWidget {
                   ),
                   TextButton(
                     onPressed: () {
-                      _launchUrl('/agb.html');
+                      _launchUrl('https://kiforkids.de/agb.html', external: true);
                     },
                     style: TextButton.styleFrom(
                       foregroundColor: Colors.blueAccent,
@@ -120,7 +120,7 @@ class FooterSection extends StatelessWidget {
                   ),
                   TextButton(
                     onPressed: () {
-                      _launchUrl('/impressum.html');
+                      _launchUrl('https://kiforkids.de/impressum.html', external: true);
                     },
                     style: TextButton.styleFrom(
                       foregroundColor: Colors.blueAccent,
