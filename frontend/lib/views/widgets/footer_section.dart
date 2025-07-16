@@ -8,9 +8,11 @@ class FooterSection extends StatelessWidget {
 
   // Hilfsfunktion zum Öffnen von URLs (Web/Native)
   Future<void> _launchUrl(String urlString, {bool external = false}) async {
-    final isWeb = kIsWeb;
-    final Uri url = isWeb && !external ? Uri.parse(Uri.base.origin + urlString) : Uri.parse(urlString);
-    final mode = external ? LaunchMode.externalApplication : LaunchMode.platformDefault;
+    final Uri url = Uri.parse(urlString);
+
+    // Verwende für Web immer externalApplication, damit Safari keine Popups blockiert
+    final LaunchMode mode = kIsWeb ? LaunchMode.externalApplication : LaunchMode.platformDefault;
+
     if (!await launchUrl(url, mode: mode)) {
       throw Exception('Konnte URL nicht öffnen: $urlString');
     }
