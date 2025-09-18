@@ -13,6 +13,10 @@ env/
 venv/
 .idea/
 .vscode/
+.DS_Store
+*.pem
+*.key
+*.p12
 
 # Log/Cache
 *.log
@@ -20,6 +24,11 @@ venv/
 .mypy_cache/
 .ruff_cache/
 coverage/
+.pytest_cache/
+
+# Build/Dist
+build/
+dist/
 
 # Lokale Daten
 results_data/

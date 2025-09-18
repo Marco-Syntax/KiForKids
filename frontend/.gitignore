@@ -44,6 +44,17 @@ app.*.map.json
 /android/app/profile
 /android/app/release
 .env
+.env.*
+
+# macOS, IDE
+.DS_Store
+.idea/
+.vscode/
+
+# Secrets / Keys
+*.pem
+*.key
+*.p12
 
 # Backend-relevante Dateien
 __pycache__/
