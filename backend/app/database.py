@@ -18,8 +18,21 @@ load_dotenv()
 DB_HOST = os.getenv("DB_HOST", "localhost")
 DB_PORT = os.getenv("DB_PORT", "3306")
 DB_USER = os.getenv("DB_USER", "root")
-DB_PASSWORD = os.getenv("DB_PASSWORD", "password")
+# Kein Default-Passwort mehr; erfordert Konfiguration via .env/Secrets
+DB_PASSWORD = os.getenv("DB_PASSWORD")
 DB_NAME = os.getenv("DB_NAME", "homeschool")
+
+missing = [name for name, val in {
+    "DB_USER": DB_USER,
+    "DB_PASSWORD": DB_PASSWORD,
+    "DB_HOST": DB_HOST,
+    "DB_PORT": DB_PORT,
+    "DB_NAME": DB_NAME,
+}.items() if val in (None, "")]
+
+if missing:
+    logger.critical(f"Fehlende DB-Konfig Variablen: {', '.join(missing)}")
+    sys.exit(1)
 
 # MariaDB-Verbindungsstring
 SQLALCHEMY_DATABASE_URL = f"mysql+pymysql://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}"

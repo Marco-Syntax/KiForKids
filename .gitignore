@@ -1,6 +1,7 @@
 # Umgebungsvariablen
 .env
 .env.*
+!.env.example
 
 # Python
 __pycache__/
@@ -24,6 +25,13 @@ __pycache__/
 *.pem
 *.key
 *.p12
+*.jks
+*.keystore
+secrets/
+ios/Runner/GoogleService-Info.plist
+android/app/google-services.json
+.env
+.env.*
 
 # Kernal Artefakte
 kernal/store/file_sums/
