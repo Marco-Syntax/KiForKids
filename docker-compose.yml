@@ -1,0 +1,40 @@
+version: '3'
+
+services:
+  backend:
+    build: ./backend
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env
+    depends_on:
+      mariadb:
+        condition: service_healthy
+    volumes:
+      - ./backend:/app
+    command: uvicorn app.main:app --host 0.0.0.0 --reload
+    restart: unless-stopped  
+  mariadb:
+    image: mariadb:10.11
+    ports:
+      - "3306:3306"
+    env_file:
+      - .env
+    environment:
+      - MARIADB_ROOT_PASSWORD=${DB_ROOT_PASSWORD}
+      - MARIADB_USER=${DB_USER}
+      - MARIADB_PASSWORD=${DB_PASSWORD}
+      - MARIADB_DATABASE=${DB_NAME}
+    volumes:
+      - mariadb_data:/var/lib/mysql
+      - ./backend/init.sql:/docker-entrypoint-initdb.d/init.sql 
+    healthcheck:
+      # Benutzt Container-Env-Variablen, keine Klartext-Passwörter im Repo
+      test: ["CMD-SHELL", "mysqladmin ping -h 127.0.0.1 -u $$MARIADB_USER -p$$MARIADB_PASSWORD --silent || mysqladmin ping -h 127.0.0.1 -u root -p$$MARIADB_ROOT_PASSWORD --silent"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    restart: unless-stopped  
+
+volumes:
+  mariadb_data: 
